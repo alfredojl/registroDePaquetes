@@ -1,0 +1,16 @@
+[{
+        "estado": "Recibido"
+    },
+    {
+        "estado": "Preparado"
+    },
+    {
+        "estado": "Digitalizado"
+    },
+    {
+        "estado": "Sellado"
+    },
+    {
+        "estado": "Cosido"
+    }
+]
