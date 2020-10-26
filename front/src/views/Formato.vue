@@ -31,7 +31,7 @@
         <th class="renglon">{{ preparador }}</th>
         <th class="l">Verificador</th>
         <th class="checkes"></th>
-        <th class="renglon">Digitalizador</th>
+        <th class="">Digitalizador</th>
       </tr>
       <tr>
         <td class="l">Paquete</td>
