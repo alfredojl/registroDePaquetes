@@ -140,8 +140,9 @@ export default {
     getFolios() {
       if (!localStorage.noPaquete) this.spinner = false;
       let params = {
-        folioInicio: localStorage.folioInicio,
-        folioFin: localStorage.folioFin,
+        // folioInicio: localStorage.folioInicio,
+        // folioFin: localStorage.folioFin,
+        noPaquete: this.noPaquete
       };
       axios
         .get(`${config.api}/folios`, {
