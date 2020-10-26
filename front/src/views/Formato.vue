@@ -152,7 +152,7 @@
     <div class="mb-5"></div>
     <div class="mt-5"></div>
     <div class="row">
-      <div class="col-9 mt-5"></div>
+      <div class="col-9 mt-2"></div>
       <img :src="qrvue" alt="" class="bottom-qr" />
     </div>
   </div>
