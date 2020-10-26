@@ -58,6 +58,7 @@
         name="checkbox-1"
         value="true"
         unchecked-value="false"
+        switch
       >
         BIS
       </b-form-checkbox>
@@ -66,6 +67,7 @@
         id="checkbox"
         name="checkbox"
         v-model="numeral"
+        switch
         value="true"
         unchecked-value="false"
       >

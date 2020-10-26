@@ -8,6 +8,7 @@ import Asignar from "../views/Asignar.vue";
 import Capturar from "../views/Capturar.vue";
 import Formato from "../views/Formato.vue";
 import Editar from "../views/Editar.vue";
+import Lotes from '../views/Lotes';
 // import CrearUsuario from "../views/CrearUsuario.vue";
 
 Vue.use(VueRouter);
@@ -56,6 +57,15 @@ const routes = [{
         path: '/registrar',
         name: 'Registrar',
         component: Registrar,
+        beforeEnter: (to, from, next) => {
+            if (isAuthenticated()) next();
+            else next(false);
+        },
+    },
+    {
+        path: '/lotes',
+        name: 'Lotes',
+        component: Lotes,
         beforeEnter: (to, from, next) => {
             if (isAuthenticated()) next();
             else next(false);

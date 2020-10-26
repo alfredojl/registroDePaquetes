@@ -8,11 +8,12 @@
 
 <script>
 import Vue from 'vue'
-import BootstrapVue from 'bootstrap-vue'
+import {BootstrapVue, BIconPlusSquare} from 'bootstrap-vue'
 import Header from './components/Header'
 
 
 Vue.use(BootstrapVue)
+Vue.component('BIconPlusSquare', BIconPlusSquare);
 
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'

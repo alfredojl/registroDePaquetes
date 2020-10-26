@@ -31,11 +31,12 @@
         <th class="renglon">{{ preparador }}</th>
         <th class="l">Verificador</th>
         <th class="checkes"></th>
-        <th class="l">Digitalizador</th>
+        <th class="renglon">Digitalizador</th>
       </tr>
       <tr>
         <td class="l">Paquete</td>
-        <td class="l">{{ noPaquete }} {{ identificador }}/{{ cantidad }}</td>
+        <td class="l">{{ noPaquete }} {{ identificador }}{{ identificador ? '/' : '' }}{{ cantidad }}</td>
+        <!-- <td class="l" v-else>{{ noPaquete }}</td> -->
         <td class="l">Registro de datos</td>
         <td class="l"></td>
         <td class="l"></td>
@@ -62,7 +63,7 @@
         <td class="l"></td>
       </tr>
       <tr>
-        <td class="l">Con periodico</td>
+        <td class="l">Con periódico</td>
         <td class="l"></td>
         <td class="l">Sin fojas dobladas</td>
         <td class="l"></td>
@@ -125,7 +126,7 @@
         <td class="l"></td>
       </tr>
       <tr>
-        <td class="l">Numero estimado de fojas</td>
+        <td class="l">Número estimado de fojas</td>
         <td class="l"></td>
         <td class="l"></td>
         <td class="l"></td>

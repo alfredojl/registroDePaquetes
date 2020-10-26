@@ -269,6 +269,7 @@ export default {
       this.$router.push("/validar");
     },
     search() {
+      this.noPaquete = this.noPaquete.slice(0, 5)
       if (!this.noPaquete)
         return Swal.fire("Ingresa un número de paquete", "", "info");
       axios

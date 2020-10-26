@@ -71,11 +71,14 @@
       <div class="col-3"></div>
       <div class="col-6 p-0 d-flex">
         <b-input-group prepend="Turno" class="">
-          <!-- <b-form-input type="number" v-model="turno"></b-form-input> -->
           <b-form-select
+          autofocus
             v-model="turno"
             :options="turnos"
-          ></b-form-select>
+          >
+          <template #first>
+        </template>
+          </b-form-select>
         </b-input-group>
       </div>
     </div>
@@ -90,7 +93,10 @@
             value-field="name"
             text-field="name"
             :disabled="!turno"
-          ></b-form-select>
+          >
+          <template #first>
+        </template>
+          </b-form-select>
         </b-input-group>
       </div>
     </div>
@@ -105,7 +111,10 @@
             value-field="name"
             text-field="name"
             :disabled="!verificador"
-          ></b-form-select>
+          >
+          <template #first>
+        </template>
+          </b-form-select>
         </b-input-group>
       </div>
     </div>

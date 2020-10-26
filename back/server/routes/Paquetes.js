@@ -122,6 +122,25 @@ app.put('/paquete', async(req, res) => {
     })
 });
 
+app.put('/captura', (req, res) => {
+    let noPaquete = req.body.noPaquete;
+    let body = req.body;
+
+    Paquete.updateOne({ noPaquete }, body, { new: true }, (err, paqueteDB) => {
+        if (err) {
+            return res.status(500).json({
+                ok: false,
+                err
+            })
+        }
+
+        res.json({
+            ok: true,
+            paquete: paqueteDB
+        })
+    })
+})
+
 app.delete('/paquete', (req, res) => {
     let noPaquete = req.query.noPaquete;
 
