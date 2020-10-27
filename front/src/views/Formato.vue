@@ -230,8 +230,8 @@ Preparador: ${this.preparador}`
           //         .slice(0, 10)
           //     : null;
           // this.fechaExpediente = new Date(res.data.paquete.fechaExpediente);
-          let dia = res.data.paquete.fechaExpediente.slice(9,10);
-          let mes = res.data.paquete.fechaExpediente.slice(6,7);
+          let dia = res.data.paquete.fechaExpediente.slice(8,10);
+          let mes = res.data.paquete.fechaExpediente.slice(5,7);
           this.fechaExpediente = dia + '/' + mes + '/' + res.data.paquete.fechaExpediente.slice(0, 4)
           // this.fechaExpediente =
           //   dia + "/" + mes + "/" + this.fechaExpediente.getFullYear();

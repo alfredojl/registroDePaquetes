@@ -34,6 +34,17 @@ app.post('/paquete', async(req, res) => {
             })
         }
 
+        await Folio.deleteMany({ noPaquete }, (err, fol) => {
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    err: {
+                        message: 'Error al eliminar folios'
+                    }
+                })
+            }
+        });
+
         let folios = [];
         for (let i = body.folioInicio; i <= body.folioFin; i++) {
             let folio = {
