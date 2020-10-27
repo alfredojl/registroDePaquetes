@@ -7,6 +7,7 @@ import Registrar from "../views/Registrar.vue";
 import Asignar from "../views/Asignar.vue";
 import Capturar from "../views/Capturar.vue";
 import Formato from "../views/Formato.vue";
+import QRlotes from "../views/QRlotes.vue";
 import Editar from "../views/Editar.vue";
 import Lotes from '../views/Lotes';
 // import CrearUsuario from "../views/CrearUsuario.vue";
@@ -57,6 +58,15 @@ const routes = [{
         path: '/registrar',
         name: 'Registrar',
         component: Registrar,
+        beforeEnter: (to, from, next) => {
+            if (isAuthenticated()) next();
+            else next(false);
+        },
+    },
+    {
+        path: '/qrlotes',
+        name: 'QRlotes',
+        component: QRlotes,
         beforeEnter: (to, from, next) => {
             if (isAuthenticated()) next();
             else next(false);

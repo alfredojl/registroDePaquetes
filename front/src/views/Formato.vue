@@ -31,7 +31,7 @@
         <th class="renglon">{{ preparador }}</th>
         <th class="l">Verificador</th>
         <th class="checkes"></th>
-        <th class="">Digitalizador</th>
+        <th>Digitalizador</th>
       </tr>
       <tr>
         <td class="l">Paquete</td>
@@ -187,13 +187,6 @@ export default {
   },
   methods: {
     qr() {
-      // let data = {
-      //     '': this.noPaquete,
-      //     "Folio inicio:": this.folioInicio,
-      //     'Folio fin: ': this.folioFin,
-      //     'Fecha expediente: ': this.fechaExpediente,
-      //     'Verificador: ': this.verificador
-      // }
       QR.toDataURL(
         `${this.noPaquete} 
 Folio inicio: ${this.folioInicio}
@@ -202,8 +195,6 @@ Fecha expediente: ${this.fechaExpediente}
 Verificador: ${this.verificador}
 Preparador: ${this.preparador}`
       )
-        // console.log(data);
-        // QR.toDataURL(data)
         .then((url) => {
           this.qrvue = url;
         })
