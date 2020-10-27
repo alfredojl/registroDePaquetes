@@ -173,7 +173,7 @@ export default {
         noPaquete: this.noPaquete || localStorage.noPaquete,
       };
       axios
-        .put(`${config.api}/folios`, { data })
+        .post(`${config.api}/folios`, { data })
         .then((res) => {
           Swal.fire(`¡Hecho!`, `Folios actualizados correctamente.`, "success");
         })

@@ -125,6 +125,7 @@ app.put('/paquete', async(req, res) => {
                 noPaquete
             });
             aux.save((err, folio) => {
+                console.log('uno mas');
                 if (err)
                     return res.status(500).json({
                         ok: false,
@@ -132,7 +133,6 @@ app.put('/paquete', async(req, res) => {
                     })
                 folios.push(folio);
                 folioInicio++;
-                console.log('uno mas');
             })
             if (folioInicio == folioFin)
                 return res.json({
