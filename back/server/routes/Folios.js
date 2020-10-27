@@ -76,8 +76,6 @@ app.put('/folios', async(req, res) => {
     let noPaquete = folios[0]['noPaquete'];
     let foliosResultado = [];
 
-    console.log(req.body.data);
-
     for (bodi of folios) {
         var n = Folio.findOneAndUpdate({ folio: bodi.folio }, bodi, (err, folioDB) => {
                 if (err) {
