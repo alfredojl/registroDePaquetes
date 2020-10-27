@@ -229,11 +229,12 @@ Preparador: ${this.preparador}`
           //         .toISOString()
           //         .slice(0, 10)
           //     : null;
-          this.fechaExpediente = new Date(res.data.paquete.fechaExpediente);
-          let dia = this.fechaExpediente.getDate() + 1;
-          let mes = this.fechaExpediente.getMonth() + 1;
-          this.fechaExpediente =
-            dia + "/" + mes + "/" + this.fechaExpediente.getFullYear();
+          // this.fechaExpediente = new Date(res.data.paquete.fechaExpediente);
+          let dia = res.data.paquete.fechaExpediente.slice(9,10);
+          let mes = res.data.paquete.fechaExpediente.slice(6,7);
+          this.fechaExpediente = dia + '/' + mes + '/' + res.data.paquete.fechaExpediente.slice(0, 4)
+          // this.fechaExpediente =
+          //   dia + "/" + mes + "/" + this.fechaExpediente.getFullYear();
           this.qr();
         })
         .catch((error) => {

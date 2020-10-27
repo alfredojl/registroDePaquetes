@@ -160,25 +160,16 @@ export default {
       });
     },
     save() {
-      let oldNoPaquete = localStorage.noPaquete;
-      let data = {
-        
-        
-        
-        
-        
-        
-      };
       axios
         .put(`${config.api}/paquete`, {
           noPaquete: this.noPaquete,
-          oldNoPaquete,
           folioInicio: this.folioInicio,
           folioFin: this.folioFin,
           registrado: localStorage.loggedIn,
           fechaExpediente: this.fechaExpediente,
         })
         .then((res) => {
+          console.log(res.data);
           Swal.fire(
             `¡Hecho!`,
             `Paquete ${this.noPaquete} actualizado correctamente.`,

@@ -10,13 +10,13 @@ app.get('/folios', async(req, res) => {
 
     let noPaquete = req.query.noPaquete;
 
-    Folio.find({ noPaquete }, (err, folios) => {
+    Folio.find({ noPaquete }, {}, { sort: { folio: 1 } }, (err, folios) => {
         if (err)
             return res.status(500).json({
                 ok: false,
                 err
             })
-        res.json({
+        return res.json({
             ok: true,
             folios
         });
@@ -76,6 +76,8 @@ app.put('/folios', async(req, res) => {
     let noPaquete = folios[0]['noPaquete'];
     let foliosResultado = [];
 
+    console.log(req.body.data);
+
     for (bodi of folios) {
         var n = Folio.findOneAndUpdate({ folio: bodi.folio }, bodi, (err, folioDB) => {
                 if (err) {
@@ -101,7 +103,7 @@ app.put('/folios', async(req, res) => {
         }
     })
 
-    res.json({
+    return res.json({
         ok: true,
         foliosResultado
     })

@@ -60,7 +60,6 @@ app.post('/paquete', async(req, res) => {
 })
 
 app.put('/paquete', async(req, res) => {
-
     let noPaquete = req.body.noPaquete;
     let folioInicio = req.body.folioInicio;
     let folioFin = req.body.folioFin;
@@ -69,9 +68,8 @@ app.put('/paquete', async(req, res) => {
     let preparador = req.body.preparador;
     let turno = req.body.turno;
     let registrado = req.body.registrado;
-    let oldNoPaquete = req.body.oldNoPaquete || req.body.noPaquete;
 
-    await Paquete.updateOne({ noPaquete: oldNoPaquete }, {
+    await Paquete.updateOne({ noPaquete: noPaquete }, {
         noPaquete,
         folioInicio,
         folioFin,
@@ -82,12 +80,13 @@ app.put('/paquete', async(req, res) => {
         turno
     }, { new: true }, async(err, paqueteDB) => {
         if (err) {
-            return res.status(500).json({
+            res.status(500).json({
                 ok: false,
                 err
             })
+            throw new Error('1');
         }
-        await Folio.deleteMany({ noPaquete }, (err, fol) => {
+        Folio.deleteMany({ noPaquete }, (err, fol) => {
             if (err) {
                 res.status(500).json({
                     ok: false,
@@ -95,30 +94,54 @@ app.put('/paquete', async(req, res) => {
                         message: 'Error al eliminar folios'
                     }
                 })
+                throw new Error('2');
             }
         });
         let folios = [];
-        for (let i = folioInicio; i <= folioFin; i++) {
-            let folio = {
-                folio: i,
-                noPaquete: noPaquete
-            }
-            folios.push(folio);
-        };
-
-        await Folio.insertMany(folios, (err, resultado) => {
-            if (err) {
-                Paquete.remove({ noPaquete });
-                return res.status(500).json({
-                    ok: false,
-                    err
+        // for (let i = folioInicio; i <= folioFin; i++) {
+        //     let folio = {
+        //         folio: i,
+        //         noPaquete: noPaquete
+        //     }
+        //     let hola = Folio.create(folio, (err, resultado) => {
+        //             if (err) {
+        //                 Paquete.deleteOne({ noPaquete });
+        //                 res.status(500).json({
+        //                     ok: false,
+        //                     err
+        //                 });
+        //                 throw new Error('3');
+        //             }
+        //             console.log(resultado);
+        //         })
+        //         // folios.push(folio);
+        //     folios.push(hola)
+        // };
+        let i = folioInicio;
+        let temp = folioFin + 1;
+        while (folioInicio <= folioFin) {
+            let aux = new Folio({
+                folio: folioInicio,
+                noPaquete
+            });
+            aux.save((err, folio) => {
+                if (err)
+                    return res.status(500).json({
+                        ok: false,
+                        err
+                    })
+                folios.push(folio);
+                folioInicio++;
+                console.log('uno mas');
+            })
+            if (folioInicio == folioFin)
+                return res.json({
+                    ok: true,
+                    paquete: folios
                 });
-            }
-        })
-        return res.json({
-            ok: true,
-            paquete: paqueteDB
-        })
+            console.log(folioInicio);
+        }
+
     })
 });
 
@@ -128,13 +151,14 @@ app.put('/captura', (req, res) => {
 
     Paquete.updateOne({ noPaquete }, body, { new: true }, (err, paqueteDB) => {
         if (err) {
-            return res.status(500).json({
+            res.status(500).json({
                 ok: false,
                 err
             })
+            throw new Error('put');
         }
 
-        res.json({
+        return res.json({
             ok: true,
             paquete: paqueteDB
         })

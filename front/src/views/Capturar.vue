@@ -190,9 +190,7 @@ export default {
     getPreparadores() {
       if (!this.preparador)
         axios
-          .get(`${config.api}/preparadores`, {
-            verificador: this.verificador,
-          })
+          .get(`${config.api}/preparadores`)
           .then((res) => {
             this.preparadores = res.data.preparadores;
           })
