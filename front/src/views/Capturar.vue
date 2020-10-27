@@ -109,7 +109,7 @@
         <div class="col-6 p-0 d-flex">
           <b-input-group prepend="Número de fojas" class="">
             <b-form-input type="number" v-model="noFojas"
-            @click="save()"></b-form-input>
+            @keyup.enter="save()"></b-form-input>
           </b-input-group>
         </div>
       </div>
