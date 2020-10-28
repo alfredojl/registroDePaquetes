@@ -62,7 +62,7 @@
 </template>
 
 <script>
-import html2pdf from 'vue-html2pdf';
+// import html2pdf from 'vue-html2pdf';
 export default {
   computed: {
     valida() {
