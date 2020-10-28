@@ -236,13 +236,23 @@ export default {
     },
     getPreparadores(value) {
       axios
-        .get(`${config.api}/preparadores`, {
-          params: {
-            verificador: value,
-          },
-        })
+        .get(`${config.api}/preparadores`)
         .then((res) => {
           this.preparadores = res.data.preparadores;
+        })
+        .catch((error) => {
+          if (error) {
+            console.log(error);
+          }
+        });
+      axios
+        .get(`${config.api}/verificadores`)
+        .then((res) => {
+          let veri = res.data.verificadores;
+          veri.forEach(el => {
+            this.preparadores.push(el)
+          })
+          console.log(this.preparadores);
         })
         .catch((error) => {
           if (error) {

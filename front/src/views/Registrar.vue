@@ -167,7 +167,6 @@ export default {
           data,
         })
         .then((res) => {
-          console.log(this.noPaquete);
           if (!res.data.exist)
             return Swal.fire({
               title: `¡Hecho!`,
@@ -181,8 +180,6 @@ export default {
             `El paquete ${this.noPaquete} ya fue creado anteriormente. Intente buscarlo.`,
             "info"
           );
-          console.log(res);
-          console.log(this.noPaquete);
         })
         .catch((err) => {
           Swal.fire(`Error!`, `No se pudo agregar el paquete.`, "error");
