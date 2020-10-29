@@ -35,7 +35,7 @@
       </tr>
       <tr>
         <td class="l">Paquete</td>
-        <td class="l">{{ noPaquete }} {{ bis ? 'Bis' : '' }}{{ identificador ? identificador + '/' : '' }}{{ cantidad }}</td>
+        <td class="l">{{ noPaquete }} {{ bis ? 'BIS' : '' }}{{ identificador ? identificador + '/' : '' }}{{ cantidad }}</td>
         <!-- <td class="l" v-else>{{ noPaquete }}</td> -->
         <td class="l">Registro de datos</td>
         <td class="l"></td>
@@ -175,6 +175,7 @@ export default {
       verificador: null,
       folioInicio: null,
       folioFin: null,
+      bis: null,
       cantidad: null,
       identificador: null,
       turno: null,
@@ -226,6 +227,7 @@ Preparador: ${this.preparador}`
           this.verificador = res.data.paquete.verificador;
           this.preparador = res.data.paquete.preparador;
           this.cantidad = res.data.paquete.cantidad;
+          this.bis = res.data.paquete.bis;
           this.identificador = res.data.paquete.identificador;
           this.turno = res.data.paquete.turno;
           //   this.fechaExpediente = res.data.paquete.fechaExpediente
