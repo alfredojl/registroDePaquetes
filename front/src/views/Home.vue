@@ -1,6 +1,17 @@
 <template>
   <div class="container">
-    <div class="row mt-5">
+      <b-row class="mt-3 justify-content-center" v-show="incidencia">
+        <b-col lg="2"><b-alert show variant="warning" class="">Incidencias:</b-alert></b-col>
+      </b-row>
+      <b-row class="justify-content-center" v-show="incidencia">
+        <div>
+          <b-list-group class="m-0 p-0" horizontal v-for="faltante in faltantes" :key="faltante">
+            <b-list-group-item>{{ faltante }}</b-list-group-item>
+          </b-list-group>
+        </div>
+      </b-row>
+
+    <div class="row mt-2">
       <div class="col-3"></div>
       <div class="col-6 p-0 d-flex">
         <b-input-group prepend="Paquete" class="">
@@ -8,7 +19,6 @@
             type="number"
             autofocus
             v-model="noPaquete"
-            maxlength="5"
             :state="valida"
             v-on:keyup.enter="search()"
           ></b-form-input>
@@ -20,30 +30,30 @@
     </div>
     <div v-show="cantidad">
       <div class="row mt-1">
-      <div class="col-3"></div>
-      <div class="col-3 p-0 d-flex">
-        <b-input-group prepend="Número" class="mb-5">
-          <b-form-input
-            type="number"
-            class="col-2"
-            v-model="identificador"
-            disabled
-          ></b-form-input>
-          <b-form-input
-            type="text"
-            class="col-2"
-            value="de"
-            disabled
-          ></b-form-input>
-          <b-form-input
-            type="number"
-            class="col-2"
-            v-model="cantidad"
-            disabled
-          ></b-form-input>
-        </b-input-group>
+        <div class="col-3"></div>
+        <div class="col-3 p-0 d-flex">
+          <b-input-group prepend="Número" class="mb-5">
+            <b-form-input
+              type="number"
+              class="col-2"
+              v-model="identificador"
+              disabled
+            ></b-form-input>
+            <b-form-input
+              type="text"
+              class="col-2"
+              value="de"
+              disabled
+            ></b-form-input>
+            <b-form-input
+              type="number"
+              class="col-2"
+              v-model="cantidad"
+              disabled
+            ></b-form-input>
+          </b-input-group>
+        </div>
       </div>
-    </div>
     </div>
     <div class="row mkeyt-5">
       <div class="col-3"></div>
@@ -200,7 +210,11 @@
               @click="goAsignar()"
               >Asignar</b-button
             >
-            <b-button class="col-auto mt-3 mb-5" variant="warning" @click="goFormato()" right
+            <b-button
+              class="col-auto mt-3 mb-5"
+              variant="warning"
+              @click="goFormato()"
+              right
               >Formato</b-button
             >
           </b-button-group>
@@ -218,7 +232,8 @@ import config from "../config/config";
 export default {
   data() {
     return {
-      noPaquete: '',
+      incidencia: false,
+      noPaquete: "",
       temp: null,
       paquete: null,
       folioInicio: null,
@@ -234,25 +249,26 @@ export default {
       preparador: null,
       observaciones: null,
       verificador: null,
-      digitalizador: null
+      digitalizador: null,
+      faltantes: [],
     };
   },
   created() {},
   computed: {
-    valida(){
-      if(this.noPaquete.length > 5){
-        return false
+    valida() {
+      if (this.noPaquete.length > 5) {
+        return false;
       }
-    }
+    },
   },
   methods: {
-    goEditar(){
+    goEditar() {
       localStorage.setItem("noPaquete", this.noPaquete);
-      this.$router.push('/editar');
+      this.$router.push("/editar");
     },
-    goFormato(){
+    goFormato() {
       localStorage.setItem("noPaquete", this.noPaquete);
-      this.$router.push('/formato');
+      this.$router.push("/formato");
     },
     goCapturar() {
       localStorage.setItem("noPaquete", this.noPaquete);
@@ -268,8 +284,34 @@ export default {
       localStorage.setItem("fechaExpediente", this.fechaExpediente);
       this.$router.push("/validar");
     },
+    getFolios() {
+      if (!localStorage.noPaquete) this.spinner = false;
+      let params = {
+        // folioInicio: localStorage.folioInicio,
+        // folioFin: localStorage.folioFin,
+        noPaquete: this.noPaquete,
+      };
+      axios
+        .get(`${config.api}/folios`, {
+          params,
+        })
+        .then((res) => {
+          let folios = res.data.folios;
+          folios.forEach((el) => {
+            if (el.estado == "Faltante") {
+              this.incidencia = true;
+              this.faltantes.push(el.folio);
+              console.log(this.faltantes);
+              console.log(el.folio);
+            }
+          });
+        })
+        .catch((error) => {
+          if (error) console.log(error);
+        });
+    },
     search() {
-      this.noPaquete = this.noPaquete.slice(0, 5)
+      this.noPaquete = this.noPaquete.slice(0, 5);
       if (!this.noPaquete)
         return Swal.fire("Ingresa un número de paquete", "", "info");
       axios
@@ -306,6 +348,7 @@ export default {
           this.fechaAlta = new Date(res.data.paquete.fechaAlta)
             .toISOString()
             .slice(0, 10);
+          this.getFolios();
         })
         .catch((error) => {
           if (error) {

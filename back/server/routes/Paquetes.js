@@ -79,6 +79,9 @@ app.put('/paquete', async(req, res) => {
     let verificador = req.body.verificador;
     let preparador = req.body.preparador;
     let turno = req.body.turno;
+    let digitalizador = req.body.digitalizador;
+    let turno = req.body.turno;
+    let noFojas = req.body.noFojas;
     let registrado = req.body.registrado;
 
     await Paquete.updateOne({ noPaquete: noPaquete }, {
@@ -88,6 +91,8 @@ app.put('/paquete', async(req, res) => {
         fechaExpediente,
         registrado,
         verificador,
+        digitalizador,
+        noFojas,
         preparador,
         turno
     }, { new: true }, async(err, paqueteDB) => {

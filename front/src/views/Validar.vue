@@ -149,7 +149,6 @@ export default {
           params,
         })
         .then((res) => {
-          console.log(res.data.folios);
           this.folios = res.data.folios;
           this.folios.forEach((el, index) => {
             if (el.referencias) {
