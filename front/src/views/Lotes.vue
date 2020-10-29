@@ -1,14 +1,20 @@
 <template>
   <div class="container">
     <b-row class="justify-content-center mt-2">
-      <b-col lg="2"
-        ><b-button :pressed.sync="add" variant="info"> Añadir lote</b-button>
+      <b-col lg="auto">
+        <b-form-radio-group
+          :options="options"
+          buttons
+          class="m-3"
+          button-variant="primary"
+          v-model="add"
+        >
+        </b-form-radio-group>
       </b-col>
-      <b-col lg="2"><b-button variant="info"> Entregar lote</b-button> </b-col>
-      <b-col lg="2"><b-button variant="info"> Recibir lote</b-button> </b-col>
-      <b-col lg="2"><b-button variant="info"> Buscar lote</b-button> </b-col>
+      <!-- <b-col lg="2"><b-button variant="info"> Recibir lote</b-button> </b-col>
+      <b-col lg="2"><b-button variant="info"> Buscar lote</b-button> </b-col> -->
     </b-row>
-    <div class="row mt-5" v-show="add">
+    <div class="row mt-5" v-show="add == 'add'">
       <div class="col-3"></div>
       <div class="col-6 p-0 d-flex">
         <b-input-group prepend="Lote" class="">
@@ -21,90 +27,228 @@
         </b-input-group>
       </div>
     </div>
-    <div class="row mt-2" v-show="add">
+    <div class="row mt-2" v-show="add == 'add'">
       <div class="p-0 d-flex"></div>
     </div>
-    <div class="row mt-2" v-show="add">
-      <b-button variant="success" class="p-2" @click="agrega">Añadir lote</b-button>
-      <div class="col-2"></div>
+    <div class="row mt-2" v-show="add == 'add'">
+      <div class="col-3"></div>
       <div class="col-6 p-0 d-flex">
         <b-input-group prepend="Paquete" class="">
           <b-form-input
-						type="number"
-						:state="valida"
+            type="number"
+            :state="valida"
             ref="folio"
             @keydown.188="agrega"
-						v-model="noPaquete"
-					></b-form-input>
-          <!-- <b-form-textarea
-            id="textarea-small"
-            size="sm"
-            :state="valida"
-            ref="textarea"
-            @keydown.tab="agrega"
-            class=""
             v-model="noPaquete"
-          ></b-form-textarea> -->
+          ></b-form-input>
         </b-input-group>
       </div>
     </div>
+    <b-row class="mt-3 justify-content-center">
+      <b-col lg="2">
+      <b-button v-show="add == 'add'" variant="success" class="p-2" @click="save"
+        >Añadir lote</b-button
+      >
+      </b-col>
+      <b-col lg="2">
+    <b-button v-show="add == 'add'" variant="primary" class="p-2" @click="download"
+      >Descargar</b-button
+    >
+      </b-col>
+    </b-row>
 
-    <pre>{{ noPaquete }}</pre>
-      <b-button v-show="add" variant="primary" class="p-2" @click="download">Descargar</b-button>
-    <div>
-      <b-table ref="tabla" class="mt-3" :items="paquetes" fixed :fields="fields" v-show="add">
-        <template #cell(index)="data">
+    <div class="row justify-content-center" v-show="add == 'search'">
+      <b-col lg="auto">
+        <b-form-radio-group
+        :options="op"
+        buttons
+        button-variant="secondary"
+        v-model="give"
+        ></b-form-radio-group>
+      </b-col>
+    </div>
+      <b-row class="mt-3 justify-content-center">
+      <div class="col-auto p-0 d-flex">
+        <b-input-group prepend="Lote" v-show="give == 'lote'" class="">
+          <b-form-input type="number" v-model="noLote" @keypress.enter="search"></b-form-input>
+          <b-input-group-prepend>
+            <b-button variant="secondary" @click="search()">Buscar</b-button>
+          </b-input-group-prepend>
+        </b-input-group>
+      </div>
+      <b-col class="justify-content-center col-auto">
+        <b-input-group prepend="Paquete" v-show="give == 'paquete'" class="">
+          <b-form-input type="number" v-model="noPaquete" @keypress.enter="noLote = null; search()"></b-form-input>
+          <b-input-group-prepend>
+            <b-button variant="secondary" @click="noLote = null; search()">Buscar</b-button>
+          </b-input-group-prepend>
+        </b-input-group>
+
+      </b-col>
+
+      </b-row>
+      <b-row class="mt-2 justify-content-center">
+        <b-col lg="2">
+    <b-button v-show="give" variant="primary" class="p-2" @click="download"
+      >Descargar</b-button
+    >
+      </b-col>
+        <b-col lg="2">
+    <b-button v-show="give" variant="primary" class="p-2" @click="addDate"
+      >Entregar</b-button
+    >
+      </b-col>
+        <b-col lg="2">
+    <b-button v-show="give" variant="primary" class="p-2" @click=""
+      >Devolver</b-button
+    >
+      </b-col>
+      </b-row>
+
+      <div v-if="!spinner">
+      <b-table
+        id="tabla"
+        class="mt-3 text-center"
+        :items="paquetes"
+        :fields="fields"
+        responsive
+        bordered
+        v-show="paquetes ? true : false"
+        small
+        hover
+      >
+        <template #cell(#)="data">
           {{ data.index + 1 }}
         </template>
       </b-table>
     </div>
+    <div class="text-center mt-5" v-else>
+      <b-spinner variant="secondary"></b-spinner>
+    </div>
+
   </div>
 </template>
 
 <script>
 // import html2pdf from 'vue-html2pdf';
+import axios from "axios";
+import config from "../config/config";
+import jspdf from "jspdf";
+import autotable from "jspdf-autotable";
+import Swal from "sweetalert2";
+
 export default {
   computed: {
     valida() {
       if (this.noPaquete.length > 5) {
         this.noPaquete = this.noPaquete.slice(0, 5);
-
       }
     },
   },
   created() {
-    this.$refs.folio.focus();
   },
   data() {
     return {
+      spinner: null,
       noLote: null,
       noPaquete: "",
-      add: false,
-      fields: [
-        "index",
-        { key: "lote", label: "Lote" },
-        { key: "Paquete", sortable: true },
-        "Fecha entrega",
+      options: [
+        {text: "Añadir lote", value: "add"},
+        {text: "Buscar lote", value: "search"}
       ],
-      paquetes: [],
+      op: [
+        {text: "Lote", value: "lote"},
+        {text: "Paquete", value: "paquete"}
+      ],
+      lote: false,
+      paquete: false,
+      add: false,
+      give: false,
+      fields: [
+        "#",
+        { key: "noLote", label: "Lote" },
+        { key: "noPaquete", label: "Paquete", sortable: true },
+        { key: "fechaEntregado", label: "Fecha entrega" },
+        { key: "fechaDevolucion", label: "Fecha devolución" }
+      ],
+      paquetes: null,
     };
   },
   methods: {
+    addDate(){
+      this.paquetes.forEach( el => {
+        let fecha = new Date()
+        el.fechaEntregado = fecha.toISOString().slice(0, 10);
+      })
+      console.log(this.paquetes);
+    },
     agrega() {
-      this.noPaquete = this.noPaquete.slice(0, 5);
-		console.log(this.noPaquete);
-        let fecha = new Date();
-        let paquete = {
-          lote: this.noLote,
-          Paquete: this.noPaquete,
-          "Fecha entrega": fecha.toISOString().slice(0, 10),
-        };
-        this.paquetes.push(paquete);
+      if(!this.noPaquete){
+        this.noPaquete = "";
         this.$refs.folio.focus();
-        this.noPaquete = '';
+        return
+      }
+      this.noPaquete = this.noPaquete.slice(0, 5);
+      // let fecha = new Date();
+      let paquete = {
+        noLote: this.noLote,
+        noPaquete: this.noPaquete,
+        // "Fecha entrega": fecha.toISOString().slice(0, 10),
+      };
+      this.paquetes.push(paquete);
+      this.$refs.folio.focus();
+      this.noPaquete = "";
     },
     download() {
-    }
+      let doc = new jspdf();
+      autotable(doc, {
+        head: [["#", "Lote", "Paquete", "Fecha entrega", "Fecha devolución"]],
+        html: "#tabla",
+        margin: { horizontal: 10 },
+        styles: { overflow: "linebreak" },
+        bodyStyles: { valign: "top" },
+        theme: "grid",
+      });
+      doc.save(`lote${this.noLote}.pdf`);
+    },
+    save() {
+      axios
+        .post(`${config.api}/lote`, {
+          lote: this.paquetes,
+        })
+        .then((res) => {
+          Swal.fire("¡Hecho!", "", "success");
+        })
+        .catch((err) => {
+          Swal.fire("¡Error!", "", "error");
+          console.log(err);
+        });
+    },
+    search() {
+      this.spinner = true;
+      this.paquetes = [];
+      let params = null;
+      if (!this.noLote)
+        params = {
+          noPaquete: this.noPaquete
+        };
+      else
+        params = {
+          noLote: this.noLote
+        };
+      axios
+        .get(`${config.api}/lote`, {
+          params,
+        })
+        .then((res) => {
+          this.paquetes = res.data.lote;
+          this.spinner = false;
+        })
+        .catch((err) => {
+          console.log(err);
+          this.spinner = false;
+        });
+    },
   },
 };
 </script>

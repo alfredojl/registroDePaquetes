@@ -12,7 +12,6 @@ let loteSchema = new Schema({
     },
     fechaEntregado: {
         type: Date,
-        required: true
     },
     fechaDevolucion: {
         type: Date
@@ -26,4 +25,4 @@ let loteSchema = new Schema({
 // usuarioSchema.plugin(uniqueValidator, { message: '{PATH} ya existe, debe de ser único.' });
 
 
-module.exports = mongoose.model('Estado', estadoSchema);
+module.exports = mongoose.model('Lote', loteSchema);

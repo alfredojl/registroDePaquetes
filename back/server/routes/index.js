@@ -9,5 +9,6 @@ app.use(require('./Preparadores'));
 app.use(require('./Digitalizadores'));
 app.use(require('./Estados'));
 app.use(require('./Verificadores'));
+app.use(require('./Lotes'));
 
 module.exports = app;

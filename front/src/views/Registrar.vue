@@ -32,6 +32,7 @@
           <b-form-input
             type="number"
             v-model="folioFin"
+            :state="valida"
             v-on:keyup.enter="save()"
           ></b-form-input>
         </b-input-group>
@@ -131,7 +132,16 @@ export default {
       estado: null,
     };
   },
-  created() {},
+  computed: {
+    valida(){
+      if(this.folioFin < this.folioInicio || (this.folioFin - this.folioInicio) >= 99 || (this.folioFin - this.folioInicio) < 0)
+        return false
+      else if (!this.folioFin)
+        return null
+      else
+        return true
+    }
+  },
   methods: {
     goValidar() {
       localStorage.setItem("noPaquete", this.noPaquete);
@@ -148,6 +158,8 @@ export default {
       this.digitalizador = null;
     },
     save() {
+      if(!this.valida)
+        return Swal.fire('Asegúrese de que los datos estén correctos.', '', 'info')
       // if(!this.noPaquete || !this.folioInicio || !this.folioFin || !this.fechaExpediente)
       //   return Swal.fire(`Complete todos los campos.`, ``, "info");
       let fechaAlta = Date.now();

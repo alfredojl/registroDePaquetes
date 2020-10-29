@@ -252,7 +252,6 @@ export default {
           veri.forEach(el => {
             this.preparadores.push(el)
           })
-          console.log(this.preparadores);
         })
         .catch((error) => {
           if (error) {
