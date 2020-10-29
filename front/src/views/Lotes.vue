@@ -187,7 +187,8 @@ export default {
       //   this.$refs.folio.focus();
       //   return
       // }
-      this.noPaquete = this.noPaquete.slice(0, 5);
+      this.noPaquete = this.noPaquete.split(/\n/g);
+      console.log(this.noPaquete);
       // let fecha = new Date();
       let paquete = {
         noLote: this.noLote,

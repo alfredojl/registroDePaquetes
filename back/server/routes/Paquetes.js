@@ -25,7 +25,7 @@ app.post('/paquete', async(req, res) => {
     let body = req.body.data;
     let noPaquete = body.noPaquete;
 
-    Paquete.updateOne({ noPaquete }, body, { upsert: true }, async(err, paqueteDB) => {
+    Paquete.findOne({ noPaquete }, body, { upsert: true }, async(err, paqueteDB) => {
         if (err) {
             console.log(err);
             return res.status(500).json({
