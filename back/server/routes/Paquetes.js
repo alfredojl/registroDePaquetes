@@ -80,7 +80,6 @@ app.put('/paquete', async(req, res) => {
     let preparador = req.body.preparador;
     let turno = req.body.turno;
     let digitalizador = req.body.digitalizador;
-    let turno = req.body.turno;
     let noFojas = req.body.noFojas;
     let registrado = req.body.registrado;
 

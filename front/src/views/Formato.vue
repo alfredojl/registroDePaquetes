@@ -35,7 +35,7 @@
       </tr>
       <tr>
         <td class="l">Paquete</td>
-        <td class="l">{{ noPaquete }} {{ identificador }}{{ identificador ? '/' : '' }}{{ cantidad }}</td>
+        <td class="l">{{ noPaquete }} {{ bis ? 'Bis' : '' }}{{ identificador ? identificador + '/' : '' }}{{ cantidad }}</td>
         <!-- <td class="l" v-else>{{ noPaquete }}</td> -->
         <td class="l">Registro de datos</td>
         <td class="l"></td>
@@ -154,6 +154,10 @@
     <div class="row">
       <div class="col-9 mt-2"></div>
       <img :src="qrvue" alt="" class="bottom-qr" />
+    </div>
+
+    <div>
+
     </div>
   </div>
 </template>

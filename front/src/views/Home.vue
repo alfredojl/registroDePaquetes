@@ -1,15 +1,22 @@
 <template>
   <div class="container">
-      <b-row class="mt-3 justify-content-center" v-show="incidencia">
-        <b-col lg="2"><b-alert show variant="warning" class="">Incidencias:</b-alert></b-col>
-      </b-row>
-      <b-row class="justify-content-center" v-show="incidencia">
-        <div>
-          <b-list-group class="m-0 p-0" horizontal v-for="faltante in faltantes" :key="faltante">
-            <b-list-group-item>{{ faltante }}</b-list-group-item>
-          </b-list-group>
-        </div>
-      </b-row>
+    <b-row class="mt-3 justify-content-center" v-show="incidencia">
+      <b-col lg="2"
+        ><b-alert show variant="warning" class="">Incidencias:</b-alert></b-col
+      >
+    </b-row>
+    <b-row class="justify-content-center" v-show="incidencia">
+      <div>
+        <b-list-group
+          class="m-0 p-0"
+          horizontal
+          v-for="faltante in faltantes"
+          :key="faltante"
+        >
+          <b-list-group-item>{{ faltante }}</b-list-group-item>
+        </b-list-group>
+      </div>
+    </b-row>
 
     <div class="row mt-2">
       <div class="col-3"></div>
@@ -27,6 +34,15 @@
           </b-input-group-prepend>
         </b-input-group>
       </div>
+    </div>
+    <div v-show="bis">
+      <b-row class="">
+        <div class="col-3"></div>
+        <b-col lg="2" class="p-0">
+        <b-input-group prepend="Bis" class="">
+        </b-input-group>
+        </b-col>
+      </b-row>
     </div>
     <div v-show="cantidad">
       <div class="row mt-1">
@@ -241,6 +257,7 @@ export default {
       fechaExpediente: null,
       noFojas: null,
       fechaAlta: null,
+      bis: null,
       identificador: null,
       cantidad: null,
       estado: null,
@@ -339,6 +356,7 @@ export default {
           this.verificador = res.data.paquete.verificador;
           this.observaciones = res.data.paquete.observaciones;
           this.preparador = res.data.paquete.preparador;
+          this.bis = res.data.paquete.bis;
           this.digitalizador = res.data.paquete.digitalizador;
           this.fechaExpediente = res.data.paquete.fechaExpediente
             ? new Date(res.data.paquete.fechaExpediente)
