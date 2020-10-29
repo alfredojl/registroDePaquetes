@@ -21,14 +21,14 @@ app.get('/lote', (req, res) => {
 
 app.post('/lote', (req, res) => {
     let lote = req.body.lote;
-    console.log(lote);
 
     Lote.insertMany(lote, (err, loteDB) => {
-        if (err)
+        if (err) {
             return res.status(500).json({
                 ok: false,
                 err
             })
+        }
         console.log('error no');
         res.json({
             ok: true,

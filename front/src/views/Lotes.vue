@@ -171,7 +171,7 @@ export default {
         { key: "fechaEntregado", label: "Fecha entrega" },
         { key: "fechaDevolucion", label: "Fecha devolución" }
       ],
-      paquetes: null,
+      paquetes: [],
     };
   },
   methods: {
@@ -180,20 +180,20 @@ export default {
         let fecha = new Date()
         el.fechaEntregado = fecha.toISOString().slice(0, 10);
       })
-      console.log(this.paquetes);
     },
     agrega() {
-      if(!this.noPaquete){
-        this.noPaquete = "";
-        this.$refs.folio.focus();
-        return
-      }
+      // if(!this.noPaquete){
+      //   this.noPaquete = "";
+      //   this.$refs.folio.focus();
+      //   return
+      // }
       this.noPaquete = this.noPaquete.slice(0, 5);
       // let fecha = new Date();
       let paquete = {
         noLote: this.noLote,
         noPaquete: this.noPaquete,
-        // "Fecha entrega": fecha.toISOString().slice(0, 10),
+        fechaEntegado: null,
+        fechaDevolucion: null
       };
       this.paquetes.push(paquete);
       this.$refs.folio.focus();
@@ -221,7 +221,7 @@ export default {
         })
         .catch((err) => {
           Swal.fire("¡Error!", "", "error");
-          console.log(err);
+          console.log(err.response);
         });
     },
     search() {
