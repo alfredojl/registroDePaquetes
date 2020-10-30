@@ -149,15 +149,46 @@
       <td>Cosido</td>
       <td class="cuadros"></td>
     </table>
-    <div class="mb-5"></div>
-    <div class="mt-5"></div>
+    <!-- <div class="mb-5"></div>
+    <div class="mt-5"></div> -->
     <div class="row">
-      <div class="col-9 mt-2"></div>
-      <img :src="qrvue" alt="" class="bottom-qr" />
     </div>
 
-    <div>
+    
 
+    <div class="mt-5 p-0">
+      <b-row>
+      <!-- <b-col lg="6" style="border: 1px solid black;"> -->
+      <!-- <b-row>
+        <b-col lg=""><p>Folio</p></b-col>
+        <b-col lg=""><p>Estado</p></b-col>
+        <b-col lg=""><p>Tomos</p></b-col>
+        <b-col lg=""><p>Referencias</p></b-col>
+        <b-col lg=""><p>No. fojas</p></b-col>
+      </b-row> -->
+        <b-col>
+        <b-table
+    style="max-width: 30rem;"
+    id="folios"
+    class="mt-3"
+    :items="folios"
+    :fields="headers"
+    >
+    </b-table>
+</b-col>
+      <!-- <b-row md="auto" v-for="folio in folios">
+        <b-col lg=""><p>{{ folio.folio }}</p></b-col>
+        <b-col lg=""><p>{{ folio.estado }}</p></b-col>
+        <b-col lg=""><p>{{ folio.tomos ? folio.tomos : 'N/A' }}</p></b-col>
+        <b-col lg=""><p>{{ folio.referencias ? folio.referencias : 'N/A' }}</p></b-col>
+        <b-col lg=""><p>__________</p></b-col>
+      </b-row> -->
+      <!-- </b-col> -->
+      <div>
+        <img :src="qrvue" alt="" class="" />
+        <!-- <div style="width: 200px; height: 200px;"></div> -->
+      </div>
+      </b-row>
     </div>
   </div>
 </template>
@@ -176,11 +207,19 @@ export default {
       folioInicio: null,
       folioFin: null,
       bis: null,
+      headers: [
+        {key: "folio", label: "Folio"},
+        {key: "estado", label: "Estado"},
+        {key: "tomos", label: "Tomos"},
+        {key: "referencias", label: "Referencia"},
+        "No. de fojas"
+      ],
       cantidad: null,
       identificador: null,
       turno: null,
       fechaToday: null,
       fechaExpediente: null,
+      folios: [],
       qrvue: null,
     };
   },
@@ -205,6 +244,32 @@ Preparador: ${this.preparador}`
         })
         .catch((err) => {
           console.log(err);
+        });
+    },
+    getFolios() {
+      if (!localStorage.noPaquete) this.spinner = false;
+      let params = {
+        // folioInicio: localStorage.folioInicio,
+        // folioFin: localStorage.folioFin,
+        noPaquete: this.noPaquete
+      };
+      axios
+        .get(`${config.api}/folios`, {
+          params,
+        })
+        .then((res) => {
+          this.folios = res.data.folios;
+          console.log(this.folios);
+          // this.folios.forEach((el, index) => {
+          //   if (el.referencias) {
+          //     this.referencias[index] = el.referencias;
+          //     this.selected[index] = "Oficio";
+          //   } else this.selected[index] = "Completo";
+          //   this.spinner = false;
+          // });
+        })
+        .catch((error) => {
+          if (error) console.log(error);
         });
     },
     search() {
@@ -241,6 +306,7 @@ Preparador: ${this.preparador}`
           this.fechaExpediente = dia + '/' + mes + '/' + res.data.paquete.fechaExpediente.slice(0, 4)
           // this.fechaExpediente =
           //   dia + "/" + mes + "/" + this.fechaExpediente.getFullYear();
+          this.getFolios();
           this.qr();
         })
         .catch((error) => {

@@ -10,6 +10,7 @@ import Formato from "../views/Formato.vue";
 import QRlotes from "../views/QRlotes.vue";
 import Editar from "../views/Editar.vue";
 import Lotes from '../views/Lotes';
+import Reporte from '../views/Reporte';
 // import CrearUsuario from "../views/CrearUsuario.vue";
 
 Vue.use(VueRouter);
@@ -67,6 +68,15 @@ const routes = [{
         path: '/qrlotes',
         name: 'QRlotes',
         component: QRlotes,
+        beforeEnter: (to, from, next) => {
+            if (isAuthenticated()) next();
+            else next(false);
+        },
+    },
+    {
+        path: '/reporte',
+        name: 'Reporte',
+        component: Reporte,
         beforeEnter: (to, from, next) => {
             if (isAuthenticated()) next();
             else next(false);

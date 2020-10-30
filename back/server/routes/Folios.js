@@ -74,23 +74,22 @@ app.post('/folios', async(req, res) => {
 app.put('/folios', async(req, res) => {
     let folios = req.body.data.folios;
     let noPaquete = folios[0]['noPaquete'];
+    let errors = false;
     let foliosResultado = [];
 
-    for (bodi of folios) {
-        var n = Folio.findOneAndUpdate({ folio: bodi.folio }, bodi, (err, folioDB) => {
-                if (err) {
-                    return res.status(500).json({
-                        ok: false,
-                        err
-                    })
-                }
-                // console.log(n);
-                // foliosResultado.push(folioDB);
-            })
-            // enes.push(n);
+    for (folio of folios) {
+        console.log(folio);
+        Folio.findOneAndUpdate({ folio: folio.folio }, folio, (err, folioDB) => {
+            if (err)
+                errors = true;
+        })
     }
-    // console.log(n);
-
+    if (errors) {
+        return res.status(500).json({
+            ok: false,
+            err
+        });
+    }
     Paquete.findOneAndUpdate({ noPaquete }, { validado: folios[0]['validado'] }, (err, paqueteDB) => {
         if (err) {
             console.log(err);
@@ -99,12 +98,38 @@ app.put('/folios', async(req, res) => {
                 err
             })
         }
-    })
-
+    });
     return res.json({
-        ok: true,
-        foliosResultado
-    })
+            ok: true,
+            message: 'hola final',
+        })
+        // Folio.updateMany(folios)
+        //     .exec((err, foliosDB) => {
+        //         if (err) {
+        //             console.log(err);
+        //             return res.status(500).json({
+        //                 ok: false,
+        //                 err
+        //             })
+        //         }
+        //         Paquete.findOneAndUpdate({ noPaquete }, { validado: folios[0]['validado'] }, (err, paqueteDB) => {
+        //             if (err) {
+        //                 console.log(err);
+        //                 return res.status(500).json({
+        //                     ok: false,
+        //                     err
+        //                 })
+        //             }
+
+    //             return res.json({
+    //                 ok: true,
+    //                 message: 'hola final',
+    //                 folios: foliosDB
+    //             })
+    //         })
+
+    //     })
+
 
 })
 

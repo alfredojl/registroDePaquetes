@@ -168,12 +168,13 @@ export default {
         this.folios[i]["validado"] = localStorage.loggedIn;
       let data = {
         folios: this.folios,
-        // validado: localStorage.loggedIn,
+        validado: localStorage.loggedIn,
         noPaquete: this.noPaquete || localStorage.noPaquete,
       };
       axios
         .put(`${config.api}/folios`, { data })
         .then((res) => {
+          console.log(res);
           Swal.fire(`¡Hecho!`, `Folios actualizados correctamente.`, "success");
         })
         .catch((err) => {
@@ -182,7 +183,6 @@ export default {
             `Ocurrió un error al intentar actualizar los folios.`,
             "error"
           );
-          console.log(err);
         });
     },
   },
