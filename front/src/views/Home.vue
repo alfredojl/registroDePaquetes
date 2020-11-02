@@ -29,13 +29,21 @@
             :state="valida"
             v-on:keyup.enter="search()"
           ></b-form-input>
+          <b-form-checkbox
+          class="m-1"
+          v-model="bis"
+          value="true"
+          unchecked-value="false"
+          >
+            BIS
+          </b-form-checkbox>
           <b-input-group-prepend>
             <b-button variant="secondary" @click="search()">Buscar</b-button>
           </b-input-group-prepend>
         </b-input-group>
       </div>
     </div>
-    <div v-show="bis">
+    <div v-if="showBis == true">
       <b-row class="">
         <div class="col-3"></div>
         <b-col lg="2" class="p-0">
@@ -258,6 +266,7 @@ export default {
       noFojas: null,
       fechaAlta: null,
       bis: null,
+      showBis: false,
       identificador: null,
       cantidad: null,
       estado: null,
@@ -318,8 +327,6 @@ export default {
             if (el.estado == "Faltante") {
               this.incidencia = true;
               this.faltantes.push(el.folio);
-              console.log(this.faltantes);
-              console.log(el.folio);
             }
           });
         })
@@ -335,6 +342,7 @@ export default {
         .get(`${config.api}/paquete`, {
           params: {
             noPaquete: this.noPaquete,
+            bis: this.bis
           },
         })
         .then((res) => {
@@ -354,9 +362,9 @@ export default {
           this.cantidad = res.data.paquete.cantidad;
           this.estado = res.data.paquete.estado;
           this.verificador = res.data.paquete.verificador;
+          this.showBis = res.data.paquete.bis;
           this.observaciones = res.data.paquete.observaciones;
           this.preparador = res.data.paquete.preparador;
-          this.bis = res.data.paquete.bis;
           this.digitalizador = res.data.paquete.digitalizador;
           this.fechaExpediente = res.data.paquete.fechaExpediente
             ? new Date(res.data.paquete.fechaExpediente)

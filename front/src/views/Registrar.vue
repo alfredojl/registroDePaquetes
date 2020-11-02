@@ -145,9 +145,7 @@ export default {
   methods: {
     goValidar() {
       localStorage.setItem("noPaquete", this.noPaquete);
-      localStorage.setItem("folioInicio", this.folioInicio);
-      localStorage.setItem("folioFin", this.folioFin);
-      localStorage.setItem("fechaExpediente", this.fechaExpediente);
+      localStorage.setItem("bis", this.bis);
       this.$router.push("/validar");
     },
     limpiar() {
@@ -162,6 +160,9 @@ export default {
         return Swal.fire('Asegúrese de que los datos estén correctos.', '', 'info')
       // if(!this.noPaquete || !this.folioInicio || !this.folioFin || !this.fechaExpediente)
       //   return Swal.fire(`Complete todos los campos.`, ``, "info");
+      if(this.bis){
+
+      }
       let fechaAlta = Date.now();
       let data = {
         noPaquete: this.noPaquete,

@@ -26,6 +26,7 @@
         ></b-spinner>
       </div>
       <div class="mt-5"></div>
+        <b-badge variant="light">9 <span class="sr-only">unread messages</span></b-badge>
       <div class="row mb-3" v-for="(dato, index) in folios" :key="dato.folio">
         <div class="col-2"></div>
         <div class="col-4 p-0 d-flex">
@@ -83,6 +84,7 @@ export default {
       noPaquete: null,
       folioInicio: null,
       folioFin: null,
+      bis: null,
       folios: [],
       tomos: [],
       referencias: [],
@@ -96,6 +98,7 @@ export default {
   },
   created() {
     this.noPaquete = localStorage.noPaquete || null;
+    this.bis = localStorage.bis || null;
     this.getFolios();
   },
   methods: {
@@ -139,7 +142,13 @@ export default {
     },
     getFolios() {
       if (!localStorage.noPaquete) this.spinner = false;
-      let params = {
+      let params;
+      if(this.bis)
+        params = {
+          noPaquete: this.noPaquete,
+          bis: this.bis
+        }
+      params = {
         // folioInicio: localStorage.folioInicio,
         // folioFin: localStorage.folioFin,
         noPaquete: this.noPaquete

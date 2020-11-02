@@ -5,12 +5,10 @@ const Folio = require('../models/Folios');
 const Paquete = require('../models/Paquetes');
 
 app.get('/folios', async(req, res) => {
-    // let folioInicio = req.query.folioInicio;
-    // let folioFin = req.query.folioFin || folioInicio;
-
     let noPaquete = req.query.noPaquete;
+    let bis = req.query.bis;
 
-    Folio.find({ noPaquete }, {}, { sort: { folio: 1 } }, (err, folios) => {
+    Folio.find({ noPaquete, bis }, {}, { sort: { folio: 1 } }, (err, folios) => {
         if (err)
             return res.status(500).json({
                 ok: false,
@@ -22,31 +20,6 @@ app.get('/folios', async(req, res) => {
         });
     })
 
-
-
-    // if (folioInicio) {
-    //     var folios = await Folio.find({
-    //             folio: { $gte: folioInicio, $lte: folioFin }
-    //         })
-    //         .catch(err => {
-    //             console.log(err);
-    //             return res.status(500).json({
-    //                 ok: false,
-    //                 err
-    //             })
-    //         })
-    // } else {
-    //     var folios = await Folio.find({
-    //             noPaquete
-    //         })
-    //         .catch(err => {
-    //             console.log(err);
-    //             return res.status(500).json({
-    //                 ok: false,
-    //                 err
-    //             })
-    //         })
-    // }
 })
 
 app.post('/folios', async(req, res) => {
@@ -100,7 +73,7 @@ app.put('/folios', async(req, res) => {
     });
     return res.json({
             ok: true,
-            message: 'hola final',
+            message: 'Actualizados'
         })
         // Folio.updateMany(folios)
         //     .exec((err, foliosDB) => {

@@ -17,6 +17,10 @@ let foliosSchema = new Schema({
     referencias: {
         type: String
     },
+    bis: {
+        type: Boolean,
+        default: false
+    },
     estado: {
         type: String,
         default: 'Completo'
