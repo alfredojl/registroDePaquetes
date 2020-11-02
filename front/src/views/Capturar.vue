@@ -10,6 +10,14 @@
             v-model="noPaquete"
             v-on:keyup.enter="search()"
           ></b-form-input>
+          <b-form-checkbox
+          class="m-1"
+          v-model="bis"
+          value="true"
+          unchecked-value="false"
+          >
+            BIS
+          </b-form-checkbox>
           <b-input-group-prepend>
             <b-button variant="secondary" @click="search()">Buscar</b-button>
           </b-input-group-prepend>
@@ -158,6 +166,7 @@ export default {
       folioInicio: null,
       folioFin: null,
       noFojas: null,
+      bis: null,
       fechaAlta: null,
       fechaExpediente: null,
       noPaquete: null,
@@ -174,6 +183,7 @@ export default {
   },
   created() {
     this.noPaquete = localStorage.noPaquete;
+    this.bis = localStorage.bis;
     this.getEstados();
     this.search();
   },
@@ -219,6 +229,7 @@ export default {
         .get(`${config.api}/paquete`, {
           params: {
             noPaquete: this.noPaquete,
+            bis: this.bis
           },
         })
         .then((res) => {
