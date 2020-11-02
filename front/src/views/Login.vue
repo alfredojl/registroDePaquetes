@@ -77,7 +77,9 @@ export default {
                 .post(`${config.api}/login`, data)
                 .then(res => {
                     if (res.status == 200) {
-                        localStorage.setItem('loggedIn', res.data.usuario);
+                        localStorage.setItem('loggedIn', res.data.usuario.name);
+                        if(res.data.usuario.role)
+                            localStorage.setItem('role', res.data.usuario.role);
                         this.$router.replace('/home');
                     }
                 })

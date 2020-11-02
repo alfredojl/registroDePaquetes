@@ -39,13 +39,13 @@ const install = async() => {
             console.log(err);
         })
 
-    await Estado.insertMany(estados)
-        .then(estadosDB => {
-            console.log('Estados agregados correctamente.');
-        })
-        .catch(err => {
-            console.log(err);
-        })
+    // await Estado.insertMany(estados)
+    //     .then(estadosDB => {
+    //         console.log('Estados agregados correctamente.');
+    //     })
+    //     .catch(err => {
+    //         console.log(err);
+    //     })
 
     await Digitalizador.insertMany(digitalizadores)
         .then(digitalizadoresDB => {

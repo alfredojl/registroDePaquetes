@@ -1,81 +1,101 @@
 [{
         "name": "Alfonso Muñoz Lugo",
-        "turno": "Matutino"
+        "turno": "Matutino",
+        "role": "digitalizador"
     },
     {
         "name": "Daniel Azael Labastida Hernàndez",
-        "turno": "Matutino"
+        "turno": "Matutino",
+        "role": "digitalizador"
     },
     {
         "name": "Eduardo Geovanni Ochoa Vazquez",
-        "turno": "Matutino"
+        "turno": "Matutino",
+        "role": "digitalizador"
     },
     {
         "name": "Laura Olmos",
-        "turno": "Matutino"
+        "turno": "Matutino",
+        "role": "digitalizador"
     },
     {
         "name": "Raúl Lugo Raya",
-        "turno": "Matutino"
+        "turno": "Matutino",
+        "role": "digitalizador"
     },
     {
         "name": "Anna Valeria Badillo Barbosa",
-        "turno": "Matutino"
+        "turno": "Matutino",
+        "role": "digitalizador"
     },
     {
         "name": "Lesly Alexandra Franco Díaz",
-        "turno": "Matutino"
+        "turno": "Matutino",
+        "role": "digitalizador"
     },
     {
         "name": "María del Carmen Castellanos Rostro",
-        "turno": "Matutino"
+        "turno": "Matutino",
+        "role": "digitalizador"
     },
     {
         "name": "Leticia Díaz Torres",
-        "turno": "Matutino"
+        "turno": "Matutino",
+        "role": "digitalizador"
     },
     {
         "name": "Liliana Chavez Vega",
-        "turno": "Matutino"
+        "turno": "Matutino",
+        "role": "digitalizador"
     },
     {
         "name": "Yoshio Aldebarán González Villaseñor",
-        "turno": "Vespertino"
+        "turno": "Vespertino",
+        "role": "digitalizador"
     },
     {
         "name": "José Luis Osorio Nájera",
-        "turno": "Vespertino"
+        "turno": "Vespertino",
+        "role": "digitalizador"
     },
     {
         "name": "Victor Adrian Molina Escamilla",
-        "turno": "Vespertino"
+        "turno": "Vespertino",
+        "role": "digitalizador"
     },
     {
         "name": "Paula Geovana Alanis",
-        "turno": "Vespertino"
+        "turno": "Vespertino",
+        "role": "digitalizador"
     },
     {
         "name": "Vivaldi Isaú Moreno Juárez",
-        "turno": "Vespertino"
+        "turno": "Vespertino",
+        "role": "digitalizador"
     },
     {
         "name": "Juan José Barrera Aranda",
-        "turno": "Vespertino"
+        "turno": "Vespertino",
+        "role": "digitalizador"
     },
     {
         "name": "Karina María Eugenia Peláez Sanabria",
-        "turno": "Vespertino"
+        "turno": "Vespertino",
+        "role": "digitalizador"
     },
     {
         "name": "José Ángel Melitón Osorio Nájera",
-        "turno": "Vespertino"
+        "turno": "Vespertino",
+        "role": "digitalizador"
     },
     {
         "name": "América Guzmán Jacobo",
-        "turno": "Vespertino"
+        "turno": "Vespertino",
+        "role": "digitalizador"
     },
     {
         "name": "Mary Carmen López Armas",
-        "turno": "Vespertino"
+        "turno": "Vespertino",
+        "role": "digitalizador"
     }
 ]

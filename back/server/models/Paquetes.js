@@ -31,6 +31,12 @@ let paqueteSchema = new Schema({
     fechaExpediente: {
         type: Date,
     },
+    fechaAsignacion: {
+        type: Date,
+    },
+    fechaAlta: {
+        type: Date
+    },
     noFojas: {
         type: Number
     },
@@ -43,9 +49,6 @@ let paqueteSchema = new Schema({
     },
     cantidad: {
         type: Number
-    },
-    fechaAlta: {
-        type: Date
     },
     registrado: {
         type: String

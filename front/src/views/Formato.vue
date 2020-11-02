@@ -149,23 +149,8 @@
       <td>Cosido</td>
       <td class="cuadros"></td>
     </table>
-    <!-- <div class="mb-5"></div>
-    <div class="mt-5"></div> -->
-    <div class="row">
-    </div>
-
-    
-
     <div class="mt-5 p-0">
       <b-row>
-      <!-- <b-col lg="6" style="border: 1px solid black;"> -->
-      <!-- <b-row>
-        <b-col lg=""><p>Folio</p></b-col>
-        <b-col lg=""><p>Estado</p></b-col>
-        <b-col lg=""><p>Tomos</p></b-col>
-        <b-col lg=""><p>Referencias</p></b-col>
-        <b-col lg=""><p>No. fojas</p></b-col>
-      </b-row> -->
         <b-col>
         <b-table
     style="max-width: 30rem;"
@@ -176,17 +161,8 @@
     >
     </b-table>
 </b-col>
-      <!-- <b-row md="auto" v-for="folio in folios">
-        <b-col lg=""><p>{{ folio.folio }}</p></b-col>
-        <b-col lg=""><p>{{ folio.estado }}</p></b-col>
-        <b-col lg=""><p>{{ folio.tomos ? folio.tomos : 'N/A' }}</p></b-col>
-        <b-col lg=""><p>{{ folio.referencias ? folio.referencias : 'N/A' }}</p></b-col>
-        <b-col lg=""><p>__________</p></b-col>
-      </b-row> -->
-      <!-- </b-col> -->
       <div>
         <img :src="qrvue" alt="" class="" />
-        <!-- <div style="width: 200px; height: 200px;"></div> -->
       </div>
       </b-row>
     </div>

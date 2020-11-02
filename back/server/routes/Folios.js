@@ -78,7 +78,6 @@ app.put('/folios', async(req, res) => {
     let foliosResultado = [];
 
     for (folio of folios) {
-        console.log(folio);
         Folio.findOneAndUpdate({ folio: folio.folio }, folio, (err, folioDB) => {
             if (err)
                 errors = true;

@@ -11,7 +11,8 @@
         <b-nav-item to="validar" :disabled="($route.path == '/validar')">Validar</b-nav-item>
         <b-nav-item to="capturar" :disabled="($route.path == '/capturar')">Capturar</b-nav-item>
         <b-nav-item to="asignar" :disabled="($route.path == '/asignar')">Asignar</b-nav-item>
-        <b-nav-item to="lotes" :disabled="($route.path == '/lotes')">Lotes</b-nav-item>
+        <b-nav-item v-if="roleExist" to="reporte" :disabled="($route.path == '/reporte')">Reporte</b-nav-item>
+        <!-- <b-nav-item to="lotes" :disabled="($route.path == '/lotes')">Lotes</b-nav-item> -->
       </b-navbar-nav>
 
       <b-navbar-nav class="ml-auto">
@@ -38,6 +39,11 @@ export default {
     logOut() {
       localStorage.clear();
       this.$router.replace('/');
+    },
+    roleExist() {
+      if(!localStorage.role)
+        return false
+      return true
     }
   },
 }

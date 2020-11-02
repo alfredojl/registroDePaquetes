@@ -70,6 +70,14 @@
     <div class="row">
       <div class="col-3"></div>
       <div class="col-6 p-0 d-flex">
+        <b-input-group prepend="Fecha de asignación" class="">
+          <b-form-input type="date" v-model="fechaAsignacion" disabled></b-form-input>
+        </b-input-group>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-3"></div>
+      <div class="col-6 p-0 d-flex">
         <b-input-group prepend="Turno" class="">
           <b-form-select
           autofocus
@@ -146,7 +154,7 @@
       </div>
     </div>
     <div class="">
-      <div class="row align-content-between">
+      <div class="row align-content-between mb-5">
         <div class="col-3"></div>
         <div class="beetween">
           <b-button-group size="sm">
@@ -189,6 +197,7 @@ export default {
       preparador: null,
       preparadores: null,
       digitalizador: null,
+      fechaAsignacion: null,
       digitalizadores: null,
       turnos: ["Matutino", "Vespertino"],
     };
@@ -200,6 +209,8 @@ export default {
     this.getVerificadores();
     this.getPreparadores();
     this.getDigitalizadores();
+    this.fechaAsignacion = new Date();
+    this.fechaAsignacion = this.fechaAsignacion.toISOString().slice(0,10);
   },
   methods: {
     goFormato(){
@@ -344,6 +355,7 @@ export default {
             preparador: this.preparador,
             folioInicio: this.folioInicio,
             folioFin: this.folioFin,
+            fechaAsignacion: this.fechaAsignacion,
             fechaExpediente: this.fechaExpediente,
             digitalizador: this.digitalizador,
             estado: this.estado,

@@ -74,6 +74,7 @@ app.put('/paquete', async(req, res) => {
 
     let noPaquete = req.body.noPaquete;
     let folioInicio = req.body.folioInicio;
+    let fechaAsignacion = req.body.fechaAsignacion;
     let folioFin = req.body.folioFin;
     let fechaExpediente = req.body.fechaExpediente;
     let verificador = req.body.verificador;
@@ -91,6 +92,7 @@ app.put('/paquete', async(req, res) => {
         registrado,
         verificador,
         digitalizador,
+        fechaAsignacion,
         noFojas,
         preparador,
         turno

@@ -16,7 +16,6 @@ mongoose.connect('mongodb://localhost:27017/registro', {
 });
 
 const getFaltantes = () => {
-    let faltantes = null;
     Paquete.find({ folioInicio: null }, (err, faltantesDB) => {
         if (err)
             return res.status(500).json({
@@ -30,3 +29,5 @@ const getFaltantes = () => {
     })
 
 }
+
+module.exports = app;

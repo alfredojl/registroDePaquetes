@@ -13,6 +13,9 @@ let usuarioSchema = new Schema({
     passwd: {
         type: String,
         required: [true, 'Debes tener una contraseña.']
+    },
+    role: {
+        type: String
     }
 });
 

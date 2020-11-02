@@ -10,5 +10,6 @@ app.use(require('./Digitalizadores'));
 app.use(require('./Estados'));
 app.use(require('./Verificadores'));
 app.use(require('./Lotes'));
+app.use(require('./reporte'));
 
 module.exports = app;

@@ -78,7 +78,7 @@ const routes = [{
         name: 'Reporte',
         component: Reporte,
         beforeEnter: (to, from, next) => {
-            if (isAuthenticated()) next();
+            if (isAuthenticated() && isReporter()) next();
             else next(false);
         },
     },
@@ -131,6 +131,9 @@ const routes = [{
 
 const isAuthenticated = () => {
     return !!localStorage.loggedIn;
+};
+const isReporter = () => {
+    return localStorage.role == "reporter" ? true : false;
 };
 
 const router = new VueRouter({
