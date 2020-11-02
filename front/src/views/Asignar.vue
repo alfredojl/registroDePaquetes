@@ -9,6 +9,14 @@
             v-model="noPaquete"
             v-on:keyup.enter="search"
           ></b-form-input>
+          <b-form-checkbox
+          class="m-1"
+          v-model="bis"
+          value="true"
+          unchecked-value="false"
+          >
+            BIS
+          </b-form-checkbox>
           <b-input-group-prepend>
             <b-button variant="secondary" @click="search()">Buscar</b-button>
           </b-input-group-prepend>
@@ -205,12 +213,13 @@ export default {
   created() {
     this.getEstados();
     this.noPaquete = localStorage.noPaquete;
-    this.search();
     this.getVerificadores();
     this.getPreparadores();
     this.getDigitalizadores();
     this.fechaAsignacion = new Date();
     this.fechaAsignacion = this.fechaAsignacion.toISOString().slice(0,10);
+    this.bis = localStorage.bis;
+    this.search();
   },
   methods: {
     goFormato(){
@@ -296,6 +305,7 @@ export default {
         .get(`${config.api}/paquete`, {
           params: {
             noPaquete: this.noPaquete,
+            bis: this.bis
           },
         })
         .then((res) => {
