@@ -181,6 +181,7 @@ export default {
       preparador: null,
       verificador: null,
       folioInicio: null,
+      bis: null,
       folioFin: null,
       bis: null,
       headers: [
@@ -227,7 +228,8 @@ Preparador: ${this.preparador}`
       let params = {
         // folioInicio: localStorage.folioInicio,
         // folioFin: localStorage.folioFin,
-        noPaquete: this.noPaquete
+        noPaquete: this.noPaquete,
+        bis: this.bis
       };
       axios
         .get(`${config.api}/folios`, {
@@ -250,10 +252,12 @@ Preparador: ${this.preparador}`
     },
     search() {
       this.noPaquete = localStorage.noPaquete;
+      this.bis = localStorage.bis;
       axios
         .get(`${config.api}/paquete`, {
           params: {
             noPaquete: this.noPaquete,
+            bis: this.bis
           },
         })
         .then((res) => {
