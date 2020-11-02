@@ -3,7 +3,7 @@
     <div class="row mt-5">
       <div class="col-3"></div>
       <div class="col-6 p-0 d-flex">
-        <b-input-group prepend="Paquete" class="mb-5">
+        <b-input-group prepend="Paquete" class="">
           <b-form-input
             type="number"
             autofocus
@@ -16,6 +16,10 @@
         </b-input-group>
       </div>
     </div>
+      <b-row>
+      <div class="col-3"></div>
+        <b-badge v-if="bis == 'true'" variant="success" class="p-2" style="width: 10rem">BIS</b-badge>
+      </b-row>
 
     <div>
       <div class="row" v-if="spinner">
@@ -26,7 +30,6 @@
         ></b-spinner>
       </div>
       <div class="mt-5"></div>
-        <b-badge variant="light">9 <span class="sr-only">unread messages</span></b-badge>
       <div class="row mb-3" v-for="(dato, index) in folios" :key="dato.folio">
         <div class="col-2"></div>
         <div class="col-4 p-0 d-flex">
@@ -98,7 +101,8 @@ export default {
   },
   created() {
     this.noPaquete = localStorage.noPaquete || null;
-    this.bis = localStorage.bis || null;
+    this.bis = localStorage.bis;
+    console.log(this.bis)
     this.getFolios();
   },
   methods: {
@@ -115,6 +119,7 @@ export default {
         .get(`${config.api}/folios`, {
           params: {
             noPaquete: this.noPaquete,
+            bis: this.bis
           },
         })
         .then((res) => {
@@ -136,26 +141,19 @@ export default {
           });
         })
         .catch((error) => {
-          if (error) console.log(error);
+          if (error) console.log(error.response);
           this.spinner = false;
         });
     },
     getFolios() {
       if (!localStorage.noPaquete) this.spinner = false;
-      let params;
-      if(this.bis)
-        params = {
-          noPaquete: this.noPaquete,
-          bis: this.bis
-        }
-      params = {
-        // folioInicio: localStorage.folioInicio,
-        // folioFin: localStorage.folioFin,
-        noPaquete: this.noPaquete
+      let params = {
+        noPaquete: this.noPaquete,
+        bis: this.bis
       };
       axios
         .get(`${config.api}/folios`, {
-          params,
+          params
         })
         .then((res) => {
           this.folios = res.data.folios;
@@ -183,7 +181,6 @@ export default {
       axios
         .put(`${config.api}/folios`, { data })
         .then((res) => {
-          console.log(res);
           Swal.fire(`¡Hecho!`, `Folios actualizados correctamente.`, "success");
         })
         .catch((err) => {

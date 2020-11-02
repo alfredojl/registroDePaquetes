@@ -8,6 +8,7 @@ app.get('/folios', async(req, res) => {
     let noPaquete = req.query.noPaquete;
     let bis = req.query.bis;
 
+    
     Folio.find({ noPaquete, bis }, {}, { sort: { folio: 1 } }, (err, folios) => {
         if (err)
             return res.status(500).json({

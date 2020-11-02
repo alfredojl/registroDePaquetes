@@ -305,9 +305,8 @@ export default {
       this.$router.push("/asignar");
     },
     goValidar() {
-      localStorage.setItem("folioInicio", this.folioInicio);
-      localStorage.setItem("folioFin", this.folioFin);
-      localStorage.setItem("fechaExpediente", this.fechaExpediente);
+      localStorage.setItem("noPaquete", this.noPaquete);
+      localStorage.setItem("bis", this.showBis);
       this.$router.push("/validar");
     },
     getFolios() {
