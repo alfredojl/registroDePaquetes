@@ -78,7 +78,7 @@ let paqueteSchema = new Schema({
     observaciones: {
         type: String
     },
-    lote: {
+    noLote: {
         type: Number
     }
 });

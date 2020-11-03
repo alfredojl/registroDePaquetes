@@ -132,6 +132,19 @@
         </div>
       </div>
       <div class="row">
+      <div class="col-3"></div>
+      <div class="col-6 p-0 d-flex">
+        <b-input-group prepend="Digitalizador" class="">
+          <b-form-select
+            v-model="digitalizador"
+            :options="digitalizadores"
+            value-field="name"
+            text-field="id"
+          ></b-form-select>
+        </b-input-group>
+      </div>
+    </div>
+      <div class="row">
         <div class="col-3"></div>
         <div class="col-6 p-0 d-flex">
           <b-input-group prepend="Cosido por" class="">
@@ -207,6 +220,7 @@ export default {
       fechaAlta: null,
       fechaExpediente: null,
       fechaAsignacion: null,
+      digitalizador: null,
       fechaCosido: null,
       cosedor: null,
       noPaquete: null,
@@ -227,6 +241,7 @@ export default {
     this.fechaAsignacion = this.fechaCosido = new Date();
     this.fechaAsignacion = this.fechaCosido = this.fechaAsignacion.toISOString().slice(0, 10);
     this.getEstados();
+    this.getDigitalizadores();
     this.getPreparadores();
     this.search();
   },
@@ -234,6 +249,12 @@ export default {
     limpiar() {
       this.noFojas = null;
       this.verificador = null;
+    },
+    getDigitalizadores(){
+      axios.get(`${config.api}/digitalizador`)
+      .then(res => {
+        this.digitalizadores = res.data.digitalizadores;
+      })
     },
     getPreparadores() {
       if (!this.preparador)
@@ -276,6 +297,7 @@ export default {
           this.fechaAlta = res.data.paquete.fechaAlta;
           this.estado = res.data.paquete.estado;
           this.turno = res.data.paquete.turno;
+          this.cosedor = res.data.paquete.cosedor;
           this.fechaExpediente = res.data.paquete.fechaExpediente
             ? new Date(res.data.paquete.fechaExpediente)
                 .toISOString()

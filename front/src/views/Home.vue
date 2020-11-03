@@ -176,6 +176,36 @@
       </div>
     </div>
     <div class="row">
+        <div class="col-3"></div>
+        <div class="col-6 p-0 d-flex">
+          <b-input-group prepend="Cosido por" class="">
+            <!-- <b-form-select
+              v-model="cosedor"
+              :options="preparadores"
+              value-field="name"
+              text-field="name"
+              disabled
+            >
+              <template #first> </template>
+            </b-form-select> -->
+            <b-form-input v-model="cosedor" disabled></b-form-input>
+          </b-input-group>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-3"></div>
+        <div class="col-6 p-0 d-flex">
+          <b-input-group prepend="Fecha de cosido" class="">
+            <b-form-input
+              type="date"
+              v-model="fechaCosido"
+              v-on:keyup.enter="save()"
+              disabled
+            ></b-form-input>
+          </b-input-group>
+        </div>
+      </div>
+    <div class="row">
       <div class="col-3"></div>
       <div class="col-6 p-0 d-flex">
         <b-input-group prepend="Digitalizador" class="">
@@ -263,6 +293,8 @@ export default {
       folioInicio: null,
       folioFin: null,
       fechaExpediente: null,
+      cosedor: null,
+      fechaCosido: null,
       noFojas: null,
       fechaAlta: null,
       bis: null,
@@ -353,6 +385,7 @@ export default {
             );
           this.folioInicio = res.data.paquete.folioInicio;
           this.registrador = res.data.paquete.registrado;
+          this.cosedor = res.data.paquete.cosedor;
           this.validador = res.data.paquete.validado;
           this.folioFin = res.data.paquete.folioFin;
           this.noFojas = res.data.paquete.noFojas;
@@ -374,6 +407,9 @@ export default {
             .toISOString()
             .slice(0, 10);
           this.getFolios();
+          this.fechaCosido = new Date(res.data.paquete.fechaCosido)
+            .toISOString()
+            .slice(0, 10);
         })
         .catch((error) => {
           if (error) {
