@@ -21,6 +21,9 @@ let foliosSchema = new Schema({
         type: Boolean,
         default: false
     },
+    identificador: {
+        type: Number
+    },
     estado: {
         type: String,
         default: 'Completo'

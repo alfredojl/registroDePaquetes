@@ -53,6 +53,9 @@ let paqueteSchema = new Schema({
     registrado: {
         type: String
     },
+    cosedor: {
+        type: String
+    },
     digitalizador: {
         type: String
     },

@@ -105,13 +105,21 @@
         </div>
       </div>
       <div class="row">
-        <div class="col-3"></div>
-        <div class="col-6 p-0 d-flex">
-          <b-input-group prepend="Preparador" class="">
-            <b-form-input type="text" v-model="preparador"></b-form-input>
-          </b-input-group>
-        </div>
+      <div class="col-3"></div>
+      <div class="col-6 p-0 d-flex">
+        <b-input-group prepend="Preparador" class="">
+          <b-form-select
+            v-model="preparador"
+            :options="preparadores"
+            value-field="name"
+            text-field="name"
+          >
+          <template #first>
+        </template>
+          </b-form-select>
+        </b-input-group>
       </div>
+    </div>
       <div class="row">
         <div class="col-3"></div>
         <div class="col-6 p-0 d-flex">
@@ -121,6 +129,22 @@
           </b-input-group>
         </div>
       </div>
+      <div class="row">
+      <div class="col-3"></div>
+      <div class="col-6 p-0 d-flex">
+        <b-input-group prepend="Cosido por" class="">
+          <b-form-select
+            v-model="cosedor"
+            :options="preparadores"
+            value-field="name"
+            text-field="name"
+          >
+          <template #first>
+        </template>
+          </b-form-select>
+        </b-input-group>
+      </div>
+    </div>
       <div class="row">
         <div class="col-3"></div>
         <div class="col-6 p-0 d-flex">
@@ -169,6 +193,8 @@ export default {
       bis: null,
       fechaAlta: null,
       fechaExpediente: null,
+      fechaAsignacion: null,
+      cosedor: null,
       noPaquete: null,
       spinner: null,
       estado: null,
@@ -184,18 +210,14 @@ export default {
   created() {
     this.noPaquete = localStorage.noPaquete;
     this.bis = localStorage.bis;
+    this.fechaAsignacion = new Date();
+    this.fechaAsignacion = this.fechaAsignacion.toISOString().slice(0,10);
     this.getEstados();
     this.search();
   },
   methods: {
     limpiar() {
       this.noFojas = null;
-      this.estado = null;
-      this.folioInicio = null;
-      this.folioFin = null;
-      this.fechaAlta = null;
-      this.fechaExpediente = null;
-      this.preparador = null;
       this.verificador = null;
     },
     getPreparadores() {
@@ -289,7 +311,10 @@ export default {
           let data = {
             noPaquete: this.noPaquete,
             noFojas: this.noFojas,
+            bis: this.bis,
+            fechaAsignacion: this.fechaAsignacion,
             estado: this.estado,
+            digitalizador: this.digitalizador,
             preparador: this.preparador,
             observaciones: this.observaciones,
           };

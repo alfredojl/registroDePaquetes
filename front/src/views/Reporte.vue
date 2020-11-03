@@ -54,7 +54,6 @@
       </b-col>
     </b-row>
     </b-row>
-    <pre>{{ reporte }}</pre>
   </div>
 </template>
 

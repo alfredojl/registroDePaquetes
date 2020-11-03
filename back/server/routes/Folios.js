@@ -8,7 +8,7 @@ app.get('/folios', async(req, res) => {
     let noPaquete = req.query.noPaquete;
     let bis = req.query.bis;
 
-    
+
     Folio.find({ noPaquete, bis }, {}, { sort: { folio: 1 } }, (err, folios) => {
         if (err)
             return res.status(500).json({
@@ -47,12 +47,14 @@ app.post('/folios', async(req, res) => {
 
 app.put('/folios', async(req, res) => {
     let folios = req.body.data.folios;
-    let noPaquete = folios[0]['noPaquete'];
+    let noPaquete = req.body.data.noPaquete;
+    let bis = req.body.data.bis;
     let errors = false;
+    let validado = req.body.data.validado;
     let foliosResultado = [];
 
     for (folio of folios) {
-        Folio.findOneAndUpdate({ folio: folio.folio }, folio, (err, folioDB) => {
+        Folio.findOneAndUpdate({ folio: folio.folio, bis }, folio, (err, folioDB) => {
             if (err)
                 errors = true;
         })
@@ -63,7 +65,7 @@ app.put('/folios', async(req, res) => {
             err
         });
     }
-    Paquete.findOneAndUpdate({ noPaquete }, { validado: folios[0]['validado'] }, (err, paqueteDB) => {
+    Paquete.findOneAndUpdate({ noPaquete, bis }, { validado }, (err, paqueteDB) => {
         if (err) {
             console.log(err);
             return res.status(500).json({

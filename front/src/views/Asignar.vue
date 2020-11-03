@@ -31,7 +31,7 @@
       ></b-spinner>
     </div>
     <div v-else>
-    <div class="row mt-5">
+    <div class="row mt-2">
       <div class="col-3"></div>
       <div class="col-6 p-0 d-flex">
         <b-input-group prepend="Folio inicio" class="">
@@ -72,14 +72,6 @@
       <div class="col-6 p-0 d-flex">
         <b-input-group prepend="Fecha de registro" class="">
           <b-form-input type="date" v-model="fechaAlta" disabled></b-form-input>
-        </b-input-group>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-3"></div>
-      <div class="col-6 p-0 d-flex">
-        <b-input-group prepend="Fecha de asignación" class="">
-          <b-form-input type="date" v-model="fechaAsignacion" disabled></b-form-input>
         </b-input-group>
       </div>
     </div>
@@ -138,12 +130,11 @@
       <div class="col-3"></div>
       <div class="col-6 p-0 d-flex">
         <b-input-group prepend="Digitalizador" class="">
-          <!-- <b-form-input type="number" v-model="verificadores"></b-form-input> -->
           <b-form-select
             v-model="digitalizador"
             :options="digitalizadores"
             value-field="name"
-            text-field="name"
+            text-field="id"
           ></b-form-select>
         </b-input-group>
       </div>
@@ -216,25 +207,19 @@ export default {
     this.getVerificadores();
     this.getPreparadores();
     this.getDigitalizadores();
-    this.fechaAsignacion = new Date();
-    this.fechaAsignacion = this.fechaAsignacion.toISOString().slice(0,10);
     this.bis = localStorage.bis;
     this.search();
   },
   methods: {
     goFormato(){
       localStorage.setItem("noPaquete", this.noPaquete);
+      localStorage.setItem("bis", this.bis);
       this.$router.push('/formato');
     },
     limpiar(){
-      this.noFojas = null;
-      this.estado = null;
-      this.folioInicio = null;
-      this.folioFin = null;
-      this.fechaAlta = null;
-      this.fechaExpediente = null;
       this.preparador = null;
-      this.validador = null;
+      this.estado = null;
+      this.digitalizador = null;
       this.verificador = null;
       this.turno = null;
     },
@@ -363,12 +348,7 @@ export default {
           axios.put(`${config.api}/paquete`, {
             verificador: this.verificador,
             preparador: this.preparador,
-            folioInicio: this.folioInicio,
-            folioFin: this.folioFin,
-            fechaAsignacion: this.fechaAsignacion,
-            fechaExpediente: this.fechaExpediente,
-            digitalizador: this.digitalizador,
-            estado: this.estado,
+            bis: this.bis,
             turno: this.turno,
             noPaquete: this.noPaquete
           })

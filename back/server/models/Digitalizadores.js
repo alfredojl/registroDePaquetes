@@ -9,6 +9,15 @@ let digitalizadorSchema = new Schema({
         type: String,
         required: [true, 'El nombre es necesario.'],
         unique: true
+    },
+    id: {
+        type: Number
+    },
+    role: {
+        type: String
+    },
+    turno: {
+        type: String
     }
 });
 

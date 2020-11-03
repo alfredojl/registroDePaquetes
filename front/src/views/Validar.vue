@@ -10,6 +10,14 @@
             v-model="noPaquete"
             v-on:keyup.enter="search()"
           ></b-form-input>
+          <b-form-checkbox
+          class="m-1"
+          v-model="bis"
+          value="true"
+          unchecked-value="false"
+          >
+            BIS
+          </b-form-checkbox>
           <b-input-group-prepend>
             <b-button variant="secondary" @click="search()">Buscar</b-button>
           </b-input-group-prepend>
@@ -171,12 +179,14 @@ export default {
     },
     save() {
       localStorage.noPaquete = this.noPaquete;
+      
       for (let i = 0; i < this.folios.length; i++)
         this.folios[i]["validado"] = localStorage.loggedIn;
       let data = {
         folios: this.folios,
         validado: localStorage.loggedIn,
         noPaquete: this.noPaquete || localStorage.noPaquete,
+        bis: this.bis
       };
       axios
         .put(`${config.api}/folios`, { data })
