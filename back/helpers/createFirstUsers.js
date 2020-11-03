@@ -20,10 +20,9 @@ const crearUsuario = async() => {
     // const name = "root";
     // const passwdprov = "admin";
 
-    const usuarios = [
-        {
-            name: "root",
-            passwd: bcrypt.hashSync('admin', 10),
+    const usuarios = [{
+            name: "atovar",
+            passwd: bcrypt.hashSync('ajta8245', 10),
             role: "reporter"
         }
         // {
