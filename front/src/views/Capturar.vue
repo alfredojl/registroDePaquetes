@@ -202,6 +202,8 @@
         </b-button-group>
       </div>
     </div>
+    <pre>{{ digitalizador }}</pre>
+    <pre>{{ digitalizadores }}</pre>
   </div>
 </template>
 
