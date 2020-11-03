@@ -358,7 +358,6 @@ export default {
             observaciones: this.observaciones,
           };
           this.spinner = true;
-          console.log(data);
           axios
             .put(`${config.api}/captura`, data)
             .then((res) => {
