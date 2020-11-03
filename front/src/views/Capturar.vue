@@ -348,7 +348,7 @@ export default {
           let data = {
             noPaquete: this.noPaquete,
             noFojas: this.noFojas,
-            bis: this.bis,
+            bis: this.bis || false,
             fechaAsignacion: this.fechaAsignacion,
             fechaCosido: this.fechaCosido,
             cosedor: this.cosedor,
