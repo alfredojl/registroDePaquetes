@@ -11,10 +11,10 @@
             v-on:keyup.enter="search()"
           ></b-form-input>
           <b-form-checkbox
-          class="m-1"
-          v-model="bis"
-          value="true"
-          unchecked-value="false"
+            class="m-1"
+            v-model="bis"
+            value="true"
+            unchecked-value="false"
           >
             BIS
           </b-form-checkbox>
@@ -105,46 +105,59 @@
         </div>
       </div>
       <div class="row">
-      <div class="col-3"></div>
-      <div class="col-6 p-0 d-flex">
-        <b-input-group prepend="Preparador" class="">
-          <b-form-select
-            v-model="preparador"
-            :options="preparadores"
-            value-field="name"
-            text-field="name"
-          >
-          <template #first>
-        </template>
-          </b-form-select>
-        </b-input-group>
-      </div>
-    </div>
-      <div class="row">
         <div class="col-3"></div>
         <div class="col-6 p-0 d-flex">
-          <b-input-group prepend="Número de fojas" class="">
-            <b-form-input type="number" v-model="noFojas"
-            @keyup.enter="save()"></b-form-input>
+          <b-input-group prepend="Preparador" class="">
+            <b-form-select
+              v-model="preparador"
+              :options="preparadores"
+              value-field="name"
+              text-field="name"
+            >
+              <template #first> </template>
+            </b-form-select>
           </b-input-group>
         </div>
       </div>
       <div class="row">
-      <div class="col-3"></div>
-      <div class="col-6 p-0 d-flex">
-        <b-input-group prepend="Cosido por" class="">
-          <b-form-select
-            v-model="cosedor"
-            :options="preparadores"
-            value-field="name"
-            text-field="name"
-          >
-          <template #first>
-        </template>
-          </b-form-select>
-        </b-input-group>
+        <div class="col-3"></div>
+        <div class="col-6 p-0 d-flex">
+          <b-input-group prepend="Número de fojas" class="">
+            <b-form-input
+              type="number"
+              v-model="noFojas"
+              @keyup.enter="save()"
+            ></b-form-input>
+          </b-input-group>
+        </div>
       </div>
-    </div>
+      <div class="row">
+        <div class="col-3"></div>
+        <div class="col-6 p-0 d-flex">
+          <b-input-group prepend="Cosido por" class="">
+            <b-form-select
+              v-model="cosedor"
+              :options="preparadores"
+              value-field="name"
+              text-field="name"
+            >
+              <template #first> </template>
+            </b-form-select>
+          </b-input-group>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-3"></div>
+        <div class="col-6 p-0 d-flex">
+          <b-input-group prepend="Fecha de cosido" class="">
+            <b-form-input
+              type="date"
+              v-model="fechaCosido"
+              v-on:keyup.enter="save()"
+            ></b-form-input>
+          </b-input-group>
+        </div>
+      </div>
       <div class="row">
         <div class="col-3"></div>
         <div class="col-6 p-0 d-flex">
@@ -194,6 +207,7 @@ export default {
       fechaAlta: null,
       fechaExpediente: null,
       fechaAsignacion: null,
+      fechaCosido: null,
       cosedor: null,
       noPaquete: null,
       spinner: null,
@@ -210,9 +224,10 @@ export default {
   created() {
     this.noPaquete = localStorage.noPaquete;
     this.bis = localStorage.bis;
-    this.fechaAsignacion = new Date();
-    this.fechaAsignacion = this.fechaAsignacion.toISOString().slice(0,10);
+    this.fechaAsignacion = this.fechaCosido = new Date();
+    this.fechaAsignacion = this.fechaCosido = this.fechaAsignacion.toISOString().slice(0, 10);
     this.getEstados();
+    this.getPreparadores();
     this.search();
   },
   methods: {
@@ -251,7 +266,7 @@ export default {
         .get(`${config.api}/paquete`, {
           params: {
             noPaquete: this.noPaquete,
-            bis: this.bis
+            bis: this.bis,
           },
         })
         .then((res) => {
@@ -313,6 +328,8 @@ export default {
             noFojas: this.noFojas,
             bis: this.bis,
             fechaAsignacion: this.fechaAsignacion,
+            fechaCosido: this.fechaCosido,
+            cosedor: this.cosedor,
             estado: this.estado,
             digitalizador: this.digitalizador,
             preparador: this.preparador,
