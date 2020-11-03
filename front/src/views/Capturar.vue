@@ -202,7 +202,6 @@
         </b-button-group>
       </div>
     </div>
-    <pre>{{ data }}</pre>
   </div>
 </template>
 
@@ -359,6 +358,7 @@ export default {
             observaciones: this.observaciones,
           };
           this.spinner = true;
+          console.log(data);
           axios
             .put(`${config.api}/captura`, data)
             .then((res) => {
