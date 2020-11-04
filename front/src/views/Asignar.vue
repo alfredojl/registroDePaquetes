@@ -186,6 +186,7 @@ export default {
       folioFin: null,
       noFojas: null,
       fechaAlta: null,
+      bis: false,
       estado: null,
       estados: null,
       fechaExpediente: null,

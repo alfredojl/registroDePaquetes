@@ -95,7 +95,7 @@ export default {
       noPaquete: null,
       folioInicio: null,
       folioFin: null,
-      bis: null,
+      bis: false,
       folios: [],
       tomos: [],
       referencias: [],

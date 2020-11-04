@@ -297,7 +297,7 @@ export default {
       fechaCosido: null,
       noFojas: null,
       fechaAlta: null,
-      bis: null,
+      bis: false,
       showBis: false,
       identificador: null,
       cantidad: null,

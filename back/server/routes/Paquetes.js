@@ -27,241 +27,64 @@ app.post('/paquete', async(req, res) => {
     let noPaquete = body.noPaquete;
     let bis = body.bis;
 
-    // if (bis == 'true') {
-    //     Paquete.find({ noPaquete, bis }, {}, (err, encontradoDB) => {
-    //         if (err)
-    //             return res.status(500).json({
-    //                 ok: false,
-    //                 err
-    //             });
-
-    //         if (encontradoDB.length > 0) {
-
-    //             res.json({
-    //                 ok: true,
-    //                 message: "existente",
-    //             })
-    //         }
-    //         else
-    //         Paquete.create(body, async(err, paqueteDB) => {
-    //             if (err)
-    //                 return res.status(500).json({
-    //                     ok: false,
-    //                     err
-    //                 });
-
-    //             await Folio.deleteMany({ noPaquete }, (err, fol) => {
-    //                 if (err) {
-    //                     return res.status(500).json({
-    //                         ok: false,
-    //                         err: {
-    //                             message: 'Error al eliminar folios'
-    //                         }
-    //                     })
-    //                 }
-    //             });
-
-    //             let folios = [];
-    //             for (let i = body.folioInicio; i <= body.folioFin; i++) {
-    //                 let folio = {
-    //                     folio: i,
-    //                     noPaquete: body.noPaquete,
-    //                     bis: true
-    //                 }
-    //                 folios.push(folio);
-    //             };
-
-    //             await Folio.insertMany(folios, (err, resultado) => {
-    //                 if (err) {
-    //                     Paquete.remove({ noPaquete: body.noPaquete });
-    //                     return res.status(500).json({
-    //                         ok: false,
-    //                         err
-    //                     });
-    //                 }
-    //             });
-    //             return res.json({
-    //                 ok: true,
-    //                 paquete: paqueteDB
-    //             });
-    //         });
-
-    //     })
-    // console.log('entrando bis')
-    // Paquete.create(body, async(err, paqueteDB) => {
-    //     if (err)
-    //         return res.status(500).json({
-    //             ok: false,
-    //             err
-    //         });
-
-    //     await Folio.deleteMany({ noPaquete }, (err, fol) => {
-    //         if (err) {
-    //             return res.status(500).json({
-    //                 ok: false,
-    //                 err: {
-    //                     message: 'Error al eliminar folios'
-    //                 }
-    //             })
-    //         }
-    //     });
-
-    //     let folios = [];
-    //     for (let i = body.folioInicio; i <= body.folioFin; i++) {
-    //         let folio = {
-    //             folio: i,
-    //             noPaquete: body.noPaquete,
-    //             bis: true
-    //         }
-    //         folios.push(folio);
-    //     };
-
-    //     await Folio.insertMany(folios, (err, resultado) => {
-    //         if (err) {
-    //             Paquete.remove({ noPaquete: body.noPaquete });
-    //             return res.status(500).json({
-    //                 ok: false,
-    //                 err
-    //             });
-    //         }
-    //     });
-    //     return res.json({
-    //         ok: true,
-    //         paquete: paqueteDB
-    //     });
-    // });
-    // }
-
     Paquete.find({ noPaquete, bis }, {}, (err, encontradoDB) => {
-            if (err)
-                return res.status(500).json({
-                    ok: false,
-                    err
+        if (err)
+            return res.status(500).json({
+                ok: false,
+                err
+            });
+
+        if (encontradoDB.length > 0) {
+
+            res.json({
+                ok: true,
+                message: "existente",
+            })
+        } else
+            Paquete.create(body, async(err, paqueteDB) => {
+                if (err)
+                    return res.status(500).json({
+                        ok: false,
+                        err
+                    });
+
+                await Folio.deleteMany({ noPaquete, bis }, (err, fol) => {
+                    if (err) {
+                        return res.status(500).json({
+                            ok: false,
+                            err: {
+                                message: 'Error al eliminar folios'
+                            }
+                        })
+                    }
                 });
 
-            if (encontradoDB.length > 0) {
+                let folios = [];
+                for (let i = body.folioInicio; i <= body.folioFin; i++) {
+                    let folio = {
+                        folio: i,
+                        noPaquete: body.noPaquete,
+                        bis
+                    }
+                    folios.push(folio);
+                };
 
-                res.json({
-                    ok: true,
-                    message: "existente",
-                })
-            } else
-                Paquete.create(body, async(err, paqueteDB) => {
-                    if (err)
+                await Folio.insertMany(folios, (err, resultado) => {
+                    if (err) {
+                        Paquete.remove({ noPaquete: body.noPaquete });
                         return res.status(500).json({
                             ok: false,
                             err
                         });
-
-                    await Folio.deleteMany({ noPaquete, bis }, (err, fol) => {
-                        if (err) {
-                            return res.status(500).json({
-                                ok: false,
-                                err: {
-                                    message: 'Error al eliminar folios'
-                                }
-                            })
-                        }
-                    });
-
-                    let folios = [];
-                    for (let i = body.folioInicio; i <= body.folioFin; i++) {
-                        let folio = {
-                            folio: i,
-                            noPaquete: body.noPaquete,
-                            bis
-                        }
-                        folios.push(folio);
-                    };
-
-                    await Folio.insertMany(folios, (err, resultado) => {
-                        if (err) {
-                            Paquete.remove({ noPaquete: body.noPaquete });
-                            return res.status(500).json({
-                                ok: false,
-                                err
-                            });
-                        }
-                    });
-                    return res.json({
-                        ok: true,
-                        paquete: paqueteDB
-                    });
+                    }
                 });
+                return res.json({
+                    ok: true,
+                    paquete: paqueteDB
+                });
+            });
 
-        })
-        // Paquete.create(body, async(err, paqueteDB) => {
-        //     if (err)
-        //         return res.status(500).json({
-        //             ok: false,
-        //             err
-        //         })
-        //     let folios = [];
-        //     for (let i = body.folioInicio; i <= body.folioFin; i++) {
-        //         let folio = {
-        //             folio: i,
-        //             noPaquete: body.noPaquete
-        //         }
-        //         folios.push(folio);
-        //     };
-
-    //     await Folio.insertMany(folios, (err, resultado) => {
-    //         if (err) {
-    //             Paquete.remove({ noPaquete: body.noPaquete });
-    //             return res.status(500).json({
-    //                 ok: false,
-    //                 err
-    //             });
-    //         }
-    //     })
-    //     return res.json({
-    //         ok: true,
-    //         paquete: paqueteDB
-    //     });
-    // })
-
-    // Paquete.findOneAndUpdate({ noPaquete }, body, { upsert: true }, async(err, paqueteDB) => {
-    //     if (err) {
-    //         return res.status(500).json({
-    //             ok: false,
-    //             err
-    //         })
-    //     }
-
-    //     await Folio.deleteMany({ noPaquete }, (err, fol) => {
-    //         if (err) {
-    //             return res.status(500).json({
-    //                 ok: false,
-    //                 err: {
-    //                     message: 'Error al eliminar folios'
-    //                 }
-    //             })
-    //         }
-    //     });
-
-    //     let folios = [];
-    //     for (let i = body.folioInicio; i <= body.folioFin; i++) {
-    //         let folio = {
-    //             folio: i,
-    //             noPaquete: body.noPaquete
-    //         }
-    //         folios.push(folio);
-    //     };
-
-    //     await Folio.insertMany(folios, (err, resultado) => {
-    //         if (err) {
-    //             Paquete.remove({ noPaquete: body.noPaquete });
-    //             return res.status(500).json({
-    //                 ok: false,
-    //                 err
-    //             });
-    //         }
-    //     })
-    //     return res.json({
-    //         ok: true,
-    //         paquete: paqueteDB
-    //     });
-    // })
+    })
 })
 
 app.put('/paquete', async(req, res) => {
@@ -293,35 +116,6 @@ app.put('/paquete', async(req, res) => {
                 err
             })
         }
-        // await Folio.deleteMany({ noPaquete, bis }, (err, fol) => {
-        //     if (err) {
-        //         return res.status(500).json({
-        //             ok: false,
-        //             err: {
-        //                 message: 'Error al eliminar folios'
-        //             }
-        //         })
-        //     }
-        // });
-        // let folios = [];
-        // for (let i = folioInicio; i <= folioFin; i++) {
-        //     let folio = {
-        //         folio: i,
-        //         noPaquete: noPaquete,
-        //         bis
-        //     }
-        //     folios.push(folio);
-        // };
-
-        // await Folio.insertMany(folios, (err, resultado) => {
-        //     if (err) {
-        //         Paquete.remove({ noPaquete });
-        //         return res.status(500).json({
-        //             ok: false,
-        //             err
-        //         });
-        //     }
-        // })
         return res.json({
             ok: true,
             paquete: paqueteDB

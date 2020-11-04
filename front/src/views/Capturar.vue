@@ -3,7 +3,7 @@
     <div class="row">
       <div class="col-3"></div>
       <div class="col-6 p-0 d-flex">
-        <b-input-group prepend="Paquete" class="mb-5">
+        <b-input-group prepend="Paquete" class="mb-2">
           <b-form-input
             type="number"
             autofocus
@@ -32,6 +32,15 @@
       ></b-spinner>
     </div>
     <div v-else>
+      <div v-if="showBis == true">
+      <b-row class="">
+        <div class="col-3"></div>
+        <b-col lg="2" class="p-0">
+        <b-input-group prepend="Bis" class="">
+        </b-input-group>
+        </b-col>
+      </b-row>
+    </div>
       <div class="row">
         <div class="col-3"></div>
         <div class="col-6 p-0 d-flex">
@@ -216,7 +225,8 @@ export default {
       folioInicio: null,
       folioFin: null,
       noFojas: null,
-      bis: null,
+      bis: false,
+      showBis: null,
       fechaAlta: null,
       fechaExpediente: null,
       fechaAsignacion: null,
@@ -249,6 +259,7 @@ export default {
     limpiar() {
       this.noFojas = null;
       this.verificador = null;
+      this.digitalizador = null;
     },
     getDigitalizadores(){
       axios.get(`${config.api}/digitalizador`)
@@ -298,6 +309,7 @@ export default {
           this.estado = res.data.paquete.estado;
           this.turno = res.data.paquete.turno;
           this.cosedor = res.data.paquete.cosedor;
+          this.showBis = res.data.paquete.bis;
           this.fechaExpediente = res.data.paquete.fechaExpediente
             ? new Date(res.data.paquete.fechaExpediente)
                 .toISOString()
@@ -315,9 +327,11 @@ export default {
           this.spinner = false;
         })
         .catch((error) => {
+          let cad = this.bis == 'true' ? 'BIS' : '';
+
           if (error) {
             Swal.fire(
-              `No se pudo encontrar el paquete ${this.noPaquete}.`,
+              `No se pudo encontrar el paquete ${this.noPaquete} ${cad}.`,
               "",
               "error"
             );
@@ -329,8 +343,6 @@ export default {
     save() {
       if (
         !this.noPaquete ||
-        !this.turno ||
-        !this.verificador ||
         !this.preparador ||
         !this.noFojas ||
         !this.estado
