@@ -110,7 +110,6 @@ export default {
   created() {
     this.noPaquete = localStorage.noPaquete || null;
     this.bis = localStorage.bis;
-    console.log(this.bis)
     this.getFolios();
   },
   methods: {

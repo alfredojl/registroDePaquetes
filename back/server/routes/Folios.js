@@ -54,7 +54,7 @@ app.put('/folios', async(req, res) => {
     let foliosResultado = [];
 
     for (folio of folios) {
-        Folio.findOneAndUpdate({ folio: folio.folio, bis }, folio, (err, folioDB) => {
+        Folio.findOneAndUpdate({ noPaquete, folio: folio.folio, bis }, folio, (err, folioDB) => {
             if (err)
                 errors = true;
         })

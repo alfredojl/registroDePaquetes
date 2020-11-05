@@ -127,6 +127,18 @@
       </div>
     </div>
     <div class="row">
+        <div class="col-3"></div>
+        <div class="col-6 p-0 d-flex">
+          <b-input-group prepend="Fecha de asignación" class="">
+            <b-form-input
+              type="date"
+              v-model="fechaAsignacion"
+              v-on:keyup.enter="save()"
+            ></b-form-input>
+          </b-input-group>
+        </div>
+      </div>
+    <div class="row">
       <div class="col-3"></div>
       <div class="col-6 p-0 d-flex">
         <b-input-group prepend="Digitalizador" class="">
@@ -295,6 +307,7 @@ export default {
           },
         })
         .then((res) => {
+          console.log(res.data.paquete);
           if (!res.data.paquete)
           {
             return Swal.fire(
@@ -317,6 +330,11 @@ export default {
           this.digitalizador = res.data.paquete.digitalizador;
           this.fechaExpediente = res.data.paquete.fechaExpediente
             ? new Date(res.data.paquete.fechaExpediente)
+                .toISOString()
+                .slice(0, 10)
+            : null;
+          this.fechaAsignacion = res.data.paquete.fechaAsignacion
+            ? new Date(res.data.paquete.fechaAsignacion)
                 .toISOString()
                 .slice(0, 10)
             : null;
