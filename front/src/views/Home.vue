@@ -30,10 +30,10 @@
             v-on:keyup.enter="search()"
           ></b-form-input>
           <b-form-checkbox
-          class="m-1"
-          v-model="bis"
-          value="true"
-          unchecked-value="false"
+            class="m-1"
+            v-model="bis"
+            value="true"
+            unchecked-value="false"
           >
             BIS
           </b-form-checkbox>
@@ -43,12 +43,43 @@
         </b-input-group>
       </div>
     </div>
+    <div class="row mb-2 mt-2">
+      <div class="col-3"></div>
+      <b-form-checkbox
+        class="col-2"
+        id="checkbox"
+        name="checkbox"
+        v-model="numeral"
+        switch
+        value="true"
+        unchecked-value="false"
+      >
+        Varios paquetes
+      </b-form-checkbox>
+      <p class="m-1" v-if="numeral == 'true'">Paquete</p>
+      <b-form-input
+        v-if="numeral == 'true'"
+        type="number"
+        class="col-1 p-2"
+        placeholder="#"
+        size="sm"
+        v-model="identificador"
+      ></b-form-input>
+      <p v-if="numeral == 'true'" class="m-1">de</p>
+      <b-form-input
+        v-if="numeral == 'true'"
+        class="col-1 p-2"
+        type="number"
+        size="sm"
+        placeholder="total"
+        v-model="cantidad"
+      ></b-form-input>
+    </div>
     <div v-if="showBis == true">
       <b-row class="">
         <div class="col-3"></div>
         <b-col lg="2" class="p-0">
-        <b-input-group prepend="Bis" class="">
-        </b-input-group>
+          <b-input-group prepend="Bis" class=""> </b-input-group>
         </b-col>
       </b-row>
     </div>
@@ -56,7 +87,7 @@
       <div class="row mt-1">
         <div class="col-3"></div>
         <div class="col-3 p-0 d-flex">
-          <b-input-group prepend="Número" class="mb-5">
+          <b-input-group prepend="Número" class="mb-1">
             <b-form-input
               type="number"
               class="col-2"
@@ -176,10 +207,10 @@
       </div>
     </div>
     <div class="row">
-        <div class="col-3"></div>
-        <div class="col-6 p-0 d-flex">
-          <b-input-group prepend="Cosido por" class="">
-            <!-- <b-form-select
+      <div class="col-3"></div>
+      <div class="col-6 p-0 d-flex">
+        <b-input-group prepend="Cosido por" class="">
+          <!-- <b-form-select
               v-model="cosedor"
               :options="preparadores"
               value-field="name"
@@ -188,23 +219,23 @@
             >
               <template #first> </template>
             </b-form-select> -->
-            <b-form-input v-model="cosedor" disabled></b-form-input>
-          </b-input-group>
-        </div>
+          <b-form-input v-model="cosedor" disabled></b-form-input>
+        </b-input-group>
       </div>
-      <div class="row">
-        <div class="col-3"></div>
-        <div class="col-6 p-0 d-flex">
-          <b-input-group prepend="Fecha de cosido" class="">
-            <b-form-input
-              type="date"
-              v-model="fechaCosido"
-              v-on:keyup.enter="save()"
-              disabled
-            ></b-form-input>
-          </b-input-group>
-        </div>
+    </div>
+    <div class="row">
+      <div class="col-3"></div>
+      <div class="col-6 p-0 d-flex">
+        <b-input-group prepend="Fecha de cosido" class="">
+          <b-form-input
+            type="date"
+            v-model="fechaCosido"
+            v-on:keyup.enter="save()"
+            disabled
+          ></b-form-input>
+        </b-input-group>
       </div>
+    </div>
     <div class="row">
       <div class="col-3"></div>
       <div class="col-6 p-0 d-flex">
@@ -275,6 +306,7 @@
         </div>
       </div>
     </div>
+    <pre>{{ identificador }} {{ numeral }}</pre>
   </div>
 </template>
 
@@ -296,6 +328,7 @@ export default {
       cosedor: null,
       fechaCosido: null,
       noFojas: null,
+      numeral: null,
       fechaAlta: null,
       bis: false,
       showBis: false,
@@ -369,12 +402,21 @@ export default {
       this.noPaquete = this.noPaquete.slice(0, 5);
       if (!this.noPaquete)
         return Swal.fire("Ingresa un número de paquete", "", "info");
+        let params;
+      if(this.identificador)
+        params = {
+          noPaquete: this.noPaquete,
+          bis: this.bis,
+          identificador: this.identificador
+        }
+      else
+        params = {
+          noPaquete: this.noPaquete,
+          bis: this.bis
+        }
       axios
         .get(`${config.api}/paquete`, {
-          params: {
-            noPaquete: this.noPaquete,
-            bis: this.bis
-          },
+          params
         })
         .then((res) => {
           if (!res.data.paquete)

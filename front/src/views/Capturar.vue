@@ -171,6 +171,18 @@
       <div class="row">
         <div class="col-3"></div>
         <div class="col-6 p-0 d-flex">
+          <b-input-group prepend="Fecha de preparación" class="">
+            <b-form-input
+              type="date"
+              v-model="fechaAsignacion"
+              v-on:keyup.enter="save()"
+            ></b-form-input>
+          </b-input-group>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-3"></div>
+        <div class="col-6 p-0 d-flex">
           <b-input-group prepend="Fecha de cosido" class="">
             <b-form-input
               type="date"

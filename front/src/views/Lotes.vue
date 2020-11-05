@@ -104,6 +104,7 @@
     >
       </b-col>
       </b-row>
+      <pre>{{ noPaquete }}</pre>
 
       <div v-if="!spinner">
       <b-table
@@ -140,9 +141,9 @@ import Swal from "sweetalert2";
 export default {
   computed: {
     valida() {
-      if (this.noPaquete.length > 5) {
-        this.noPaquete = this.noPaquete.slice(0, 5);
-      }
+      // if (this.noPaquete.length > 5) {
+      //   this.noPaquete = this.noPaquete.slice(0, 5);
+      // }
     },
   },
   created() {
@@ -151,7 +152,7 @@ export default {
     return {
       spinner: null,
       noLote: null,
-      noPaquete: "",
+      noPaquete: {},
       options: [
         {text: "Añadir lote", value: "add"},
         {text: "Buscar lote", value: "search"}
@@ -187,8 +188,8 @@ export default {
       //   this.$refs.folio.focus();
       //   return
       // }
-      this.noPaquete = this.noPaquete.split(/\n/g);
-      console.log(this.noPaquete);
+      // this.noPaquete = this.noPaquete.split(/\n/g);
+      console.log(this.noPaquete.split(/\n/g));
       // let fecha = new Date();
       let paquete = {
         noLote: this.noLote,
@@ -198,7 +199,7 @@ export default {
       };
       this.paquetes.push(paquete);
       this.$refs.folio.focus();
-      this.noPaquete = "";
+      // this.noPaquete = "";
     },
     download() {
       let doc = new jspdf();
