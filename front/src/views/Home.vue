@@ -4,20 +4,21 @@
       <b-col lg="2"
         ><b-alert show variant="warning" class="">Incidencias:</b-alert></b-col
       >
+      <div class="w-100"></div>
+        <b-row>
+          <b-col>
+        <b-list-group
+          class=""
+          horizontal
+          v-for="faltante of faltantes"
+        >
+          <b-list-group-item class="p-1">{{ faltante }}</b-list-group-item>
+        </b-list-group>
+          </b-col>
+        </b-row>
     </b-row>
     <b-row class="justify-content-center" v-show="incidencia == 'true'">
-      <div>
-        <b-list-group
-          class="m-0 p-0"
-          horizontal
-          v-for="faltante in faltantes"
-          :key="faltante"
-        >
-          <b-list-group-item>{{ faltante }}</b-list-group-item>
-        </b-list-group>
-      </div>
     </b-row>
-
     <div class="row mt-2">
       <div class="col-3"></div>
       <div class="col-6 p-0 d-flex">
@@ -274,7 +275,6 @@
         </div>
       </div>
     </div>
-    <pre>{{ identificador }} {{ numeral }}</pre>
   </div>
 </template>
 
@@ -288,7 +288,6 @@ export default {
     return {
       incidencia: false,
       noPaquete: "",
-      temp: null,
       paquete: null,
       folioInicio: null,
       folioFin: null,
@@ -343,11 +342,13 @@ export default {
       this.$router.push("/validar");
     },
     getFolios() {
+      this.faltantes = [];
       if (!localStorage.noPaquete) this.spinner = false;
       let params = {
         // folioInicio: localStorage.folioInicio,
         // folioFin: localStorage.folioFin,
         noPaquete: this.noPaquete,
+        bis: this.bis
       };
       axios
         .get(`${config.api}/folios`, {
@@ -355,13 +356,15 @@ export default {
         })
         .then((res) => {
           let folios = res.data.folios;
+          console.log(folios);
           folios.forEach((el) => {
             if (el.estado == "Faltante") {
               this.faltantes.push(el.folio);
             }
-            if(this.faltantes.length > 0)
-              this.incidencia = true;
           });
+          if(this.faltantes.length > 0)
+            this.incidencia = true;
+          console.log(this.faltantes);
         })
         .catch((error) => {
           if (error) console.log(error);
@@ -387,12 +390,14 @@ export default {
           params
         })
         .then((res) => {
-          if (!res.data.paquete)
+          if (!res.data.paquete){
+            this.noPaquete = null;
             return Swal.fire(
               `No se encontró el paquete ${this.noPaquete}.`,
               "",
               "error"
             );
+          }
           this.folioInicio = res.data.paquete.folioInicio;
           this.registrador = res.data.paquete.registrado;
           this.cosedor = res.data.paquete.cosedor;
@@ -416,10 +421,10 @@ export default {
           this.fechaAlta = new Date(res.data.paquete.fechaAlta)
             .toISOString()
             .slice(0, 10);
-          this.getFolios();
-          this.fechaCosido = new Date(res.data.paquete.fechaCosido)
+          this.fechaCosido = res.data.paquete.fechaCosido ? new Date(res.data.paquete.fechaCosido)
             .toISOString()
-            .slice(0, 10);
+            .slice(0, 10) : null;
+          this.getFolios();
         })
         .catch((error) => {
           if (error) {
