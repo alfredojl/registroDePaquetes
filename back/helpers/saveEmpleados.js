@@ -24,20 +24,20 @@ const install = async() => {
         console.log("BD ONLINE");
     });
     // console.log(preparadores);
-    // await Preparadores.insertMany(preparadores)
-    //     .then(preparadoresDB => {
-    //         console.log("Preparadores añadidos correctamente.");
-    //     })
-    //     .catch(err => {
-    //         console.log(err);
-    //     })
-    // await Verificador.insertMany(verificadores)
-    //     .then(VerificadoresDB => {
-    //         console.log("Verificadores añadidos correctamente.");
-    //     })
-    //     .catch(err => {
-    //         console.log(err);
-    //     })
+    await Preparadores.insertMany(preparadores)
+        .then(preparadoresDB => {
+            console.log("Preparadores añadidos correctamente.");
+        })
+        .catch(err => {
+            console.log(err);
+        })
+    await Verificador.insertMany(verificadores)
+        .then(VerificadoresDB => {
+            console.log("Verificadores añadidos correctamente.");
+        })
+        .catch(err => {
+            console.log(err);
+        })
 
     // await Estado.insertMany(estados)
     //     .then(estadosDB => {
@@ -47,13 +47,13 @@ const install = async() => {
     //         console.log(err);
     //     })
 
-    await Digitalizador.insertMany(digitalizadores)
-        .then(digitalizadoresDB => {
-            console.log('Digitalizadores agregados correctamente.');
-        })
-        .catch(err => {
-            console.log(err);
-        })
+    // await Digitalizador.insertMany(digitalizadores)
+    //     .then(digitalizadoresDB => {
+    //         console.log('Digitalizadores agregados correctamente.');
+    //     })
+    //     .catch(err => {
+    //         console.log(err);
+    //     })
     process.exit();
 };
 

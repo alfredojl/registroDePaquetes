@@ -376,7 +376,6 @@ export default {
         params = {
           noPaquete: this.noPaquete,
           bis: this.bis,
-          identificador: this.identificador
         }
       else
         params = {
