@@ -34,13 +34,15 @@
       <div class="col-3"></div>
       <div class="col-6 p-0 d-flex">
         <b-input-group prepend="Paquete" class="">
-          <b-form-input
-            type="number"
+          <b-form-textarea
+            type="textarea"
             :state="valida"
             ref="folio"
-            @keydown.188="agrega"
+            @keydown.delete="agrega"
+            size="sm"
             v-model="noPaquete"
-          ></b-form-input>
+            no-resize
+          ></b-form-textarea>
         </b-input-group>
       </div>
     </div>
@@ -104,8 +106,6 @@
     >
       </b-col>
       </b-row>
-      <pre>{{ noPaquete }}</pre>
-
       <div v-if="!spinner">
       <b-table
         id="tabla"
@@ -141,9 +141,8 @@ import Swal from "sweetalert2";
 export default {
   computed: {
     valida() {
-      // if (this.noPaquete.length > 5) {
-      //   this.noPaquete = this.noPaquete.slice(0, 5);
-      // }
+        
+        // return false
     },
   },
   created() {
@@ -152,7 +151,7 @@ export default {
     return {
       spinner: null,
       noLote: null,
-      noPaquete: {},
+      noPaquete: ``,
       options: [
         {text: "Añadir lote", value: "add"},
         {text: "Buscar lote", value: "search"}
@@ -168,7 +167,7 @@ export default {
       fields: [
         "#",
         { key: "noLote", label: "Lote" },
-        { key: "noPaquete", label: "Paquete", sortable: true },
+        { key: "noPaquete", label: "Paquete" },
         { key: "fechaEntregado", label: "Fecha entrega" },
         { key: "fechaDevolucion", label: "Fecha devolución" }
       ],
@@ -188,18 +187,17 @@ export default {
       //   this.$refs.folio.focus();
       //   return
       // }
-      // this.noPaquete = this.noPaquete.split(/\n/g);
-      console.log(this.noPaquete.split(/\n/g));
-      // let fecha = new Date();
+      this.noPaquete = this.noPaquete.split(/\n/g)[0];
+      let fecha = new Date();
       let paquete = {
         noLote: this.noLote,
         noPaquete: this.noPaquete,
-        fechaEntegado: null,
+        fechaEntregado: fecha.toISOString().slice(0,10),
         fechaDevolucion: null
       };
       this.paquetes.push(paquete);
       this.$refs.folio.focus();
-      // this.noPaquete = "";
+      this.noPaquete = '';
     },
     download() {
       let doc = new jspdf();

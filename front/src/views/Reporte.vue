@@ -34,6 +34,17 @@
           </b-col>
         </b-row>
         <div class="row m-2">
+        <label for="">Por turno:</label>
+          <b-form-select
+          autofocus
+            v-model="turno"
+            :options="turnos"
+          >
+          <template #first>
+        </template>
+          </b-form-select>
+    </div>
+        <div class="row m-2">
           <label>Por verificador:</label>
           <b-form-select
             :disabled="preparados == 'false'"
@@ -104,6 +115,7 @@ export default {
         { key: "_id", label: "Preparador" },
         { key: "total", label: "Total de fojas" },
       ],
+      turnos: ["Matutino", "Vespertino"],
     };
   },
   created() {
@@ -190,6 +202,7 @@ export default {
           .get(`${ruta}`, {
             params: {
               fechaInicio: this.fechaInicio,
+              turno: this.turno,
               fechaFin: this.fechaFin
             },
           })

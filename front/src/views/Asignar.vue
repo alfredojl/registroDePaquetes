@@ -202,7 +202,6 @@ export default {
       estado: null,
       estados: null,
       fechaExpediente: null,
-      fechaAlta: null,
       turno: null,
       verificador: null,
       verificadores: null,
@@ -217,6 +216,8 @@ export default {
   created() {
     this.getEstados();
     this.noPaquete = localStorage.noPaquete;
+    this.fechaAsignacion = new Date();
+    this.fechaAsignacion = this.fechaAsignacion.toISOString().slice(0, 10);
     this.getVerificadores();
     this.getPreparadores();
     this.getDigitalizadores();
@@ -307,8 +308,8 @@ export default {
           },
         })
         .then((res) => {
-          console.log(res.data.paquete);
-          if (!res.data.paquete)
+
+if (!res.data.paquete)
           {
             return Swal.fire(
               `No se encontró el paquete ${this.noPaquete}.`,
@@ -333,11 +334,11 @@ export default {
                 .toISOString()
                 .slice(0, 10)
             : null;
-          this.fechaAsignacion = res.data.paquete.fechaAsignacion
-            ? new Date(res.data.paquete.fechaAsignacion)
-                .toISOString()
-                .slice(0, 10)
-            : null;
+          // this.fechaAsignacion = res.data.paquete.fechaAsignacion
+          //   ? new Date(res.data.paquete.fechaAsignacion)
+          //       .toISOString()
+          //       .slice(0, 10)
+          //   : null;
           this.fechaAlta = new Date(res.data.paquete.fechaAlta)
             .toISOString()
             .slice(0, 10);
@@ -369,6 +370,7 @@ export default {
             preparador: this.preparador,
             bis: this.bis,
             turno: this.turno,
+            fechaAsignacion: this.fechaAsignacion,
             noPaquete: this.noPaquete
           })
           .then(res => {

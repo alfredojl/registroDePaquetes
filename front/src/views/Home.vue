@@ -5,7 +5,7 @@
         ><b-alert show variant="warning" class="">Incidencias:</b-alert></b-col
       >
     </b-row>
-    <b-row class="justify-content-center" v-show="incidencia">
+    <b-row class="justify-content-center" v-show="incidencia == 'true'">
       <div>
         <b-list-group
           class="m-0 p-0"
@@ -42,38 +42,6 @@
           </b-input-group-prepend>
         </b-input-group>
       </div>
-    </div>
-    <div class="row mb-2 mt-2">
-      <div class="col-3"></div>
-      <b-form-checkbox
-        class="col-2"
-        id="checkbox"
-        name="checkbox"
-        v-model="numeral"
-        switch
-        value="true"
-        unchecked-value="false"
-      >
-        Varios paquetes
-      </b-form-checkbox>
-      <p class="m-1" v-if="numeral == 'true'">Paquete</p>
-      <b-form-input
-        v-if="numeral == 'true'"
-        type="number"
-        class="col-1 p-2"
-        placeholder="#"
-        size="sm"
-        v-model="identificador"
-      ></b-form-input>
-      <p v-if="numeral == 'true'" class="m-1">de</p>
-      <b-form-input
-        v-if="numeral == 'true'"
-        class="col-1 p-2"
-        type="number"
-        size="sm"
-        placeholder="total"
-        v-model="cantidad"
-      ></b-form-input>
     </div>
     <div v-if="showBis == true">
       <b-row class="">
@@ -389,9 +357,10 @@ export default {
           let folios = res.data.folios;
           folios.forEach((el) => {
             if (el.estado == "Faltante") {
-              this.incidencia = true;
               this.faltantes.push(el.folio);
             }
+            if(this.faltantes.length > 0)
+              this.incidencia = true;
           });
         })
         .catch((error) => {

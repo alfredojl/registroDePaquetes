@@ -35,7 +35,7 @@
       </tr>
       <tr>
         <td class="l">Paquete</td>
-        <td class="l">{{ noPaquete }} {{ bis ? 'BIS' : '' }}{{ identificador ? identificador + '/' : '' }}{{ cantidad }}</td>
+        <td class="l">{{ noPaquete }} {{ bis ? 'BIS' : '' }} {{ identificador ? identificador + '/' : '' }}{{ cantidad }}</td>
         <!-- <td class="l" v-else>{{ noPaquete }}</td> -->
         <td class="l">Registro de datos</td>
         <td class="l"></td>
