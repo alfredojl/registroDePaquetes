@@ -10,7 +10,7 @@
         <b-list-group
           class=""
           horizontal
-          v-for="faltante of faltantes"
+          v-for="faltante of faltantes" :key="faltante"
         >
           <b-list-group-item class="p-1">{{ faltante }}</b-list-group-item>
         </b-list-group>
@@ -179,16 +179,20 @@
       <div class="col-3"></div>
       <div class="col-6 p-0 d-flex">
         <b-input-group prepend="Cosido por" class="">
-          <!-- <b-form-select
-              v-model="cosedor"
-              :options="preparadores"
-              value-field="name"
-              text-field="name"
-              disabled
-            >
-              <template #first> </template>
-            </b-form-select> -->
           <b-form-input v-model="cosedor" disabled></b-form-input>
+        </b-input-group>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-3"></div>
+      <div class="col-6 p-0 d-flex">
+        <b-input-group prepend="Fecha de preparación" class="">
+          <b-form-input
+            type="date"
+            v-model="fechaAsignacion"
+            v-on:keyup.enter="save()"
+            disabled
+          ></b-form-input>
         </b-input-group>
       </div>
     </div>
@@ -232,6 +236,8 @@
         size=""
         class="col-6 d-flex"
         v-model="observaciones"
+        disabled
+        no-resize
       ></b-form-textarea>
     </div>
     <div class="">
@@ -294,6 +300,7 @@ export default {
       fechaExpediente: null,
       cosedor: null,
       fechaCosido: null,
+      fechaAsignacion: null,
       noFojas: null,
       numeral: null,
       fechaAlta: null,
@@ -415,6 +422,11 @@ export default {
           this.digitalizador = res.data.paquete.digitalizador;
           this.fechaExpediente = res.data.paquete.fechaExpediente
             ? new Date(res.data.paquete.fechaExpediente)
+                .toISOString()
+                .slice(0, 10)
+            : null;
+          this.fechaAsignacion = res.data.paquete.fechaAsignacion
+            ? new Date(res.data.paquete.fechaAsignacion)
                 .toISOString()
                 .slice(0, 10)
             : null;

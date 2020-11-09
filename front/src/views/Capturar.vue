@@ -41,6 +41,33 @@
         </b-col>
       </b-row>
     </div>
+    <div v-show="cantidad">
+      <div class="row mt-1">
+        <div class="col-3"></div>
+        <div class="col-3 p-0 d-flex">
+          <b-input-group prepend="Número" class="mb-1">
+            <b-form-input
+              type="number"
+              class="col-2"
+              v-model="identificador"
+              disabled
+            ></b-form-input>
+            <b-form-input
+              type="text"
+              class="col-2"
+              value="de"
+              disabled
+            ></b-form-input>
+            <b-form-input
+              type="number"
+              class="col-2"
+              v-model="cantidad"
+              disabled
+            ></b-form-input>
+          </b-input-group>
+        </div>
+      </div>
+    </div>
       <div class="row">
         <div class="col-3"></div>
         <div class="col-6 p-0 d-flex">
@@ -213,6 +240,7 @@
           size=""
           class="col-6 d-flex"
           v-model="observaciones"
+          no-resize
         ></b-form-textarea>
       </div>
       <div class="row mt-3 mb-5">
@@ -245,6 +273,9 @@ export default {
       digitalizador: null,
       fechaCosido: null,
       cosedor: null,
+      identificador: null,
+      numeral: null,
+      cantidad: null,
       noPaquete: null,
       spinner: null,
       estado: null,
@@ -321,6 +352,8 @@ export default {
           this.estado = res.data.paquete.estado;
           this.turno = res.data.paquete.turno;
           this.cosedor = res.data.paquete.cosedor;
+          this.identificador = res.data.paquete.identificador;
+          this.cantidad = res.data.paquete.cantidad;
           this.showBis = res.data.paquete.bis;
           this.fechaExpediente = res.data.paquete.fechaExpediente
             ? new Date(res.data.paquete.fechaExpediente)

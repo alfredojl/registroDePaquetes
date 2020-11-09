@@ -110,6 +110,7 @@ export default {
       preparados: 'true',
       verificadores: null,
       verificador: null,
+      turno: null,
       preparadorH: [
         "Índice",
         { key: "_id", label: "Preparador" },

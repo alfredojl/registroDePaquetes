@@ -186,6 +186,7 @@ export default {
               position: "top-end",
               text: `Paquete ${this.noPaquete} agregado con éxito.`,
               icon: "success",
+              showConfirmButton: false,
               timer: 1500,
             });
           Swal.fire(

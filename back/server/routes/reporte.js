@@ -7,13 +7,14 @@ app.get("/reportePreparado", (req, res) => {
     let verificador = req.query.verificador;
     let preparador = req.query.preparador;
     let fechaInicio = new Date(req.query.fechaInicio);
+    let turno = req.query.turno;
     let fechaFin = req.query.fechaFin || fechaInicio;
     fechaFin = new Date(fechaFin);
 
     if (preparador) {
         Paquete.aggregate(
             [
-                { $match: { preparador: `${preparador}` } },
+                { $match: { preparador: `${preparador}`, turno: `${turno}` } },
                 {
                     $group: {
                         _id: "$preparador",
@@ -38,7 +39,7 @@ app.get("/reportePreparado", (req, res) => {
     if (verificador) {
         Paquete.aggregate(
             [
-                { $match: { verificador: `${verificador}` } },
+                { $match: { verificador: `${verificador}`, turno: `${turno}` } },
                 {
                     $group: {
                         _id: "$verificador",
@@ -69,6 +70,7 @@ app.get("/reportePreparado", (req, res) => {
                         $and: [
                             { fechaAsignacion: { $lte: fechaFin } },
                             { fechaAsignacion: { $gte: fechaInicio } },
+                            { turno: `${turno}` }
                         ],
                     },
                 },
@@ -98,14 +100,14 @@ app.get('/reporteCosido', (req, res) => {
     let verificador = req.query.verificador;
     let preparador = req.query.preparador;
     let fechaInicio = new Date(req.query.fechaInicio);
+    let turno = req.query.turno;
     let fechaFin = req.query.fechaFin || fechaInicio;
     fechaFin = new Date(fechaFin);
-    console.log('cosidos');
 
     if (preparador) {
         Paquete.aggregate(
             [
-                { $match: { cosedor: `${cosedor}` } },
+                { $match: { cosedor: `${cosedor}`, turno: `${turno}` } },
                 {
                     $group: {
                         _id: "$cosedor",
@@ -127,41 +129,15 @@ app.get('/reporteCosido', (req, res) => {
             }
         );
     }
-    if (verificador) {
-        Paquete.aggregate(
-            [
-                { $match: { verificador: `${verificador}` } },
-                {
-                    $group: {
-                        _id: "$verificador",
-                        total: { $sum: "$noFojas" },
-                    },
-                },
-                { $sort: { verificador: -1 } },
-            ],
-            (err, reporte) => {
-                if (err)
-                    return res.status(500).json({
-                        ok: false,
-                        err,
-                    });
-                return res.json({
-                    ok: true,
-                    mes: "verificador",
-                    reporte,
-                });
-            }
-        );
-    }
 
     if (fechaInicio && fechaFin) {
-        console.log('fechas');
         Paquete.aggregate(
             [{
                     $match: {
                         $and: [
                             { fechaCosido: { $lte: fechaFin } },
                             { fechaCosido: { $gte: fechaInicio } },
+                            { turno: `${turno}` }
                         ],
                     },
                 },
