@@ -33,41 +33,40 @@
     </div>
     <div v-else>
       <div v-if="showBis == true">
-      <b-row class="">
-        <div class="col-3"></div>
-        <b-col lg="2" class="p-0">
-        <b-input-group prepend="Bis" class="">
-        </b-input-group>
-        </b-col>
-      </b-row>
-    </div>
-    <div v-show="cantidad">
-      <div class="row mt-1">
-        <div class="col-3"></div>
-        <div class="col-3 p-0 d-flex">
-          <b-input-group prepend="Número" class="mb-1">
-            <b-form-input
-              type="number"
-              class="col-2"
-              v-model="identificador"
-              disabled
-            ></b-form-input>
-            <b-form-input
-              type="text"
-              class="col-2"
-              value="de"
-              disabled
-            ></b-form-input>
-            <b-form-input
-              type="number"
-              class="col-2"
-              v-model="cantidad"
-              disabled
-            ></b-form-input>
-          </b-input-group>
+        <b-row class="">
+          <div class="col-3"></div>
+          <b-col lg="2" class="p-0">
+            <b-input-group prepend="Bis" class=""> </b-input-group>
+          </b-col>
+        </b-row>
+      </div>
+      <div v-show="cantidad">
+        <div class="row mt-1">
+          <div class="col-3"></div>
+          <div class="col-3 p-0 d-flex">
+            <b-input-group prepend="Número" class="mb-1">
+              <b-form-input
+                type="number"
+                class="col-2"
+                v-model="identificador"
+                disabled
+              ></b-form-input>
+              <b-form-input
+                type="text"
+                class="col-2"
+                value="de"
+                disabled
+              ></b-form-input>
+              <b-form-input
+                type="number"
+                class="col-2"
+                v-model="cantidad"
+                disabled
+              ></b-form-input>
+            </b-input-group>
+          </div>
         </div>
       </div>
-    </div>
       <div class="row">
         <div class="col-3"></div>
         <div class="col-6 p-0 d-flex">
@@ -149,7 +148,6 @@
               :options="preparadores"
               value-field="name"
               text-field="name"
-              @change="todayPreparador"
             >
               <template #first> </template>
             </b-form-select>
@@ -169,18 +167,18 @@
         </div>
       </div>
       <div class="row">
-      <div class="col-3"></div>
-      <div class="col-6 p-0 d-flex">
-        <b-input-group prepend="Digitalizador" class="">
-          <b-form-select
-            v-model="digitalizador"
-            :options="digitalizadores"
-            value-field="name"
-            text-field="id"
-          ></b-form-select>
-        </b-input-group>
+        <div class="col-3"></div>
+        <div class="col-6 p-0 d-flex">
+          <b-input-group prepend="Digitalizador" class="">
+            <b-form-select
+              v-model="digitalizador"
+              :options="digitalizadores"
+              value-field="name"
+              text-field="id"
+            ></b-form-select>
+          </b-input-group>
+        </div>
       </div>
-    </div>
       <div class="row">
         <div class="col-3"></div>
         <div class="col-6 p-0 d-flex">
@@ -203,7 +201,7 @@
           <b-input-group prepend="Fecha de preparación" class="">
             <b-form-input
               type="date"
-              v-model="fechaAsignacion"
+              v-model="fechaPreparacion"
               v-on:keyup.enter="save()"
             ></b-form-input>
           </b-input-group>
@@ -272,7 +270,7 @@ export default {
       showBis: null,
       fechaAlta: null,
       fechaExpediente: null,
-      fechaAsignacion: null,
+      fechaPreparacion: null,
       digitalizador: null,
       fechaCosido: null,
       cosedor: null,
@@ -291,13 +289,10 @@ export default {
       turnos: ["Matutino", "Vespertino"],
     };
   },
-  computed: {
-  },
+  computed: {},
   created() {
     this.noPaquete = localStorage.noPaquete;
     this.bis = localStorage.bis;
-    this.fechaAsignacion = new Date();
-    this.fechaAsignacion = this.fechaAsignacion.toISOString().slice(0, 10);
     this.getEstados();
     this.getDigitalizadores();
     this.getPreparadores();
@@ -308,20 +303,19 @@ export default {
       this.fechaCosido = new Date();
       this.fechaCosido = this.fechaCosido.toISOString().slice(0, 10);
     },
-    todayPreparador() {
-      this.fechaAsignacion = new Date();
-      this.fechaAsignacion = this.fechaAsignacion.toISOString().slice(0, 10);
+    todayP() {
+      this.fechaPreparacion = new Date();
+      this.fechaPreparacion = this.fechaPreparacion.toISOString().slice(0, 10);
     },
     limpiar() {
       this.noFojas = null;
       this.verificador = null;
       this.digitalizador = null;
     },
-    getDigitalizadores(){
-      axios.get(`${config.api}/digitalizador`)
-      .then(res => {
+    getDigitalizadores() {
+      axios.get(`${config.api}/digitalizador`).then((res) => {
         this.digitalizadores = res.data.digitalizadores;
-      })
+      });
     },
     getPreparadores() {
       if (!this.preparador)
@@ -376,10 +370,14 @@ export default {
           this.fechaAlta = new Date(res.data.paquete.fechaAlta)
             .toISOString()
             .slice(0, 10);
-          this.fechaCosido = res.data.paquete.fechaCosido ?
-            new Date(res.data.paquete.fechaCosido).toISOString().slice(0, 10) : null;
-          this.fechaAsignacion = res.data.paquete.fechaAsignacion ?
-            new Date(res.data.paquete.fechaAsignacion).toISOString().slice(0, 10) : null;
+          this.fechaCosido = res.data.paquete.fechaCosido
+            ? new Date(res.data.paquete.fechaCosido).toISOString().slice(0, 10)
+            : null;
+          this.fechaPreparacion = res.data.paquete.fechaPreparacion
+            ? new Date(res.data.paquete.fechaPreparacion)
+                .toISOString()
+                .slice(0, 10)
+            : new Date().toISOString().slice(0, 10);
           this.validador = res.data.paquete.validador;
           this.preparador = res.data.paquete.preparador;
           this.verificador = res.data.paquete.verificador;
@@ -389,7 +387,7 @@ export default {
           this.spinner = false;
         })
         .catch((error) => {
-          let cad = this.bis == 'true' ? 'BIS' : '';
+          let cad = this.bis == "true" ? "BIS" : "";
 
           if (error) {
             Swal.fire(
@@ -403,12 +401,7 @@ export default {
         });
     },
     save() {
-      if (
-        !this.noPaquete ||
-        !this.preparador ||
-        !this.noFojas ||
-        !this.estado
-      )
+      if (!this.noPaquete || !this.preparador || !this.noFojas || !this.estado)
         return Swal.fire("Complete los campos.", "", "info");
       Swal.fire({
         title: `¿Desea guardar los cambios?`,
@@ -423,7 +416,7 @@ export default {
             noPaquete: this.noPaquete,
             noFojas: this.noFojas,
             bis: this.bis || false,
-            fechaAsignacion: this.fechaAsignacion,
+            fechaPreparacion: this.fechaPreparacion,
             fechaCosido: this.fechaCosido,
             cosedor: this.cosedor,
             estado: this.estado,

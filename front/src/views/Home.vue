@@ -5,17 +5,18 @@
         ><b-alert show variant="warning" class="">Incidencias:</b-alert></b-col
       >
       <div class="w-100"></div>
-        <b-row>
-          <b-col>
-        <b-list-group
-          class=""
-          horizontal
-          v-for="faltante of faltantes" :key="faltante"
-        >
-          <b-list-group-item class="p-1">{{ faltante }}</b-list-group-item>
-        </b-list-group>
-          </b-col>
-        </b-row>
+      <b-row>
+        <b-col>
+          <b-list-group
+            class=""
+            horizontal
+            v-for="faltante of faltantes"
+            :key="faltante"
+          >
+            <b-list-group-item class="p-1">{{ faltante }}</b-list-group-item>
+          </b-list-group>
+        </b-col>
+      </b-row>
     </b-row>
     <b-row class="justify-content-center" v-show="incidencia == 'true'">
     </b-row>
@@ -186,11 +187,22 @@
     <div class="row">
       <div class="col-3"></div>
       <div class="col-6 p-0 d-flex">
-        <b-input-group prepend="Fecha de preparación" class="">
+        <b-input-group prepend="Fecha de asignación" class="">
           <b-form-input
             type="date"
             v-model="fechaAsignacion"
-            v-on:keyup.enter="save()"
+            disabled
+          ></b-form-input>
+        </b-input-group>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-3"></div>
+      <div class="col-6 p-0 d-flex">
+        <b-input-group prepend="Fecha de preparación" class="">
+          <b-form-input
+            type="date"
+            v-model="fechaPreparacion"
             disabled
           ></b-form-input>
         </b-input-group>
@@ -301,6 +313,7 @@ export default {
       cosedor: null,
       fechaCosido: null,
       fechaAsignacion: null,
+      fechaPreparacion: null,
       noFojas: null,
       numeral: null,
       fechaAlta: null,
@@ -355,7 +368,7 @@ export default {
         // folioInicio: localStorage.folioInicio,
         // folioFin: localStorage.folioFin,
         noPaquete: this.noPaquete,
-        bis: this.bis
+        bis: this.bis,
       };
       axios
         .get(`${config.api}/folios`, {
@@ -363,15 +376,12 @@ export default {
         })
         .then((res) => {
           let folios = res.data.folios;
-          console.log(folios);
           folios.forEach((el) => {
             if (el.estado == "Faltante") {
               this.faltantes.push(el.folio);
             }
           });
-          if(this.faltantes.length > 0)
-            this.incidencia = true;
-          console.log(this.faltantes);
+          if (this.faltantes.length > 0) this.incidencia = true;
         })
         .catch((error) => {
           if (error) console.log(error);
@@ -381,23 +391,23 @@ export default {
       this.noPaquete = this.noPaquete.slice(0, 5);
       if (!this.noPaquete)
         return Swal.fire("Ingresa un número de paquete", "", "info");
-        let params;
-      if(this.identificador)
+      let params;
+      if (this.identificador)
         params = {
           noPaquete: this.noPaquete,
           bis: this.bis,
-        }
+        };
       else
         params = {
           noPaquete: this.noPaquete,
-          bis: this.bis
-        }
+          bis: this.bis,
+        };
       axios
         .get(`${config.api}/paquete`, {
-          params
+          params,
         })
         .then((res) => {
-          if (!res.data.paquete){
+          if (!res.data.paquete) {
             this.noPaquete = null;
             return Swal.fire(
               `No se encontró el paquete ${this.noPaquete}.`,
@@ -420,6 +430,11 @@ export default {
           this.observaciones = res.data.paquete.observaciones;
           this.preparador = res.data.paquete.preparador;
           this.digitalizador = res.data.paquete.digitalizador;
+          this.fechaPreparacion = res.data.paquete.fechaPreparacion
+            ? new Date(res.data.paquete.fechaPreparacion)
+                .toISOString()
+                .slice(0, 10)
+            : null;
           this.fechaExpediente = res.data.paquete.fechaExpediente
             ? new Date(res.data.paquete.fechaExpediente)
                 .toISOString()
@@ -433,9 +448,9 @@ export default {
           this.fechaAlta = new Date(res.data.paquete.fechaAlta)
             .toISOString()
             .slice(0, 10);
-          this.fechaCosido = res.data.paquete.fechaCosido ? new Date(res.data.paquete.fechaCosido)
-            .toISOString()
-            .slice(0, 10) : null;
+          this.fechaCosido = res.data.paquete.fechaCosido
+            ? new Date(res.data.paquete.fechaCosido).toISOString().slice(0, 10)
+            : null;
           this.getFolios();
         })
         .catch((error) => {

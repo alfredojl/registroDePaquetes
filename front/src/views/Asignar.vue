@@ -129,19 +129,6 @@
     <div class="row">
       <div class="col-3"></div>
       <div class="col-6 p-0 d-flex">
-        <b-input-group prepend="Digitalizador" class="">
-          <b-form-select
-            v-model="digitalizador"
-            :options="digitalizadores"
-            value-field="name"
-            text-field="id"
-          ></b-form-select>
-        </b-input-group>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-3"></div>
-      <div class="col-6 p-0 d-flex">
         <b-input-group prepend="Estado" class="">
           <b-form-select
             v-model="estado"
@@ -190,13 +177,12 @@ export default {
       estado: null,
       estados: null,
       fechaExpediente: null,
+      fechaAsignacion: null,
       turno: null,
       verificador: null,
       verificadores: null,
       preparador: null,
       preparadores: null,
-      digitalizador: null,
-      digitalizadores: null,
       turnos: ["Matutino", "Vespertino"],
     };
   },
@@ -204,10 +190,9 @@ export default {
     this.getEstados();
     this.noPaquete = localStorage.noPaquete;
     this.fechaAsignacion = new Date();
-    this.fechaAsignacion = this.fechaAsignacion.toISOString().slice(0, 10);
+    // this.fechaAsignacion = this.fechaAsignacion.toISOString().slice(0, 10);
     this.getVerificadores();
     this.getPreparadores();
-    this.getDigitalizadores();
     this.bis = localStorage.bis;
     this.search();
   },
@@ -265,12 +250,6 @@ export default {
           }
         });
     },
-    getDigitalizadores(){
-      axios.get(`${config.api}/digitalizador`)
-      .then(res => {
-        this.digitalizadores = res.data.digitalizadores;
-      })
-    },
     getEstados() {
       axios
         .get(`${config.api}/estado`)
@@ -315,7 +294,6 @@ if (!res.data.paquete)
           this.turno = res.data.paquete.turno;
           this.verificador = res.data.paquete.verificador;
           this.preparador = res.data.paquete.preparador;
-          this.digitalizador = res.data.paquete.digitalizador;
           this.fechaExpediente = res.data.paquete.fechaExpediente
             ? new Date(res.data.paquete.fechaExpediente)
                 .toISOString()
@@ -356,6 +334,7 @@ if (!res.data.paquete)
             verificador: this.verificador,
             preparador: this.preparador,
             bis: this.bis,
+            fechaAsignacion: this.fechaAsignacion,
             turno: this.turno,
             noPaquete: this.noPaquete
           })

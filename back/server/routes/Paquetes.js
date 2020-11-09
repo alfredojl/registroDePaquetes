@@ -131,7 +131,7 @@ app.put('/captura', (req, res) => {
     let fechaCosido = req.body.fechaCosido;
     let estado = req.body.estado;
     let cosedor = req.body.cosedor;
-    let fechaAsignacion = req.body.fechaAsignacion;
+    let fechaPreparacion = req.body.fechaPreparacion;
     let observaciones = req.body.observaciones;
     let preparador = req.body.preparador;
 
@@ -140,7 +140,7 @@ app.put('/captura', (req, res) => {
         noFojas,
         cosedor,
         estado,
-        fechaAsignacion,
+        fechaPreparacion,
         fechaCosido,
         observaciones,
         preparador

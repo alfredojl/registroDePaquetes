@@ -37,6 +37,9 @@ let paqueteSchema = new Schema({
     fechaAsignacion: {
         type: Date,
     },
+    fechaPreparacion: {
+        type: Date,
+    },
     fechaAlta: {
         type: Date
     },
