@@ -127,18 +127,6 @@
       </div>
     </div>
     <div class="row">
-        <div class="col-3"></div>
-        <div class="col-6 p-0 d-flex">
-          <b-input-group prepend="Fecha de asignación" class="">
-            <b-form-input
-              type="date"
-              v-model="fechaAsignacion"
-              v-on:keyup.enter="save()"
-            ></b-form-input>
-          </b-input-group>
-        </div>
-      </div>
-    <div class="row">
       <div class="col-3"></div>
       <div class="col-6 p-0 d-flex">
         <b-input-group prepend="Digitalizador" class="">
@@ -208,7 +196,6 @@ export default {
       preparador: null,
       preparadores: null,
       digitalizador: null,
-      fechaAsignacion: null,
       digitalizadores: null,
       turnos: ["Matutino", "Vespertino"],
     };
@@ -370,7 +357,6 @@ if (!res.data.paquete)
             preparador: this.preparador,
             bis: this.bis,
             turno: this.turno,
-            fechaAsignacion: this.fechaAsignacion,
             noPaquete: this.noPaquete
           })
           .then(res => {

@@ -149,6 +149,7 @@
               :options="preparadores"
               value-field="name"
               text-field="name"
+              @change="todayPreparador"
             >
               <template #first> </template>
             </b-form-select>
@@ -188,6 +189,7 @@
               v-model="cosedor"
               :options="preparadores"
               value-field="name"
+              @change="today()"
               text-field="name"
             >
               <template #first> </template>
@@ -215,6 +217,7 @@
               type="date"
               v-model="fechaCosido"
               v-on:keyup.enter="save()"
+              :disabled="!cosedor"
             ></b-form-input>
           </b-input-group>
         </div>
@@ -288,17 +291,27 @@ export default {
       turnos: ["Matutino", "Vespertino"],
     };
   },
+  computed: {
+  },
   created() {
     this.noPaquete = localStorage.noPaquete;
     this.bis = localStorage.bis;
-    this.fechaAsignacion = this.fechaCosido = new Date();
-    this.fechaAsignacion = this.fechaCosido = this.fechaAsignacion.toISOString().slice(0, 10);
+    this.fechaAsignacion = new Date();
+    this.fechaAsignacion = this.fechaAsignacion.toISOString().slice(0, 10);
     this.getEstados();
     this.getDigitalizadores();
     this.getPreparadores();
     this.search();
   },
   methods: {
+    today() {
+      this.fechaCosido = new Date();
+      this.fechaCosido = this.fechaCosido.toISOString().slice(0, 10);
+    },
+    todayPreparador() {
+      this.fechaAsignacion = new Date();
+      this.fechaAsignacion = this.fechaAsignacion.toISOString().slice(0, 10);
+    },
     limpiar() {
       this.noFojas = null;
       this.verificador = null;
@@ -363,6 +376,10 @@ export default {
           this.fechaAlta = new Date(res.data.paquete.fechaAlta)
             .toISOString()
             .slice(0, 10);
+          this.fechaCosido = res.data.paquete.fechaCosido ?
+            new Date(res.data.paquete.fechaCosido).toISOString().slice(0, 10) : null;
+          this.fechaAsignacion = res.data.paquete.fechaAsignacion ?
+            new Date(res.data.paquete.fechaAsignacion).toISOString().slice(0, 10) : null;
           this.validador = res.data.paquete.validador;
           this.preparador = res.data.paquete.preparador;
           this.verificador = res.data.paquete.verificador;
