@@ -19,13 +19,15 @@ const getPaquetes = () => {
         }
     );
 
-    Paquete.find({}, ["noPaquete", "fechaExpediente"], (err, paquetesDB) => {
+    Paquete.find({}, ["noPaquete", "folioInicio", "folioFin", "fechaExpediente"], (err, paquetesDB) => {
         if (err) throw new Error(err);
         // console.log(paquetesDB);
         let aux = paquetesDB.map((el) => {
             return {
                 Paquete: el.noPaquete,
-                Fecha: el.fechaExpediente ?
+                "Folio inicio": el.folioInicio,
+                "Folio fin": el.folioFin,
+                "Fecha de expediente": el.fechaExpediente ?
                     new Date(el.fechaExpediente).toISOString().slice(0, 10) : "No hay fecha"
             };
         });

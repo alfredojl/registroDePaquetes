@@ -210,8 +210,14 @@ export default {
   },
   methods: {
     goFormato(){
-      localStorage.setItem("noPaquete", this.noPaquete);
-      localStorage.setItem("bis", this.bis);
+      localStorage.setItem('paquete', JSON.stringify({
+        noPaquete: this.noPaquete,
+        bis: this.bis,
+        folioInicio: this.folioInicio,
+        folioFin: this.folioFin,
+        identificador: this.identificador,
+        cantidad: this.cantidad
+      }))
       this.$router.push('/formato');
     },
     limpiar(){
