@@ -226,8 +226,8 @@ Preparador: ${this.preparador}`
     getFolios() {
       if (!localStorage.noPaquete) this.spinner = false;
       let params = {
-        // folioInicio: localStorage.folioInicio,
-        // folioFin: localStorage.folioFin,
+        folioInicio: this.folioInicio,
+        folioFin: this.folioFin,
         noPaquete: this.noPaquete,
         bis: this.bis
       };
@@ -237,7 +237,7 @@ Preparador: ${this.preparador}`
         })
         .then((res) => {
           this.folios = res.data.folios;
-          console.log(this.folios);
+          this.qr();
           // this.folios.forEach((el, index) => {
           //   if (el.referencias) {
           //     this.referencias[index] = el.referencias;
@@ -251,13 +251,18 @@ Preparador: ${this.preparador}`
         });
     },
     search() {
-      this.noPaquete = localStorage.noPaquete;
-      this.bis = localStorage.bis;
+      let aux = JSON.parse(localStorage.getItem('paquete'));
+      // console.log(aux);
+      this.noPaquete = aux.noPaquete;
+      this.bis = aux.bis;
+      this.folioInicio = aux.folioInicio;
+      this.folioFin = aux.folioFin;
       axios
-        .get(`${config.api}/paquete`, {
+        .get(`${config.api}/paqueteFormato`, {
           params: {
             noPaquete: this.noPaquete,
-            bis: this.bis
+            bis: this.bis,
+            folioInicio: this.folioInicio
           },
         })
         .then((res) => {
@@ -267,27 +272,24 @@ Preparador: ${this.preparador}`
               "",
               "error"
             );
-          this.folioInicio = res.data.paquete.folioInicio;
-          this.folioFin = res.data.paquete.folioFin;
-          this.verificador = res.data.paquete.verificador;
-          this.preparador = res.data.paquete.preparador;
-          this.cantidad = res.data.paquete.cantidad;
-          this.bis = res.data.paquete.bis;
-          this.identificador = res.data.paquete.identificador;
-          this.turno = res.data.paquete.turno;
-          //   this.fechaExpediente = res.data.paquete.fechaExpediente
-          //     ? new Date(res.data.paquete.fechaExpediente)
+          this.verificador = res.data.paquete[0].verificador;
+          this.preparador = res.data.paquete[0].preparador;
+          this.cantidad = res.data.paquete[0].cantidad;
+          this.bis = res.data.paquete[0].bis;
+          this.identificador = res.data.paquete[0].identificador;
+          this.turno = res.data.paquete[0].turno;
+          //   this.fechaExpediente = res.data.paquete[0].fechaExpediente
+          //     ? new Date(res.data.paquete[0].fechaExpediente)
           //         .toISOString()
           //         .slice(0, 10)
           //     : null;
-          // this.fechaExpediente = new Date(res.data.paquete.fechaExpediente);
-          let dia = res.data.paquete.fechaExpediente.slice(8,10);
-          let mes = res.data.paquete.fechaExpediente.slice(5,7);
-          this.fechaExpediente = dia + '/' + mes + '/' + res.data.paquete.fechaExpediente.slice(0, 4)
+          // this.fechaExpediente = new Date(res.data.paquete[0].fechaExpediente);
+          let dia = res.data.paquete[0].fechaExpediente.slice(8,10);
+          let mes = res.data.paquete[0].fechaExpediente.slice(5,7);
+          this.fechaExpediente = dia + '/' + mes + '/' + res.data.paquete[0].fechaExpediente.slice(0, 4)
           // this.fechaExpediente =
           //   dia + "/" + mes + "/" + this.fechaExpediente.getFullYear();
           this.getFolios();
-          this.qr();
         })
         .catch((error) => {
           if (error) {

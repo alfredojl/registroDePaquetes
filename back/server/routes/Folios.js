@@ -10,7 +10,6 @@ app.get('/folios', async(req, res) => {
     let folioInicio = req.query.folioInicio;
     let folioFin = req.query.folioFin;
 
-    console.log(folioInicio, folioFin);
     // Folio.find({ noPaquete, bis }, {}, { sort: { folio: 1 } }, (err, folios) => {
     //     if (err)
     //         return res.status(500).json({

@@ -4,9 +4,29 @@ const app = express();
 const Paquete = require('../models/Paquetes');
 const Folio = require('../models/Folios');
 
+app.get('/paqueteFormato', (req, res) => {
+    let noPaquete = req.query.noPaquete;
+    let bis = req.query.bis || false;
+    let folioInicio = req.query.folioInicio;
+
+    Paquete.find({ noPaquete, bis, folioInicio }, (err, paqueteDB) => {
+        if (err) {
+            return res.status(500).json({
+                ok: false,
+                err
+            })
+        }
+        return res.json({
+            ok: true,
+            paquete: paqueteDB
+        })
+    })
+});
+
 app.get('/paquete', (req, res) => {
     let noPaquete = req.query.noPaquete;
     let bis = req.query.bis || false;
+    let folioInicio = req.query.folioInicio;
 
     Paquete.find({ noPaquete, bis }, (err, paqueteDB) => {
         if (err) {
@@ -112,7 +132,7 @@ app.put('/paquete', async(req, res) => {
     let noFojas = req.body.noFojas;
     let registrado = req.body.registrado;
 
-    await Paquete.updateOne({ noPaquete, bis }, {
+    await Paquete.updateOne({ noPaquete, bis, folioInicio }, {
         noPaquete,
         verificador,
         fechaAsignacion,
@@ -137,6 +157,7 @@ app.put('/captura', (req, res) => {
     let noPaquete = req.body.noPaquete;
     let bis = req.body.bis;
     let digitalizador = req.body.digitalizador;
+    let folioInicio = req.query.folioInicio;
     let noFojas = req.body.noFojas;
     let fechaCosido = req.body.fechaCosido;
     let estado = req.body.estado;
@@ -145,7 +166,8 @@ app.put('/captura', (req, res) => {
     let observaciones = req.body.observaciones;
     let preparador = req.body.preparador;
 
-    Paquete.updateOne({ noPaquete, bis }, {
+
+    Paquete.updateOne({ noPaquete, bis, folioInicio }, {
         digitalizador,
         noFojas,
         cosedor,
@@ -161,6 +183,8 @@ app.put('/captura', (req, res) => {
                 err
             })
         }
+
+        console.log(paqueteDB);
 
         res.json({
             ok: true,

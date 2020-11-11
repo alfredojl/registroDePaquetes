@@ -97,11 +97,6 @@
       <div class="col-3"></div>
       <div class="col-6 p-0 d-flex">
         <b-input-group prepend="Paquete" class="">
-          <!-- <b-form-input
-            type="number"
-            v-model="folioInicio"
-            disabled
-          ></b-form-input> -->
           <b-form-input
             type="text"
             :value="[noPaquete, bis ? 'BIS' : null, cantidad ? identificador + '/' + cantidad : ''].join(' ')"
@@ -377,7 +372,14 @@ export default {
       this.$router.push("/editar");
     },
     goFormato() {
-      localStorage.setItem("noPaquete", this.noPaquete);
+      localStorage.setItem('paquete', JSON.stringify({
+        noPaquete: this.noPaquete,
+        bis: this.bis,
+        folioInicio: this.folioInicio,
+        folioFin: this.folioFin,
+        identificador: this.identificador,
+        cantidad: this.cantidad
+      }))
       this.$router.push("/formato");
     },
     goCapturar() {
@@ -480,8 +482,6 @@ export default {
           params,
         })
         .then((res) => {
-          let index;
-          console.log(res.data);
           if (res.data.paquete.length < 1) {
             return Swal.fire(
               `No se encontró el paquete ${this.noPaquete}.`,

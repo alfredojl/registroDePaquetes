@@ -1,5 +1,17 @@
 <template>
   <div class="container mt-2">
+    <b-modal id="packages" scrollable centered ref="" title="Paquetes encontrados">
+      <div v-for="(paquete, index) of paquetes" :key="paquete.folioInicio">
+        <b-list-group>
+          <b-list-group-item button variant="light" @click="fill(paquetes[index])"
+            >Paquete: {{ paquete.noPaquete }}<br />Folio inicio:
+            {{ paquete.folioInicio }}<br />Folio fin: {{ paquete.folioFin
+            }}<br />Fecha expediente:
+            {{ paquete.fechaExpediente ? paquete.fechaExpediente.slice(0, 10) : null }}</b-list-group-item
+          >
+        </b-list-group>
+      </div>
+    </b-modal>
     <div class="row">
       <div class="col-3"></div>
       <div class="col-6 p-0 d-flex">
@@ -32,7 +44,7 @@
       ></b-spinner>
     </div>
     <div v-else>
-      <div v-if="showBis == true">
+      <!-- <div v-if="showBis == true">
         <b-row class="">
           <div class="col-3"></div>
           <b-col lg="2" class="p-0">
@@ -66,7 +78,19 @@
             </b-input-group>
           </div>
         </div>
+      </div> -->
+      <div class="row mkeyt-5">
+      <div class="col-3"></div>
+      <div class="col-6 p-0 d-flex">
+        <b-input-group prepend="Paquete" class="">
+          <b-form-input
+            type="text"
+            :value="[noPaquete, showBis ? 'BIS' : null, cantidad ? identificador + '/' + cantidad : ''].join(' ')"
+            disabled
+          ></b-form-input>
+        </b-input-group>
       </div>
+    </div>
       <div class="row">
         <div class="col-3"></div>
         <div class="col-6 p-0 d-flex">
@@ -272,6 +296,7 @@ export default {
       fechaExpediente: null,
       fechaPreparacion: null,
       digitalizador: null,
+      digitalizadores: null,
       fechaCosido: null,
       cosedor: null,
       identificador: null,
@@ -287,6 +312,7 @@ export default {
       turno: null,
       observaciones: null,
       turnos: ["Matutino", "Vespertino"],
+      paquetes: null
     };
   },
   computed: {},
@@ -352,38 +378,50 @@ export default {
           },
         })
         .then((res) => {
-          this.folioInicio = res.data.paquete.folioInicio;
-          this.folioFin = res.data.paquete.folioFin;
-          this.noFojas = res.data.paquete.noFojas;
-          this.fechaAlta = res.data.paquete.fechaAlta;
-          this.estado = res.data.paquete.estado;
-          this.turno = res.data.paquete.turno;
-          this.cosedor = res.data.paquete.cosedor;
-          this.identificador = res.data.paquete.identificador;
-          this.cantidad = res.data.paquete.cantidad;
-          this.showBis = res.data.paquete.bis;
-          this.fechaExpediente = res.data.paquete.fechaExpediente
-            ? new Date(res.data.paquete.fechaExpediente)
+          if (res.data.paquete.length < 1) {
+            return Swal.fire(
+              `No se encontró el paquete ${this.noPaquete}.`,
+              "",
+              "error"
+            );
+          }
+          if (res.data.paquete.length > 1) {
+            this.paquetes = res.data.paquete;
+            this.$bvModal.show("packages");
+          }
+          this.folioInicio = res.data.paquete[0].folioInicio;
+          this.folioFin = res.data.paquete[0].folioFin;
+          this.noFojas = res.data.paquete[0].noFojas;
+          this.fechaAlta = res.data.paquete[0].fechaAlta;
+          this.estado = res.data.paquete[0].estado;
+          this.turno = res.data.paquete[0].turno;
+          this.cosedor = res.data.paquete[0].cosedor;
+          this.identificador = res.data.paquete[0].identificador;
+          this.cantidad = res.data.paquete[0].cantidad;
+          this.showBis = res.data.paquete[0].bis;
+          this.fechaExpediente = res.data.paquete[0].fechaExpediente
+            ? new Date(res.data.paquete[0].fechaExpediente)
                 .toISOString()
                 .slice(0, 10)
             : null;
-          this.fechaAlta = new Date(res.data.paquete.fechaAlta)
+          this.fechaAlta = new Date(res.data.paquete[0].fechaAlta)
             .toISOString()
             .slice(0, 10);
-          this.fechaCosido = res.data.paquete.fechaCosido
-            ? new Date(res.data.paquete.fechaCosido).toISOString().slice(0, 10)
+          this.fechaCosido = res.data.paquete[0].fechaCosido
+            ? new Date(res.data.paquete[0].fechaCosido).toISOString().slice(0, 10)
             : null;
-          this.fechaPreparacion = res.data.paquete.fechaPreparacion
-            ? new Date(res.data.paquete.fechaPreparacion)
+          this.fechaPreparacion = res.data.paquete[0].fechaPreparacion
+            ? new Date(res.data.paquete[0].fechaPreparacion)
                 .toISOString()
                 .slice(0, 10)
             : new Date().toISOString().slice(0, 10);
-          this.validador = res.data.paquete.validador;
-          this.preparador = res.data.paquete.preparador;
-          this.verificador = res.data.paquete.verificador;
-          this.noFojas = res.data.paquete.noFojas;
-          this.observaciones = res.data.paquete.observaciones;
+          this.validador = res.data.paquete[0].validador;
+          this.preparador = res.data.paquete[0].preparador;
+          this.verificador = res.data.paquete[0].verificador;
+          this.noFojas = res.data.paquete[0].noFojas;
+          this.observaciones = res.data.paquete[0].observaciones;
           this.getPreparadores();
+
           this.spinner = false;
         })
         .catch((error) => {
@@ -400,6 +438,40 @@ export default {
           }
         });
     },
+    fill(paquete) {
+      this.folioInicio = paquete.folioInicio;
+          this.folioFin = paquete.folioFin;
+          this.noFojas = paquete.noFojas;
+          this.fechaAlta = paquete.fechaAlta;
+          this.estado = paquete.estado;
+          this.turno = paquete.turno;
+          this.cosedor = paquete.cosedor;
+          this.identificador = paquete.identificador;
+          this.cantidad = paquete.cantidad;
+          this.showBis = paquete.bis;
+          this.fechaExpediente = paquete.fechaExpediente
+            ? new Date(paquete.fechaExpediente)
+                .toISOString()
+                .slice(0, 10)
+            : null;
+          this.fechaAlta = new Date(paquete.fechaAlta)
+            .toISOString()
+            .slice(0, 10);
+          this.fechaCosido = paquete.fechaCosido
+            ? new Date(paquete.fechaCosido).toISOString().slice(0, 10)
+            : null;
+          this.fechaPreparacion = paquete.fechaPreparacion
+            ? new Date(paquete.fechaPreparacion)
+                .toISOString()
+                .slice(0, 10)
+            : new Date().toISOString().slice(0, 10);
+          this.validador = paquete.validador;
+          this.preparador = paquete.preparador;
+          this.verificador = paquete.verificador;
+          this.noFojas = paquete.noFojas;
+          this.observaciones = paquete.observaciones;
+          this.$bvModal.hide('packages');
+    },
     save() {
       if (!this.noPaquete || !this.preparador || !this.noFojas || !this.estado)
         return Swal.fire("Complete los campos.", "", "info");
@@ -415,6 +487,7 @@ export default {
           let data = {
             noPaquete: this.noPaquete,
             noFojas: this.noFojas,
+            folioInicio: this.folioInicio,
             bis: this.bis || false,
             fechaPreparacion: this.fechaPreparacion,
             fechaCosido: this.fechaCosido,

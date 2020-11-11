@@ -1,5 +1,17 @@
 <template>
   <div class="container">
+    <b-modal id="packages" scrollable centered ref="" title="Paquetes encontrados">
+      <div v-for="(paquete, index) of paquetes" :key="paquete.folioInicio">
+        <b-list-group>
+          <b-list-group-item button variant="light" @click="fill(paquetes[index])"
+            >Paquete: {{ paquete.noPaquete }}<br />Folio inicio:
+            {{ paquete.folioInicio }}<br />Folio fin: {{ paquete.folioFin
+            }}<br />Fecha expediente:
+            {{ paquete.fechaExpediente ? paquete.fechaExpediente.slice(0, 10) : null }}</b-list-group-item
+          >
+        </b-list-group>
+      </div>
+    </b-modal>
     <div class="row mt-5">
       <div class="col-3"></div>
       <div class="col-6 p-0 d-flex">
@@ -262,6 +274,31 @@ export default {
           }
         });
     },
+    fill(paquete) {
+      this.folioInicio = paquete.folioInicio;
+      this.folioFin = paquete.folioFin;
+      this.noFojas = paquete.noFojas;
+      this.fechaAlta = paquete.fechaAlta;
+      this.estado = paquete.estado;
+      this.turno = paquete.turno;
+      this.verificador = paquete.verificador;
+      this.preparador = paquete.preparador;
+      this.fechaExpediente = paquete.fechaExpediente
+        ? new Date(paquete.fechaExpediente)
+            .toISOString()
+            .slice(0, 10)
+        : null;
+      // this.fechaAsignacion = paquete.fechaAsignacion
+      //   ? new Date(paquete.fechaAsignacion)
+      //       .toISOString()
+      //       .slice(0, 10)
+      //   : null;
+      this.fechaAlta = new Date(paquete.fechaAlta)
+        .toISOString()
+        .slice(0, 10);
+        this.spinner = false;
+      this.$bvModal.hide('packages');
+    },
     search() {
       this.spinner = true;
       if (!this.noPaquete)
@@ -274,7 +311,17 @@ export default {
           },
         })
         .then((res) => {
-
+          if (res.data.paquete.length < 1) {
+            return Swal.fire(
+              `No se encontró el paquete ${this.noPaquete}.`,
+              "",
+              "error"
+            );
+          }
+          if (res.data.paquete.length > 1) {
+            this.paquetes = res.data.paquete;
+            this.$bvModal.show("packages");
+          }
         if (!res.data.paquete)
           {
             return Swal.fire(
@@ -286,25 +333,25 @@ export default {
               this.spinner = false;
             })
           }
-          this.folioInicio = res.data.paquete.folioInicio;
-          this.folioFin = res.data.paquete.folioFin;
-          this.noFojas = res.data.paquete.noFojas;
-          this.fechaAlta = res.data.paquete.fechaAlta;
-          this.estado = res.data.paquete.estado;
-          this.turno = res.data.paquete.turno;
-          this.verificador = res.data.paquete.verificador;
-          this.preparador = res.data.paquete.preparador;
-          this.fechaExpediente = res.data.paquete.fechaExpediente
-            ? new Date(res.data.paquete.fechaExpediente)
+          this.folioInicio = res.data.paquete[0].folioInicio;
+          this.folioFin = res.data.paquete[0].folioFin;
+          this.noFojas = res.data.paquete[0].noFojas;
+          this.fechaAlta = res.data.paquete[0].fechaAlta;
+          this.estado = res.data.paquete[0].estado;
+          this.turno = res.data.paquete[0].turno;
+          this.verificador = res.data.paquete[0].verificador;
+          this.preparador = res.data.paquete[0].preparador;
+          this.fechaExpediente = res.data.paquete[0].fechaExpediente
+            ? new Date(res.data.paquete[0].fechaExpediente)
                 .toISOString()
                 .slice(0, 10)
             : null;
-          // this.fechaAsignacion = res.data.paquete.fechaAsignacion
-          //   ? new Date(res.data.paquete.fechaAsignacion)
+          // this.fechaAsignacion = res.data.paquete[0].fechaAsignacion
+          //   ? new Date(res.data.paquete[0].fechaAsignacion)
           //       .toISOString()
           //       .slice(0, 10)
           //   : null;
-          this.fechaAlta = new Date(res.data.paquete.fechaAlta)
+          this.fechaAlta = new Date(res.data.paquete[0].fechaAlta)
             .toISOString()
             .slice(0, 10);
             this.spinner = false;
@@ -336,7 +383,8 @@ export default {
             bis: this.bis,
             fechaAsignacion: this.fechaAsignacion,
             turno: this.turno,
-            noPaquete: this.noPaquete
+            noPaquete: this.noPaquete,
+            folioInicio: this.folioInicio
           })
           .then(res => {
             // Swal.fire(`Asignado.`, "", "success");
