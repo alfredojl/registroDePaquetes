@@ -183,8 +183,6 @@ app.put('/captura', (req, res) => {
             })
         }
 
-        console.log(paqueteDB);
-
         res.json({
             ok: true,
             paquete: paqueteDB
