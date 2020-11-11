@@ -1,5 +1,30 @@
 <template>
   <div class="container">
+    <b-modal
+      id="packages"
+      scrollable
+      centered
+      ref=""
+      title="Paquetes encontrados"
+    >
+      <div v-for="(paquete, index) of paquetes" :key="paquete.folioInicio">
+        <b-list-group>
+          <b-list-group-item
+            button
+            variant="light"
+            @click="getFoliosVarios(paquetes[index], index)"
+            >Paquete: {{ paquete.noPaquete }}<br />Folio inicio:
+            {{ paquete.folioInicio }}<br />Folio fin: {{ paquete.folioFin
+            }}<br />Fecha expediente:
+            {{
+              paquete.fechaExpediente
+                ? paquete.fechaExpediente.slice(0, 10)
+                : null
+            }}</b-list-group-item
+          >
+        </b-list-group>
+      </div>
+    </b-modal>
     <div class="row mt-5">
       <div class="col-3"></div>
       <div class="col-6 p-0 d-flex">
@@ -7,14 +32,15 @@
           <b-form-input
             type="number"
             autofocus
+            lazy
             v-model="noPaquete"
             v-on:keyup.enter="search()"
           ></b-form-input>
           <b-form-checkbox
-          class="m-1"
-          v-model="bis"
-          value="true"
-          unchecked-value="false"
+            class="m-1"
+            v-model="bis"
+            value="true"
+            unchecked-value="false"
           >
             BIS
           </b-form-checkbox>
@@ -24,11 +50,29 @@
         </b-input-group>
       </div>
     </div>
-      <b-row>
+    <div class="row mkeyt-5">
       <div class="col-3"></div>
-        <b-badge v-if="bis == 'true'" variant="success" class="p-2" style="width: 10rem">BIS</b-badge>
-      </b-row>
-
+      <div class="col-6 p-0 d-flex">
+        <b-input-group prepend="Paquete" class="mt-2">
+          <!-- <b-form-input
+            type="number"
+            v-model="folioInicio"
+            disabled
+          ></b-form-input> -->
+          <b-form-input
+            type="text"
+            :value="
+              [
+                noPaquete,
+                showBis ? 'BIS' : null,
+                cantidad ? identificador + '/' + cantidad : '',
+              ].join(' ')
+            "
+            disabled
+          ></b-form-input>
+        </b-input-group>
+      </div>
+    </div>
     <div>
       <div class="row" v-if="spinner">
         <b-spinner
@@ -96,6 +140,10 @@ export default {
       folioInicio: null,
       folioFin: null,
       bis: false,
+      identificador: null,
+      cantidad: null,
+      paquetes: [],
+      showBis: null,
       folios: [],
       tomos: [],
       referencias: [],
@@ -118,79 +166,223 @@ export default {
       this.$router.push("/asignar");
     },
     search() {
-      this.spinner = true;
-      localStorage.noPaquete = this.noPaquete;
       if (!this.noPaquete)
         return Swal.fire("Ingresa un número de paquete", "", "info");
-      axios
-        .get(`${config.api}/folios`, {
-          params: {
-            noPaquete: this.noPaquete,
-            bis: this.bis
-          },
+      let params = {
+        noPaquete: this.noPaquete,
+        bis: this.bis,
+      };
+      return axios
+        .get(`${config.api}/paquete`, {
+          params,
         })
         .then((res) => {
-          if (res.data.folios.length == 0) {
-            this.spinner = false;
+          this.cantidad = res.data.paquete[0].cantidad;
+          this.identificador = res.data.paquete[0].identificador;
+          if (res.data.paquete.length === 0) {
             return Swal.fire(
-              `No se pudo encontrar el paquete ${this.noPaquete}.`,
+              `No se encontró el paquete ${this.noPaquete}.`,
               "",
               "error"
             );
-          }
-          this.folios = res.data.folios;
-          this.folios.forEach((el, index) => {
-            if (el.referencias) {
-              this.referencias[index] = el.referencias;
-              this.selected[index] = "Oficio";
-            } else this.selected[index] = "Completo";
+          } else if (res.data.paquete.length > 1) {
+            this.paquetes = res.data.paquete;
+            return this.$bvModal.show("packages");
+          } else {
+            this.spinner = true;
+            localStorage.noPaquete = this.noPaquete;
+            axios
+              .get(`${config.api}/folios`, {
+                params: {
+                  noPaquete: this.noPaquete,
+                  bis: this.bis,
+                  folioInicio: res.data.paquete[0].folioInicio,
+                  folioFin: res.data.paquete[0].folioFin,
+                },
+              })
+              .then((res) => {
+                if (res.data.folios.length == 0) {
+                  this.spinner = false;
+                  return Swal.fire(
+                    `No se pudo encontrar el paquete ${this.noPaquete}.`,
+                    "",
+                    "error"
+                  );
+                }
+                this.folios = res.data.folios;
+                this.folios.forEach((el, index) => {
+                  if (el.referencias) {
+                    this.referencias[index] = el.referencias;
+                    this.selected[index] = "Oficio";
+                  } else this.selected[index] = "Completo";
+                  this.spinner = false;
+                });
+              })
+              .catch((error) => {
+                if (error) console.log(error.response);
+              });
             this.spinner = false;
-          });
+          }
         })
-        .catch((error) => {
-          if (error) console.log(error.response);
-          this.spinner = false;
+        .catch((err) => {
+          console.log(err);
+          Swal.fire(
+            "¡Error!",
+            "Ocurrió un error al intentar realizar la transacción.",
+            "error"
+          );
         });
     },
-    getFolios() {
-      if (!localStorage.noPaquete) this.spinner = false;
+    getFoliosVarios(paquete, index) {
+      // if (!localStorage.noPaquete) this.spinner = false;
       let params = {
-        noPaquete: this.noPaquete,
-        bis: this.bis
+        noPaquete: paquete.noPaquete,
+        bis: paquete.bis,
+        folioInicio: paquete.folioInicio,
+        folioFin: paquete.folioFin,
       };
+      console.log(paquete);
       axios
         .get(`${config.api}/folios`, {
-          params
+          params,
         })
         .then((res) => {
+          console.log(res.data, index);
           this.folios = res.data.folios;
           this.folios.forEach((el, index) => {
             if (el.referencias) {
               this.referencias[index] = el.referencias;
               this.selected[index] = "Oficio";
             } else this.selected[index] = "Completo";
-            this.spinner = false;
           });
+          this.spinner = false;
+          this.$bvModal.hide('packages');
+
         })
         .catch((error) => {
           if (error) console.log(error);
         });
     },
+    getFolios() {
+      let params = {
+        noPaquete: this.noPaquete,
+        bis: this.bis,
+      };
+      axios
+        .get(`${config.api}/paquete`, {
+          params,
+        })
+        .then((res) => {
+          this.cantidad = res.data.paquete[0].cantidad;
+          this.identificador = res.data.paquete[0].identificador;
+          if (res.data.paquete.length === 0) {
+            return Swal.fire(
+              `No se encontró el paquete ${this.noPaquete}.`,
+              "",
+              "error"
+            );
+          } else if (res.data.paquete.length > 1) {
+            this.paquetes = res.data.paquete;
+            return this.$bvModal.show("packages");
+          } else {
+            this.spinner = true;
+            localStorage.noPaquete = this.noPaquete;
+            axios
+              .get(`${config.api}/folios`, {
+                params: {
+                  noPaquete: this.noPaquete,
+                  bis: this.bis,
+                  folioInicio: res.data.paquete[0].folioInicio,
+                  folioFin: res.data.paquete[0].folioFin,
+                },
+              })
+              .then((res) => {
+                console.log(res.data);
+                this.cantidad = res.data.paquete.cantidad;
+                this.identificador = res.data.paquete.identificador;
+                this.showBis = res.data.paquete.bis;
+                if (res.data.folios.length == 0) {
+                  this.spinner = false;
+                  return Swal.fire(
+                    `No se pudo encontrar el paquete ${this.noPaquete}.`,
+                    "",
+                    "error"
+                  );
+                }
+                this.folios = res.data.folios;
+                this.folios.forEach((el, index) => {
+                  if (el.referencias) {
+                    this.referencias[index] = el.referencias;
+                    this.selected[index] = "Oficio";
+                  } else this.selected[index] = "Completo";
+                  this.spinner = false;
+                });
+              })
+              .catch((error) => {
+                if (error) console.log(error.response);
+              });
+            this.spinner = false;
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          Swal.fire(
+            "¡Error!",
+            "Ocurrió un error al intentar realizar la transacción.",
+            "error"
+          );
+        });
+      // if (!localStorage.noPaquete) this.spinner = false;
+      // let params, aux;
+      // aux = JSON.parse(localStorage.getItem("paquete"));
+      // this.showBis = aux.bis;
+      // params = {
+      //   noPaquete: aux.noPaquete,
+      //   bis: aux.bis,
+      //   folioInicio: aux.folioInicio,
+      //   folioFin: aux.folioFin,
+      // };
+      // axios
+      //   .get(`${config.api}/folios`, {
+      //     params,
+      //   })
+      //   .then((res) => {
+      //     this.folios = res.data.folios;
+      //     this.folios.forEach((el, index) => {
+      //       if (el.referencias) {
+      //         this.referencias[index] = el.referencias;
+      //         this.selected[index] = "Oficio";
+      //       } else this.selected[index] = "Completo";
+      //     });
+      //     this.spinner = false;
+      //   })
+      //   .catch((error) => {
+      //     if (error) console.log(error);
+      //   });
+    },
     save() {
       localStorage.noPaquete = this.noPaquete;
-      
+
       for (let i = 0; i < this.folios.length; i++)
         this.folios[i]["validado"] = localStorage.loggedIn;
       let data = {
         folios: this.folios,
         validado: localStorage.loggedIn,
         noPaquete: this.noPaquete || localStorage.noPaquete,
-        bis: this.bis
+        bis: this.bis,
       };
       axios
         .put(`${config.api}/folios`, { data })
         .then((res) => {
-          Swal.fire(`¡Hecho!`, `Folios actualizados correctamente.`, "success");
+          // Swal.fire(`¡Hecho!`, `Folios actualizados correctamente.`, "success");
+          Swal.fire({
+              title: `¡Hecho!`,
+              position: "top-end",
+              text: `Folios actualizados correctamente.`,
+              icon: "success",
+              showConfirmButton: false,
+              timer: 1200,
+            });
         })
         .catch((err) => {
           Swal.fire(

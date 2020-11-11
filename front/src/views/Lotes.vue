@@ -293,8 +293,12 @@ export default {
           Swal.fire("¡Hecho!", "", "success");
         })
         .catch((err) => {
-          Swal.fire("¡Error!", "", "error");
-          console.log(err.response);
+          if(err.response.data.err.code == 11000);{
+            console.log(err.response);
+            let dup = err.response.data.err.writeErrors[0]['op'].noPaquete;
+            Swal.fire("¡Error!", `Paquete ${dup} ya existe en otro lote.`, "error");
+            console.log(err.response.data.err.writeErrors);
+          }
         });
     },
     search() {

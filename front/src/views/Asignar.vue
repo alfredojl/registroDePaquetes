@@ -275,7 +275,7 @@ export default {
         })
         .then((res) => {
 
-if (!res.data.paquete)
+        if (!res.data.paquete)
           {
             return Swal.fire(
               `No se encontró el paquete ${this.noPaquete}.`,
@@ -339,7 +339,15 @@ if (!res.data.paquete)
             noPaquete: this.noPaquete
           })
           .then(res => {
-            Swal.fire(`Asignado.`, "", "success");
+            // Swal.fire(`Asignado.`, "", "success");
+            Swal.fire({
+              title: `¡Hecho!`,
+              position: "top-end",
+              text: `Paquete asignado.`,
+              icon: "success",
+              showConfirmButton: false,
+              timer: 1000,
+            });
           })
           .catch(err => {
             console.log(err);

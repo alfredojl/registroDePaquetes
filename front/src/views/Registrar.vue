@@ -129,7 +129,7 @@ export default {
       noFojas: null,
       fechaAlta: null,
       bis: false,
-      estado: null,
+      estado: null
     };
   },
   computed: {
@@ -160,9 +160,6 @@ export default {
         return Swal.fire('Asegúrese de que los datos estén correctos.', '', 'info')
       // if(!this.noPaquete || !this.folioInicio || !this.folioFin || !this.fechaExpediente)
       //   return Swal.fire(`Complete todos los campos.`, ``, "info");
-      if(this.bis){
-
-      }
       let fechaAlta = Date.now();
       let data = {
         noPaquete: this.noPaquete,
@@ -180,14 +177,14 @@ export default {
           data,
         })
         .then((res) => {
-          if (!res.data.exist)
+          if (!res.data.message != 'existente')
             return Swal.fire({
               title: `¡Hecho!`,
               position: "top-end",
               text: `Paquete ${this.noPaquete} agregado con éxito.`,
               icon: "success",
               showConfirmButton: false,
-              timer: 1500,
+              timer: 1000,
             });
           Swal.fire(
             `Paquete existente`,

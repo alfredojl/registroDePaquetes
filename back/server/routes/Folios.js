@@ -7,18 +7,37 @@ const Paquete = require('../models/Paquetes');
 app.get('/folios', async(req, res) => {
     let noPaquete = req.query.noPaquete;
     let bis = req.query.bis;
+    let folioInicio = req.query.folioInicio;
+    let folioFin = req.query.folioFin;
 
-
-    Folio.find({ noPaquete, bis }, {}, { sort: { folio: 1 } }, (err, folios) => {
+    console.log(folioInicio, folioFin);
+    // Folio.find({ noPaquete, bis }, {}, { sort: { folio: 1 } }, (err, folios) => {
+    //     if (err)
+    //         return res.status(500).json({
+    //             ok: false,
+    //             err
+    //         })
+    //     return res.json({
+    //         ok: true,
+    //         folios
+    //     });
+    // })
+    Folio.find({
+        $and: [{
+            noPaquete: { $eq: noPaquete },
+            bis: { $eq: bis },
+            folio: { $gte: folioInicio, $lte: folioFin }
+        }]
+    }, {}, { sort: { folio: 1 } }, (err, foliosDB) => {
         if (err)
             return res.status(500).json({
                 ok: false,
                 err
-            })
-        return res.json({
+            });
+        res.json({
             ok: true,
-            folios
-        });
+            folios: foliosDB
+        })
     })
 
 })

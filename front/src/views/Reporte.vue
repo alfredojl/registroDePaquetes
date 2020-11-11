@@ -179,7 +179,6 @@ export default {
       let doc, libro;
       let fecha = new Date();
       fecha = fecha.toLocaleDateString().slice(0,10);
-      console.log(fecha);
       let aux = this.reporte.map(el => {
         return { Nombre: el._id, Total: el.total };
       });

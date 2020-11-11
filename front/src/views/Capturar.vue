@@ -428,11 +428,19 @@ export default {
           axios
             .put(`${config.api}/captura`, data)
             .then((res) => {
-              Swal.fire(
-                "¡Hecho!",
-                "Datos actualizados correctamente.",
-                "success"
-              );
+              // Swal.fire(
+              //   "¡Hecho!",
+              //   "Datos actualizados correctamente.",
+              //   "success"
+              // );
+              Swal.fire({
+              title: `¡Hecho!`,
+              position: "top-end",
+              text: `Información capturada exitosamente.`,
+              icon: "success",
+              showConfirmButton: false,
+              timer: 1200,
+            });
               this.spinner = false;
             })
             .catch((err) => {

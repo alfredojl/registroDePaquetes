@@ -8,7 +8,7 @@ app.get('/paquete', (req, res) => {
     let noPaquete = req.query.noPaquete;
     let bis = req.query.bis || false;
 
-    Paquete.findOne({ noPaquete, bis }, (err, paqueteDB) => {
+    Paquete.find({ noPaquete, bis }, (err, paqueteDB) => {
         if (err) {
             return res.status(500).json({
                 ok: false,
@@ -25,9 +25,11 @@ app.get('/paquete', (req, res) => {
 app.post('/paquete', async(req, res) => {
     let body = req.body.data;
     let noPaquete = body.noPaquete;
+    let folioInicio = body.folioInicio;
+    let folioFin = body.folioFin;
     let bis = body.bis;
 
-    Paquete.find({ noPaquete, bis }, {}, (err, encontradoDB) => {
+    Paquete.find({ noPaquete, bis, folioInicio, folioFin }, {}, (err, encontradoDB) => {
         if (err)
             return res.status(500).json({
                 ok: false,
@@ -35,20 +37,27 @@ app.post('/paquete', async(req, res) => {
             });
 
         if (encontradoDB.length > 0) {
-
-            res.json({
+            return res.json({
                 ok: true,
                 message: "existente",
             })
         } else
             Paquete.create(body, async(err, paqueteDB) => {
-                if (err)
+                if (err) {
+                    console.log(err);
                     return res.status(500).json({
                         ok: false,
                         err
                     });
+                }
 
-                await Folio.deleteMany({ noPaquete, bis }, (err, fol) => {
+                await Folio.deleteMany({
+                    $and: [{
+                        noPaquete,
+                        bis,
+                        folio: { $gte: folioInicio, $lte: folioFin },
+                    }]
+                }, (err, fol) => {
                     if (err) {
                         return res.status(500).json({
                             ok: false,
@@ -57,6 +66,7 @@ app.post('/paquete', async(req, res) => {
                             }
                         })
                     }
+                    console.log(fol);
                 });
 
                 let folios = [];
@@ -161,6 +171,9 @@ app.put('/captura', (req, res) => {
 
 app.delete('/paquete', (req, res) => {
     let noPaquete = req.query.noPaquete;
+    let bis = req.query.bis;
+    let folioInicio = req.query.folioInicio;
+    let folioFin = req.query.folioFin;
 
     Paquete.findOneAndDelete({ noPaquete }, (err, paqueteDB) => {
         if (err) {
@@ -169,7 +182,7 @@ app.delete('/paquete', (req, res) => {
                 err
             });
         }
-        Folio.deleteMany({ noPaquete }, (err, folioDB) => {
+        Folio.deleteMany({ noPaquete, bis, folio: { $gte: folioInicio, $lte: folioFin } }, (err, folioDB) => {
             if (err) {
                 return res.status(500).json({
                     ok: false,
