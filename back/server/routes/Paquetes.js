@@ -157,7 +157,7 @@ app.put('/captura', (req, res) => {
     let noPaquete = req.body.noPaquete;
     let bis = req.body.bis;
     let digitalizador = req.body.digitalizador;
-    let folioInicio = req.query.folioInicio;
+    let folioInicio = req.body.folioInicio;
     let noFojas = req.body.noFojas;
     let fechaCosido = req.body.fechaCosido;
     let estado = req.body.estado;
@@ -165,7 +165,6 @@ app.put('/captura', (req, res) => {
     let fechaPreparacion = req.body.fechaPreparacion;
     let observaciones = req.body.observaciones;
     let preparador = req.body.preparador;
-
 
     Paquete.updateOne({ noPaquete, bis, folioInicio }, {
         digitalizador,
