@@ -35,7 +35,7 @@
             type="textarea"
             :state="valida"
             ref="folio"
-            @keydown.delete="agrega"
+            @keydown.delete="busca"
             size="sm"
             v-model="noPaquete"
             no-resize
@@ -97,14 +97,25 @@
           v-show="give == 'paquete' && add == 'search'"
           class=""
         >
-          <b-form-input
+          <!-- <b-form-input
             type="number"
             v-model="noPaquete"
             @keypress.enter="
               noLote = null;
               search();
             "
-          ></b-form-input>
+          ></b-form-input> -->
+          <!-- <b-input-group prepend="Paquete" class=""> -->
+          <b-form-textarea
+            type="textarea"
+            :state="valida"
+            ref="folio"
+            @keydown.delete="agrega"
+            size="sm"
+            v-model="noPaquete"
+            no-resize
+          ></b-form-textarea>
+        <!-- </b-input-group> -->
           <b-input-group-prepend>
             <b-button
               variant="secondary"
@@ -254,6 +265,9 @@ export default {
       });
       this.upDate();
     },
+    finish(){
+      
+    },
     agrega() {
       // if(!this.noPaquete){
       //   this.noPaquete = "";
@@ -261,11 +275,12 @@ export default {
       //   return
       // }
       this.noPaquete = this.noPaquete.split(/\n/g)[0];
-      let fecha = new Date();
+      // let fecha = new Date();
       let paquete = {
         noLote: this.noLote,
         noPaquete: this.noPaquete,
-        fechaEntregado: fecha.toISOString().slice(0, 10),
+        // fechaEntregado: fecha.toISOString().slice(0, 10),
+        fechaEntregado: null,
         fechaDevolucion: null,
       };
       this.paquetes.push(paquete);

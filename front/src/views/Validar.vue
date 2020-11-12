@@ -164,12 +164,12 @@ export default {
       this.$router.push("/asignar");
     },
     search() {
-      let aux = localStorage.getItem('paquete');
-      aux = JSON.parse(aux);
-      this.noPaquete = aux.noPaquete;
-      this.bis = aux.bis;
-      this.folioInicio = aux.folioInicio;
-      this.folioFin = aux.folioFin;
+      // let aux = localStorage.getItem('paquete');
+      // aux = JSON.parse(aux);
+      // this.noPaquete = aux.noPaquete;
+      // this.bis = aux.bis;
+      // this.folioInicio = aux.folioInicio;
+      // this.folioFin = aux.folioFin;
       if (!this.noPaquete)
         return Swal.fire("Ingresa un número de paquete", "", "info");
       let params = {
