@@ -470,6 +470,7 @@ export default {
             }
           });
           if (this.faltantes.length > 0) this.incidencia = true;
+          else incidencia = false;
         })
         .catch((error) => {
           if (error) console.log(error);
