@@ -18,7 +18,6 @@
         </b-col>
       </b-row>
     </b-row>
-    <pre>{{ faltantes }}</pre>
     <b-row class="justify-content-center" v-show="incidencia == 'true'">
     </b-row>
     <div class="row mt-2">

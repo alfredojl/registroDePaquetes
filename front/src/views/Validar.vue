@@ -164,6 +164,12 @@ export default {
       this.$router.push("/asignar");
     },
     search() {
+      let aux = localStorage.getItem('paquete');
+      aux = JSON.parse(aux);
+      this.noPaquete = aux.noPaquete;
+      this.bis = aux.bis;
+      this.folioInicio = aux.folioInicio;
+      this.folioFin = aux.folioFin;
       if (!this.noPaquete)
         return Swal.fire("Ingresa un número de paquete", "", "info");
       let params = {
@@ -262,6 +268,12 @@ export default {
         });
     },
     getFolios() {
+      let aux = localStorage.getItem('paquete');
+      aux = JSON.parse(aux);
+      this.noPaquete = aux.noPaquete;
+      this.bis = aux.bis;
+      this.folioInicio = aux.folioInicio;
+      this.folioFin = aux.folioFin;
       let params = {
         noPaquete: this.noPaquete,
         bis: this.bis,
@@ -295,8 +307,6 @@ export default {
                 },
               })
               .then((res) => {
-                this.cantidad = res.data.paquete.cantidad;
-                this.identificador = res.data.paquete.identificador;
                 this.showBis = res.data.paquete.bis;
                 if (res.data.folios.length == 0) {
                   this.spinner = false;
