@@ -18,6 +18,7 @@
         </b-col>
       </b-row>
     </b-row>
+    <pre>{{ faltantes }}</pre>
     <b-row class="justify-content-center" v-show="incidencia == 'true'">
     </b-row>
     <div class="row mt-2">
@@ -368,7 +369,12 @@ export default {
   },
   methods: {
     goEditar() {
-      localStorage.setItem("noPaquete", this.noPaquete);
+      localStorage.setItem('paquete', JSON.stringify({
+        noPaquete: this.noPaquete,
+        bis: this.bis,
+        folioInicio: this.folioInicio,
+        folioFin: this.folioFin,
+      }))
       this.$router.push("/editar");
     },
     goFormato() {
@@ -448,10 +454,10 @@ export default {
       this.faltantes = [];
       if (!localStorage.noPaquete) this.spinner = false;
       let params = {
-        // folioInicio: localStorage.folioInicio,
-        // folioFin: localStorage.folioFin,
         noPaquete: this.noPaquete,
         bis: this.bis,
+        folioInicio: this.folioInicio,
+        folioFin: this.folioFin
       };
       axios
         .get(`${config.api}/folios`, {

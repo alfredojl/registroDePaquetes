@@ -156,8 +156,6 @@ export default {
     };
   },
   created() {
-    this.noPaquete = localStorage.noPaquete || null;
-    this.bis = localStorage.bis;
     this.getFolios();
   },
   methods: {

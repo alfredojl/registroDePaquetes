@@ -91,12 +91,23 @@ export default {
   },
   methods: {
     search() {
-      if (!this.noPaquete)
+      let aux = JSON.parse(localStorage.getItem('paquete'));
+      console.log(JSON.parse(localStorage.getItem('paquete')));
+      console.log(localStorage.paquete);
+      this.noPaquete = aux.noPaquete;
+      this.bis = aux.bis;
+      this.folioInicio = aux.folioInicio;
+      this.folioFin = aux.folioFin;
+
+      if (!aux.noPaquete)
         return Swal.fire("Ingresa un número de paquete.", "", "info");
       axios
         .get(`${config.api}/paquete`, {
           params: {
-            noPaquete: this.noPaquete,
+            noPaquete,
+            bis,
+            folioFin,
+            folioFin
           },
         })
         .then((res) => {
@@ -146,7 +157,10 @@ export default {
         if (result.isConfirmed) {
           axios.delete(`${config.api}/paquete`, {
             params: {
-                noPaquete: this.noPaquete
+                noPaquete: this.noPaquete,
+                bis: this.bis,
+                folioInicio: this.folioInicio,
+                folioFin: this.folioInicio
               }
           })
           .then(res => {
