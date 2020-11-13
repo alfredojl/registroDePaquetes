@@ -477,6 +477,7 @@ export default {
         });
     },
     search() {
+      this.limpiar();
       if (!this.noPaquete)
         return Swal.fire("Ingresa un número de paquete", "", "info");
       let params = {
@@ -489,6 +490,7 @@ export default {
         })
         .then((res) => {
           if (res.data.paquete.length < 1) {
+
             return Swal.fire(
               `No se encontró el paquete ${this.noPaquete}.`,
               "",
@@ -545,6 +547,28 @@ export default {
           }
         });
     },
+    limpiar() {
+      this.folioInicio = null;
+      this.registrador = null;
+      this.cosedor = null;
+      this.validador = null;
+      this.folioFin = null;
+      this.noFojas = null;
+      this.fechaAlta = null;
+      this.identificador = null;
+      this.cantidad = null;
+      this.estado = null;
+      this.verificador = null;
+      this.showBis = null;
+      this.observaciones = null;
+      this.preparador = null;
+      this.digitalizador = null;
+      this.fechaPreparacion = null;
+      this.fechaExpediente = null;
+      this.fechaAsignacion = null;
+      this.fechaAlta = null;
+      this.fechaCosido = null;
+    }
   },
 };
 </script>
