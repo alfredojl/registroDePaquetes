@@ -7,7 +7,8 @@
         "test": "echo \"Error: no test specified\" && exit 1",
         "saveEmpleados": "node ./helpers/saveEmpleados.js",
         "createFirstUser": "node ./helpers/createFirstUsers",
-        "frank": "node ./helpers/frank"
+        "frank": "node ./helpers/frank",
+        "relacion": "node ./relacionSICE-MONGO"
     },
     "repository": {
         "type": "git",
@@ -27,6 +28,7 @@
         "body-parser": "^1.19.0",
         "cors": "^2.8.5",
         "express": "^4.17.1",
+        "mongodb": "^3.6.3",
         "mongoose": "^5.10.9",
         "xlsx": "^0.16.8"
     }
