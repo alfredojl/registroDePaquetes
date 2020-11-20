@@ -24,20 +24,20 @@ const install = async() => {
         console.log("BD ONLINE");
     });
     // console.log(preparadores);
-    await Preparadores.insertMany(preparadores)
-        .then(preparadoresDB => {
-            console.log("Preparadores añadidos correctamente.");
+    // await Preparadores.insertMany(preparadores)
+    //     .then(preparadoresDB => {
+    //         console.log("Preparadores añadidos correctamente.");
+    //     })
+    //     .catch(err => {
+    //         console.log(err);
+    //     })
+    await Verificador.insertMany(verificadores)
+        .then(VerificadoresDB => {
+            console.log("Verificadores añadidos correctamente.");
         })
         .catch(err => {
             console.log(err);
         })
-        // await Verificador.insertMany(verificadores)
-        //     .then(VerificadoresDB => {
-        //         console.log("Verificadores añadidos correctamente.");
-        //     })
-        //     .catch(err => {
-        //         console.log(err);
-        //     })
 
     // await Estado.insertMany(estados)
     //     .then(estadosDB => {

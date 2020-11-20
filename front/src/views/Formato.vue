@@ -13,7 +13,7 @@
     <div class="row mt-5">
       <div class="col-9">
         <h6 class="mt-3">Fecha: {{ fechaToday }}</h6>
-        <h6>Verificador: {{ verificador }}</h6>
+        <h6>Lider de equipo: {{ verificador }}</h6>
         <h6>Turno: {{ turno }}</h6>
       </div>
       <div class="col-auto">

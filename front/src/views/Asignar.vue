@@ -373,9 +373,6 @@ export default {
         !this.noPaquete
       )
         return Swal.fire("Seleccione un paquete.", "", "info");
-      else
-        if(!this.preparador)
-          return Swal.fire("Seleccione un preparador.", "", "info");
         Swal.fire({
         title: `¿Asignar a ${this.preparador}?`,
         showCancelButton: true,
