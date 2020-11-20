@@ -473,8 +473,6 @@ export default {
           this.$bvModal.hide('packages');
     },
     save() {
-      if (!this.noPaquete || !this.preparador || !this.noFojas || !this.estado)
-        return Swal.fire("Complete los campos.", "", "info");
       Swal.fire({
         title: `¿Desea guardar los cambios?`,
         showDenyButton: true,
