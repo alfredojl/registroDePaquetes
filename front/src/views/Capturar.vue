@@ -201,6 +201,7 @@
               text-field="id"
             ></b-form-select>
           </b-input-group>
+          <pre>{{ digitalizador }}</pre>
         </div>
       </div>
       <div class="row">
@@ -344,9 +345,9 @@ export default {
         let i = 1;
         aux = aux.map( el => {
           if ( i == 1 )
-            return { label: 'Matutino', id: el.id + ' ' + el.name }
+            return { label: 'Matutino', id: el.id + ' ' + el.name, name: el.name }
           else if ( i == 12 )
-            return { label: 'Vespertino', id: el.id + ' ' + el.name }
+            return { label: 'Vespertino', id: el.id + ' ' + el.name, name: el.name }
           else
             return { id: el.id + el.name}
         })
