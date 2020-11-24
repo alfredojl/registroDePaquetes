@@ -201,7 +201,6 @@
               text-field="id"
             ></b-form-select>
           </b-input-group>
-          <pre>{{ digitalizador }}</pre>
         </div>
       </div>
       <div class="row">
