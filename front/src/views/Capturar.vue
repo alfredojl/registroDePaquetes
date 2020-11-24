@@ -214,7 +214,7 @@
               @change="today()"
               text-field="name"
             >
-              <template #first> </template>
+              <!-- <template #first></template> -->
             </b-form-select>
           </b-input-group>
         </div>
@@ -340,7 +340,19 @@ export default {
     },
     getDigitalizadores() {
       axios.get(`${config.api}/digitalizador`).then((res) => {
-        this.digitalizadores = res.data.digitalizadores;
+        let aux = res.data.digitalizadores;
+        let i = 1;
+        aux = aux.map( el => {
+          if ( i == 1 )
+            return { label: 'Matutino', id: el.id + ' ' + el.name }
+          else if ( i == 12 )
+            return { label: 'Vespertino', id: el.id + ' ' + el.name }
+          else
+            return { id: el.id + el.name}
+        })
+        
+        this.digitalizadores = aux;
+
       });
     },
     getPreparadores() {
