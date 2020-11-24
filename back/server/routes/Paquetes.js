@@ -196,7 +196,7 @@ app.delete('/paquete', (req, res) => {
     let folioInicio = req.query.folioInicio;
     let folioFin = req.query.folioFin;
 
-    Paquete.findOneAndDelete({ noPaquete, bis, folioInicio, folioFin }, (err, paqueteDB) => {
+    Paquete.findOneAndDelete({ noPaquete, bis, folioInicio }, (err, paqueteDB) => {
         if (err) {
             return res.status(500).json({
                 ok: false,
