@@ -64,7 +64,6 @@ app.post('/paquete', async(req, res) => {
         } else
             Paquete.create(body, async(err, paqueteDB) => {
                 if (err) {
-                    console.log(err);
                     return res.status(500).json({
                         ok: false,
                         err
@@ -86,7 +85,6 @@ app.post('/paquete', async(req, res) => {
                             }
                         })
                     }
-                    console.log(fol);
                 });
 
                 let folios = [];
