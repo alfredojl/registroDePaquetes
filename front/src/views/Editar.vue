@@ -93,44 +93,45 @@ export default {
     search() {
       let aux = JSON.parse(localStorage.getItem('paquete'));
       console.log(JSON.parse(localStorage.getItem('paquete')));
-      console.log(localStorage.paquete);
+      console.log(aux);
       this.noPaquete = aux.noPaquete;
       this.bis = aux.bis;
       this.folioInicio = aux.folioInicio;
       this.folioFin = aux.folioFin;
+      console.log(this.noPaquete);
 
-      if (!aux.noPaquete)
-        return Swal.fire("Ingresa un número de paquete.", "", "info");
-      axios
-        .get(`${config.api}/paquete`, {
-          params: {
-            noPaquete,
-            bis,
-            folioFin,
-            folioFin
-          },
-        })
-        .then((res) => {
-          if (!res.data.paquete)
-            return Swal.fire(
-              `No se encontró el paquete ${this.noPaquete}.`,
-              "",
-              "error"
-            );
-          this.folioInicio = res.data.paquete.folioInicio;
-          this.folioFin = res.data.paquete.folioFin;
-          this.fechaAlta = res.data.paquete.fechaAlta;
-          this.fechaExpediente = res.data.paquete.fechaExpediente
-            ? new Date(res.data.paquete.fechaExpediente)
-                .toISOString()
-                .slice(0, 10)
-            : null;
-        })
-        .catch((error) => {
-          if (error) {
-            console.log(error);
-          }
-        });
+      // if (!aux.noPaquete)
+      //   return Swal.fire("Ingresa un número de paquete.", "", "info");
+      // axios
+      //   .get(`${config.api}/paquete`, {
+      //     params: {
+      //       noPaquete,
+      //       bis,
+      //       folioFin,
+      //       folioFin
+      //     },
+      //   })
+      //   .then((res) => {
+      //     if (!res.data.paquete)
+      //       return Swal.fire(
+      //         `No se encontró el paquete ${this.noPaquete}.`,
+      //         "",
+      //         "error"
+      //       );
+      //     this.folioInicio = res.data.paquete.folioInicio;
+      //     this.folioFin = res.data.paquete.folioFin;
+      //     this.fechaAlta = res.data.paquete.fechaAlta;
+      //     this.fechaExpediente = res.data.paquete.fechaExpediente
+      //       ? new Date(res.data.paquete.fechaExpediente)
+      //           .toISOString()
+      //           .slice(0, 10)
+      //       : null;
+      //   })
+      //   .catch((error) => {
+      //     if (error) {
+      //       console.log(error);
+      //     }
+      //   });
     },
     goValidar() {
       localStorage.setItem("noPaquete", this.noPaquete);
@@ -155,6 +156,10 @@ export default {
         icon: "warning"
       }).then((result) => {
         if (result.isConfirmed) {
+          console.log(this.noPaquete);
+          console.log(this.bis);
+          console.log(this.folioInicio);
+          console.log(this.folioFin);
           axios.delete(`${config.api}/paquete`, {
             params: {
                 noPaquete: this.noPaquete,
