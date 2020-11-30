@@ -21,17 +21,17 @@ const crearUsuario = async() => {
     // const passwdprov = "admin";
 
     const usuarios = [{
-            name: "Digitalizacion",
-            passwd: bcrypt.hashSync('digi_', 10),
+            name: "Gibran",
+            passwd: bcrypt.hashSync('gibran_', 10),
         },
-        // {
-        //     name: "Francisco",
-        //     passwd: bcrypt.hashSync('Francisco.', 10)
-        // },
-        // {
-        //     name: "robert06",
-        //     passwd: bcrypt.hashSync('cheche', 10)
-        // }
+        {
+            name: "Alan",
+            passwd: bcrypt.hashSync('alan_', 10)
+        },
+        {
+            name: "Ricardo",
+            passwd: bcrypt.hashSync('ricardo_', 10)
+        }
     ]
 
     await Usuario.insertMany(usuarios)
