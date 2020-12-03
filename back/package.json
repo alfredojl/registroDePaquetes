@@ -8,7 +8,9 @@
         "saveEmpleados": "node ./helpers/saveEmpleados.js",
         "createFirstUser": "node ./helpers/createFirstUsers",
         "frank": "node ./helpers/frank",
-        "relacion": "node ./relacionSICE-MONGO"
+        "relacion": "node ./relacionSICE-MONGO",
+        "saveMaterias": "node ./helpers/saveMaterias",
+        "sendEmail": "node ./helpers/sendEmail"
     },
     "repository": {
         "type": "git",
@@ -28,6 +30,8 @@
         "body-parser": "^1.19.0",
         "cors": "^2.8.5",
         "express": "^4.17.1",
+        "gmail-send": "^1.8.10",
+        "moment": "^2.29.1",
         "mongodb": "^3.6.3",
         "mongoose": "^5.10.9",
         "xlsx": "^0.16.8"
