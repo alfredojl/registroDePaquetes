@@ -155,9 +155,9 @@ const isAuthenticated = () => {
 const isReporter = () => {
     return localStorage.role == "reporter" || localStorage.role == "admin" ? true : false;
 };
-const isValidador = () => {
-    return localStorage.role == "validador" || localStorage.role == "admin" ? true : false;
-};
+// const isValidador = () => {
+//     return localStorage.role == "validador" || localStorage.role == "admin" ? true : false;
+// };
 
 const router = new VueRouter({
     // mode: 'history',
