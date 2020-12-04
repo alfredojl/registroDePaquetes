@@ -362,6 +362,7 @@ export default {
     },
     async getInformacionFolio() {
       this.over = true;
+      let errors = [];
       // this.infoPaquete.folios[index]["spinner"] = true;
       // var newval = this.infoPaquete.folios[index];
       // this.infoPaquete.folios[index] = newval;
@@ -388,9 +389,21 @@ export default {
           this.infoPaquete.folios[j]["spinner"] = false;
         }).catch((error) => {
           if (error) {
-            console.log(error);
+            errors.push(i);
           }
         });
+      }
+      if(errors.length > 0){
+        this.spinner = false;
+        return Swal.fire({
+              title: ``,
+              position: "top-end",
+              text: `No se obtuvieron los datos:
+              ${errors.join(', ')}`,
+              icon: "error",
+              showConfirmButton: true,
+            })
+            .then(res => this.spinner = false);
       }
       Swal.fire({
               title: ``,
@@ -401,7 +414,6 @@ export default {
               timer: 1000,
             });
           this.over = false;
-          this.spinner = false;
       // axios
       //   .get(`http://digitalizacion.pjcdmx.gob.mx/consulta_folio.php`, {
       //     params: { f: folio },
@@ -436,6 +448,15 @@ export default {
       //   });
     },
     async search() {
+      if(!this.noPaquete)
+        return Swal.fire({
+              title: ``,
+              position: "top-end",
+              text: `Ingrese un paquete`,
+              icon: "info",
+              showConfirmButton: false,
+              timer: 1000,
+            });
       this.spinner = true;
       // if (!this.noPaquete)
       //   this.$router.push("/");
