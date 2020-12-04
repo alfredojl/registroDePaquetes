@@ -62,15 +62,16 @@
         </b-input-group>
       </div>
     </div>
-    <div v-if="spinner" class="text-center mt-3">
-      <!-- <b-spinner variant="dark" class="p-lg-5" label="Spinning"></b-spinner> -->
+    <!-- <div v-if="spinner" class="text-center mt-3">
+      <b-spinner variant="dark" class="p-lg-5" label="Spinning"></b-spinner>
       <b-card>
         <b-skeleton animation="fade" width="85%"></b-skeleton>
         <b-skeleton animation="fade" width="55%"></b-skeleton>
         <b-skeleton animation="fade" width="70%"></b-skeleton>
       </b-card>
-    </div>
-    <div v-else class="accordion" role="tablist">
+    </div> -->
+    <b-overlay :show="over" blur="1rem" variant="light" rounded="lg">
+    <div class="accordion" role="tablist">
       <b-card
         no-body
         class="mb-1"
@@ -293,6 +294,7 @@
         </b-collapse>
       </b-card>
     </div>
+    </b-overlay>
     <div class="row mt-4 mb-5" v-show="paquetePreparado">
       <div class="col-5"></div>
       <div class="col-6 p-0 d-flex">
@@ -364,7 +366,6 @@ export default {
       // var newval = this.infoPaquete.folios[index];
       // this.infoPaquete.folios[index] = newval;
       // this.infoPaquete.folios.push();
-      console.log(this.infoPaquete.paquete.folioInicio);
       // console.log(this.infoPaquete.paquete.folioInicio);
       for(let i = this.infoPaquete.paquete.folioInicio, j = 0; i <= this.infoPaquete.paquete.folioFin; i++, j++)
       {
