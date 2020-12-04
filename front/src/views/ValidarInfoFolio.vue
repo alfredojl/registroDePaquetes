@@ -368,28 +368,28 @@ export default {
       // console.log(this.infoPaquete.paquete.folioInicio);
       for(let i = this.infoPaquete.paquete.folioInicio, j = 0; i <= this.infoPaquete.paquete.folioFin; i++, j++)
       {
-        // await axios.get(`http://digitalizacion.pjcdmx.gob.mx/consulta_folio.php`, {
-        //   params: { f: i }
-        // })
-        // .then((res) => {
-        //   if(res.data) {
-        //     this.infoPaquete.folios[j]["expediente"] = res.data.expediente;
-        //     this.infoPaquete.folios[j]["juzgado"] = res.data.juzgado;
-        //     this.infoPaquete.folios[j]["instanciaJ"] = res.data.insJuz;
-        //     this.infoPaquete.folios[j]["sala"] = res.data.Sala;
-        //     this.infoPaquete.folios[j]["instanciaS"] = res.data.insSal;
-        //     this.infoPaquete.folios[j]["actor"] = res.data.actor;
-        //     this.infoPaquete.folios[j]["demandado"] = res.data.demandado;
-        //     this.infoPaquete.folios[j]["juicio"] = res.data.juicio;
-        //     this.infoPaquete.folios[j]["dependencia"] =
-        //     res.data.dependencia;
-        //   }
-        //   this.infoPaquete.folios[j]["spinner"] = false;
-        // }).catch((error) => {
-        //   if (error) {
-        //     console.log(error);
-        //   }
-        // });
+        await axios.get(`http://digitalizacion.pjcdmx.gob.mx/consulta_folio.php`, {
+          params: { f: i }
+        })
+        .then((res) => {
+          if(res.data) {
+            this.infoPaquete.folios[j]["expediente"] = res.data.expediente;
+            this.infoPaquete.folios[j]["juzgado"] = res.data.juzgado;
+            this.infoPaquete.folios[j]["instanciaJ"] = res.data.insJuz;
+            this.infoPaquete.folios[j]["sala"] = res.data.Sala;
+            this.infoPaquete.folios[j]["instanciaS"] = res.data.insSal;
+            this.infoPaquete.folios[j]["actor"] = res.data.actor;
+            this.infoPaquete.folios[j]["demandado"] = res.data.demandado;
+            this.infoPaquete.folios[j]["juicio"] = res.data.juicio;
+            this.infoPaquete.folios[j]["dependencia"] =
+            res.data.dependencia;
+          }
+          this.infoPaquete.folios[j]["spinner"] = false;
+        }).catch((error) => {
+          if (error) {
+            console.log(error);
+          }
+        });
       }
       Swal.fire({
               title: ``,
@@ -397,7 +397,7 @@ export default {
               text: `Paquete ${this.noPaquete} encontrado.`,
               icon: "success",
               showConfirmButton: false,
-              timer: 900,
+              timer: 1000,
             });
           this.over = false;
           this.spinner = false;
