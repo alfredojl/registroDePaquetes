@@ -377,10 +377,9 @@ export default {
             this.infoPaquete.folios[j]["demandado"] = res.data.demandado;
             this.infoPaquete.folios[j]["juicio"] = res.data.juicio;
             this.infoPaquete.folios[j]["dependencia"] =
-              res.data.dependencia;
-              console.log(this.infoPaquete.folios[j]);
+            res.data.dependencia;
           }
-          this.infoPaquete.folios[index]["spinner"] = false;
+          this.infoPaquete.folios[j]["spinner"] = false;
           this.over = false;
         }).catch((error) => {
           if (error) {
@@ -422,12 +421,12 @@ export default {
       //     this.over = false;
       //   });
     },
-    search() {
+    async search() {
       this.spinner = true;
       // if (!this.noPaquete)
       //   this.$router.push("/");
       // else{
-      axios
+      await axios
         .get(`${config.api}/foliosPaquete`, {
           params: {
             noPaquete: this.noPaquete,

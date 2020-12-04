@@ -142,10 +142,10 @@ const routes = [{
         path: '/validarInfoFolio',
         name: 'ValidarInfoFolio',
         component: ValidarInfoFolio,
-        beforeEnter: (to, from, next) => {
-            if (isAuthenticated()) next();
-            else next(false);
-        },
+        // beforeEnter: (to, from, next) => {
+        //     if (isAuthenticated()) next();
+        //     else next(false);
+        // },
     },
 ];
 
