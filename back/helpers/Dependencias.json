@@ -1,0 +1,21 @@
+[{
+        "name": "Archivo Judicial",
+        "value": 1
+    },
+    {
+        "name": "Reclusorio Norte",
+        "value": 2
+    },
+    {
+        "name": "Reclusorio Sur",
+        "value": 3
+    },
+    {
+        "name": "Reclusorio Oriente",
+        "value": 4
+    },
+    {
+        "name": "Obrero Mundial",
+        "value": 5
+    }
+]

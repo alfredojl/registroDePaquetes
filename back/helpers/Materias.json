@@ -1,0 +1,202 @@
+[{
+        "name": "DELITOS NO GRAVES"
+    },
+    {
+        "name": "JUZGADO ARRENDAMIENTO"
+    },
+    {
+        "name": "JUZGADO CIVIL"
+    },
+    {
+        "name": "JUZGADO CONCURSAL"
+    },
+    {
+        "name": "JUZGADO FAMILIAR"
+    },
+    {
+        "name": "JUZGADO PAZ CIVIL"
+    },
+    {
+        "name": "JUZGADO PAZ PENAL"
+    },
+    {
+        "name": "JUZGADO PENAL"
+    },
+    {
+        "name": "MIXTO DE PAZ"
+    },
+    {
+        "name": "SALA CIVIL"
+    },
+    {
+        "name": "SALA FAMILIAR"
+    },
+    {
+        "name": "SALA PENAL"
+    },
+    {
+        "name": "13 MIXTO DE PAZ"
+    },
+    {
+        "name": "18 MIXTO DE PAZ"
+    },
+    {
+        "name": "3 MIXTO DE PAZ"
+    },
+    {
+        "name": "APOYO ADMINISTRATIVO"
+    },
+    {
+        "name": "APOYO JUDICIAL"
+    },
+    {
+        "name": "JUZ CIV CUANTIA MENOR"
+    },
+    {
+        "name": "JUZ CIV PROCESO ORAL"
+    },
+    {
+        "name": "PAZ DE COYOACAN"
+    },
+    {
+        "name": "SECRETARIA DE ACUERDOS DE LA PRESIDENCIA"
+    },
+    {
+        "name": "DIRECCION EJECUTIVA DE RECURSOS HUMANOS"
+    },
+    {
+        "name": "JUZGADO DE INMATRICULACION"
+    },
+    {
+        "name": "JUZGADO DE PROCESO ESCRITO DE JUSTICIA PARA ADOLESCENTES"
+    },
+    {
+        "name": "JUZGADO DE PROCESO ORAL DE JUSTICIA PARA ADOLESCENTES"
+    },
+    {
+        "name": "1a CORTE PENAL"
+    },
+    {
+        "name": "2a CORTE PENAL"
+    },
+    {
+        "name": "3a CORTE PENAL"
+    },
+    {
+        "name": "4a CORTE PENAL"
+    },
+    {
+        "name": "5a CORTE PENAL"
+    },
+    {
+        "name": "6a CORTE PENAL"
+    },
+    {
+        "name": "7a CORTE PENAL"
+    },
+    {
+        "name": "8a CORTE PENAL"
+    },
+    {
+        "name": "JUZGADO MIXTO DE PRIMERA INSTANCIA EN ISLAS MARIAS"
+    },
+    {
+        "name": "JUSTICIA PARA ADOLESCENTES"
+    },
+    {
+        "name": "CENTRO DE CONVIVENCIA FAMILIAR SUPERVISADA"
+    },
+    {
+        "name": "UNIDAD DE GESTION JUDICIAL No5 DEL SISTEMA PROCESAL PENAL JUDICIAL"
+    },
+    {
+        "name": "UNIDAD DE GESTION JUDICIAL No2 DEL SISTEMA PROCESAL PENAL JUDICIAL"
+    },
+    {
+        "name": "SISTEMA PENAL ACUSATORIO DE LA CIUDAD DE MEXICO"
+    },
+    {
+        "name": "SISTEMA PENAL ORAL ACUSATORIO DE LA CIUDAD DE MEXICO"
+    },
+    {
+        "name": "JUZGADO DE PROCESO ORAL FAMILIAR"
+    },
+    {
+        "name": "JUZGADO UNICO DE JUSTICIA PARA ADOLESCENTES DE PROCESO ESCRITO"
+    },
+    {
+        "name": "JUZGADO TERCERO DE JUSTICIA PARA ADOLESCENTES DE PROCESO ORAL"
+    },
+    {
+        "name": "JUZGADO PRIMERO DE MEDIDAS SANCIONADORAS EN TRANSICION"
+    },
+    {
+        "name": "JUZGADO CUARTO JUSTICIA PARA ADOLESCENTES DE PROCESO ORAL"
+    },
+    {
+        "name": "JUZGADO SEGUNDO EJECUCION TRANSICION EN TRANSICION"
+    },
+    {
+        "name": "UNIDAD DE GESTION JUDICIAL No.1 DEL SISTEMA PROCESAL PENAL JUDICIAL"
+    },
+    {
+        "name": "UNIDAD DE GESTION JUDICIAL No. 3 DEL SISTEMA PROCESAL PENAL JUDICIAL"
+    },
+    {
+        "name": "UNIDAD DE GESTION JUDICIAL No. 4 DEL SISTEMA PROCESAL PENAL JUDICIAL"
+    },
+    {
+        "name": "UNIDAD DE GESTION JUDICIAL No. 6 DEL SISTEMA PROCESAL PENAL JUDICIAL"
+    },
+    {
+        "name": "UNIDAD DE GESTION JUDICIAL No. 7 DEL SISTEMA PROCESAL PENAL JUDICIAL"
+    },
+    {
+        "name": "UNIDAD DE GESTION JUDICIAL No. 8 DEL SISTEMA PROCESAL PENAL JUDICIAL"
+    },
+    {
+        "name": "UNIDAD DE GESTION JUDICIAL No. 9 DEL SISTEMA PROCESAL PENAL JUDICIAL"
+    },
+    {
+        "name": "UNIDAD DE GESTION JUDICIAL No. 10 DEL SISTEMA PROCESAL PENAL JUDICIAL"
+    },
+    {
+        "name": "UNIDAD DE GESTION JUDICIAL No. 11 DEL SISTEMA PROCESAL PENAL JUDICIAL"
+    },
+    {
+        "name": "UNIDAD DE GESTION JUDICIAL No. 12 DEL SISTEMA PROCESAL PENAL JUDICIAL"
+    },
+    {
+        "name": "UNIDAD DE EJECUCION ESPECIALIZADA DE SANCIONES PENALES 'RECLUSORIO ORIENTE'"
+    },
+    {
+        "name": "UNIDAD DE EJECUCION ESPECIALIZADA DE SANCIONES PENALES 'RECLUSORIO SUR'"
+    },
+    {
+        "name": "UNIDAD DE EJECUCION ESPECIALIZADA DE SANCIONES PENALES 'RECLUSORIO NORTE'"
+    },
+    {
+        "name": "UNIDAD DE EJECUCION ESPECIALIZADA DE SANCIONES PENALES 'SULLIVAN'"
+    },
+    {
+        "name": "JUSTICIA PARA ADOLESCENTES DEL SISTEMA PROCESAL PENAL ACUSATORIO"
+    },
+    {
+        "name": "JUSTICIA ESPECIAL DE EJECUCION DE MEDIDAS SANCIONADORAS PARA ADOLESCENTES"
+    },
+    {
+        "name": "JUZGADO UNICO EN TRANSICION EN MATERIA DE JUSTICIA PARA ADOLESCENTES"
+    },
+    {
+        "name": "UNIDAD DE EJECUCION DE SANCIONES PENALES"
+    },
+    {
+        "name": "JUSTICIA PARA ADOLESCENTES DE PROCESO ORAL"
+    },
+    {
+        "name": "JUZGADO UNICO DE TRANSICION EN MATERIA DE JUSTICIA PARA ADOLESCENTES"
+    },
+    {
+        "name": "SALA ESPECIALIZADA EN EJECUCION DE SANCIONES PENALES"
+    }
+]
