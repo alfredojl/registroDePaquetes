@@ -83,6 +83,13 @@ let paqueteSchema = new Schema({
     },
     noLote: {
         type: Number
+    },
+    revisado: {
+        type: Boolean,
+        default: false
+    },
+    infoCapturadaSICE: {
+        type: String
     }
 });
 

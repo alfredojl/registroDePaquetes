@@ -11,5 +11,7 @@ app.use(require('./Estados'));
 app.use(require('./Verificadores'));
 app.use(require('./Lotes'));
 app.use(require('./reporte'));
+app.use(require('./Materias'));
+app.use(require('./Dependencias'));
 
 module.exports = app;

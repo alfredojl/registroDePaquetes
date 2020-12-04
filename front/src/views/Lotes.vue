@@ -33,9 +33,8 @@
         <b-input-group prepend="Paquete" class="">
           <b-form-textarea
             type="textarea"
-            :state="valida"
             ref="folio"
-            @keydown.delete="busca"
+            @keydown.delete="agrega"
             size="sm"
             v-model="noPaquete"
             no-resize
@@ -108,9 +107,8 @@
           <!-- <b-input-group prepend="Paquete" class=""> -->
           <b-form-textarea
             type="textarea"
-            :state="valida"
             ref="folio"
-            @keydown.delete="agrega"
+            @keydown.delete="busca"
             size="sm"
             v-model="noPaquete"
             no-resize
@@ -153,7 +151,7 @@
           v-show="give && add == 'search'"
           variant="primary"
           class="p-2"
-          @click="addDateD"
+          @click="valida"
           >Devolver</b-button
         >
       </b-col>
@@ -196,15 +194,13 @@ import Swal from "sweetalert2";
 
 export default {
   computed: {
-    valida() {
-      // return false
-    },
   },
   created() {},
   data() {
     return {
       spinner: null,
       noLote: null,
+      aValidar: null,
       noPaquete: ``,
       options: [
         { text: "Añadir lote", value: "add" },
@@ -265,8 +261,70 @@ export default {
       });
       this.upDate();
     },
-    finish(){
-      
+    busca(){
+      console.log('entrando');
+      this.noPaquete = this.noPaquete.split(/\n/g)[0];
+      axios.get(`${config.api}/lote`, {
+        params: {
+          noPaquete: this.noPaquete
+        }
+      })
+      .then( res => {
+        this.aValidar = res.data.lote;
+        // this.paquetes = this.paquetes.map( (el, index) => {
+        let aux;
+
+        this.paquetes.forEach( (el, index) => {
+          // if (el.noPaquete == this.aValidar.noPaquete && el.noLote == this.aValidar.noLote)
+          if (el.noPaquete == this.aValidar.noPaquete)
+            {
+              this.paquetes[index]._rawVariant = 'danger';
+              aux = {
+                noPaquete: this.paquetes[index].noPaquete,
+                noLote: this.paquetes[index].noLote,
+                fechaEntregado: this.paquetes[index].fechaEntregado,
+                fechaDevolucion: this.paquetes[index].fechaDevolucion,
+                _rawVariant: 'danger',
+                };
+            }
+        })
+        this.paquetes[11] = {
+          // noPaquete: this.paquetes[11].noPaquete,
+          noPaquete: 1,
+          noLote: this.paquetes[11].noLote,
+          fechaEntregado: this.paquetes[11].fechaEntregado,
+          fechaDevolucion: this.paquetes.fechaDevolucion,
+          _rawVariant: 'danger'
+        };
+
+        console.log(this.paquetes);
+
+        //   if(el.noPaquete == this.aValidar.noPaquete && el.noLote == this.aValidar.noLote)
+            
+        // })
+        // this.paquetes = this.aValidar.map( el => {
+        //   return {
+        //     noPaquete: el.noPaquete,
+        //     noLote: el.noLote,
+        //     fechaEntregado: el.fechaEntregado,
+        //     fechaDevolucion: el.fechaDevolucion,
+        //     _rowVariant: 'danger'
+        //   }
+        // })
+      })
+    },
+    valida() {
+      this.noPaquete = this.noPaquete.split(/\n/g)[0];
+      let paquete = {
+        noLote: this.noLote,
+        noPaquete: this.noPaquete,
+        // fechaEntregado: fecha.toISOString().slice(0, 10),
+        fechaEntregado: null,
+        fechaDevolucion: null,
+      };
+      this.paquetes.push(paquete);
+      this.$refs.folio.focus();
+      this.noPaquete = "";
     },
     agrega() {
       // if(!this.noPaquete){

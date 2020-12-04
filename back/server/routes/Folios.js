@@ -4,6 +4,54 @@ const app = express();
 const Folio = require('../models/Folios');
 const Paquete = require('../models/Paquetes');
 
+app.get('/foliosPaquete', async(req, res) => {
+    let noPaquete = req.query.noPaquete;
+    let bis = req.query.bis;
+    let folioInicio = req.query.folioInicio;
+    let folioFin = req.query.folioFin;
+    let infoPaquete = {
+        paquete: null,
+        folios: null
+    };
+
+    Paquete.findOne({ noPaquete, bis }, (err, paqueteDB) => {
+        if (err) {
+            return res.status(500).json({
+                ok: false,
+                err
+            })
+        }
+
+        if (!paqueteDB)
+            return res.json({
+                    ok: false,
+                    msg: 'El paquete ingresado no existe.'
+                })
+                // else if (paqueteDB.estado != 'Preparado')
+                //     return res.json({
+                //         ok: false,
+                //         msg: 'El estado del paquete debe ser "Preparado" para poder capturar la informacion de sus respectivos folios.'
+                //     })
+
+        infoPaquete.paquete = paqueteDB;
+
+        Folio.find({ noPaquete }, (err, folios) => {
+            if (err)
+                return res.status(500).json({
+                    ok: false,
+                    err
+                })
+
+            infoPaquete.folios = folios;
+
+            return res.json({
+                ok: true,
+                infoPaquete
+            });
+        })
+    })
+})
+
 app.get('/folios', async(req, res) => {
     let noPaquete = req.query.noPaquete;
     let bis = req.query.bis;

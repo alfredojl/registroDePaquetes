@@ -9,8 +9,10 @@ import Capturar from "../views/Capturar.vue";
 import Formato from "../views/Formato.vue";
 import QRlotes from "../views/QRlotes.vue";
 import Editar from "../views/Editar.vue";
+import AltaFolio from '../views/AltaFolio';
 import Lotes from '../views/Lotes';
 import Reporte from '../views/Reporte';
+import ValidarInfoFolio from '../views/ValidarInfoFolio';
 // import CrearUsuario from "../views/CrearUsuario.vue";
 
 Vue.use(VueRouter);
@@ -83,6 +85,15 @@ const routes = [{
         },
     },
     {
+        path: '/altaFolio',
+        name: 'AltaFolio',
+        component: AltaFolio,
+        beforeEnter: (to, from, next) => {
+            if (isAuthenticated() && isValidador()) next();
+            else next(false);
+        },
+    },
+    {
         path: '/lotes',
         name: 'Lotes',
         component: Lotes,
@@ -127,13 +138,25 @@ const routes = [{
             else next(false);
         },
     },
+    {
+        path: '/validarInfoFolio',
+        name: 'ValidarInfoFolio',
+        component: ValidarInfoFolio,
+        beforeEnter: (to, from, next) => {
+            if (isAuthenticated()) next();
+            else next(false);
+        },
+    },
 ];
 
 const isAuthenticated = () => {
     return !!localStorage.loggedIn;
 };
 const isReporter = () => {
-    return localStorage.role == "reporter" ? true : false;
+    return localStorage.role == "reporter" || localStorage.role == "admin" ? true : false;
+};
+const isValidador = () => {
+    return localStorage.role == "validador" || localStorage.role == "admin" ? true : false;
 };
 
 const router = new VueRouter({

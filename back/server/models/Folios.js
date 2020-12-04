@@ -31,7 +31,54 @@ let foliosSchema = new Schema({
     noPaquete: {
         type: Number,
         required: true
-    }
+    },
+    folioBuscadoSICE: {
+        type: Boolean,
+        default: false
+    },
+    expediente: {
+        type: String
+    },
+    paqueteF: {
+        type: String
+    },
+    tomo: {
+        type: String
+    },
+    juzgado: {
+        type: String
+    },
+    instanciaJ: {
+        type: String
+    },
+    sala: {
+        type: String
+    },
+    instanciaS: {
+        type: String
+    },
+    toca: {
+        type: String
+    },
+    actor: {
+        type: String
+    },
+    demandado: {
+        type: String
+    },
+    juicio: {
+        type: String
+    },
+    observaciones: {
+        type: String
+    },
+    dependencia: {
+        type: String
+    },
+    numImagenes: {
+        type: String,
+        type: Number
+    },
 });
 
 // usuarioSchema.plugin(uniqueValidator, { message: '{PATH} ya existe, debe de ser único.' });
