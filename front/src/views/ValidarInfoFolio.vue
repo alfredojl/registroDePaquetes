@@ -7,9 +7,6 @@
       ref=""
       title="Paquetes encontrados"
     >
-      <div v-if="spinner" class="text center">
-        <b-spinner variant="dark" class="p-lg-5" label="Spinning"></b-spinner>
-      </div>
       <div
         v-for="(paquete, index) of paquetes"
         :key="paquete.folioInicio"
@@ -65,7 +62,15 @@
         </b-input-group>
       </div>
     </div>
-    <div class="accordion" role="tablist">
+    <div v-if="spinner" class="text-center mt-3">
+      <!-- <b-spinner variant="dark" class="p-lg-5" label="Spinning"></b-spinner> -->
+      <b-card>
+        <b-skeleton animation="fade" width="85%"></b-skeleton>
+        <b-skeleton animation="fade" width="55%"></b-skeleton>
+        <b-skeleton animation="fade" width="70%"></b-skeleton>
+      </b-card>
+    </div>
+    <div v-else class="accordion" role="tablist">
       <b-card
         no-body
         class="mb-1"
@@ -363,31 +368,39 @@ export default {
       // console.log(this.infoPaquete.paquete.folioInicio);
       for(let i = this.infoPaquete.paquete.folioInicio, j = 0; i <= this.infoPaquete.paquete.folioFin; i++, j++)
       {
-        await axios.get(`http://digitalizacion.pjcdmx.gob.mx/consulta_folio.php`, {
-          params: { f: i }
-        })
-        .then((res) => {
-          if(res.data) {
-            this.infoPaquete.folios[j]["expediente"] = res.data.expediente;
-            this.infoPaquete.folios[j]["juzgado"] = res.data.juzgado;
-            this.infoPaquete.folios[j]["instanciaJ"] = res.data.insJuz;
-            this.infoPaquete.folios[j]["sala"] = res.data.Sala;
-            this.infoPaquete.folios[j]["instanciaS"] = res.data.insSal;
-            this.infoPaquete.folios[j]["actor"] = res.data.actor;
-            this.infoPaquete.folios[j]["demandado"] = res.data.demandado;
-            this.infoPaquete.folios[j]["juicio"] = res.data.juicio;
-            this.infoPaquete.folios[j]["dependencia"] =
-            res.data.dependencia;
-          }
-          this.infoPaquete.folios[j]["spinner"] = false;
-          this.over = false;
-        }).catch((error) => {
-          if (error) {
-            console.log(error);
-          }
-          this.over = false;
-        });
+        // await axios.get(`http://digitalizacion.pjcdmx.gob.mx/consulta_folio.php`, {
+        //   params: { f: i }
+        // })
+        // .then((res) => {
+        //   if(res.data) {
+        //     this.infoPaquete.folios[j]["expediente"] = res.data.expediente;
+        //     this.infoPaquete.folios[j]["juzgado"] = res.data.juzgado;
+        //     this.infoPaquete.folios[j]["instanciaJ"] = res.data.insJuz;
+        //     this.infoPaquete.folios[j]["sala"] = res.data.Sala;
+        //     this.infoPaquete.folios[j]["instanciaS"] = res.data.insSal;
+        //     this.infoPaquete.folios[j]["actor"] = res.data.actor;
+        //     this.infoPaquete.folios[j]["demandado"] = res.data.demandado;
+        //     this.infoPaquete.folios[j]["juicio"] = res.data.juicio;
+        //     this.infoPaquete.folios[j]["dependencia"] =
+        //     res.data.dependencia;
+        //   }
+        //   this.infoPaquete.folios[j]["spinner"] = false;
+        // }).catch((error) => {
+        //   if (error) {
+        //     console.log(error);
+        //   }
+        // });
       }
+      Swal.fire({
+              title: ``,
+              position: "top-end",
+              text: `Paquete ${this.noPaquete} encontrado.`,
+              icon: "success",
+              showConfirmButton: false,
+              timer: 900,
+            });
+          this.over = false;
+          this.spinner = false;
       // axios
       //   .get(`http://digitalizacion.pjcdmx.gob.mx/consulta_folio.php`, {
       //     params: { f: folio },
@@ -438,13 +451,12 @@ export default {
             this.paquetePreparado = false;
             return Swal.fire(`${res.data.msg}`, "", "error").then((result) => {
               this.spinner = false;
+            this.infoPaquete = null;
             });
           } else {
             this.paquetePreparado = true;
             this.infoPaquete = res.data.infoPaquete;
           }
-          this.spinner = false;
-          this.over = false;
         })
         .catch((error) => {
           if (error) console.log(error);
