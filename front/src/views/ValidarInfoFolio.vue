@@ -369,12 +369,10 @@ export default {
         });
     },
     async getInformacionFolio(paquete) {
-      console.log(paquete);
       this.over = true;
       let errors = [];
       if(this.modal === true){
         // this.infoPaquete.folios = 
-        console.log('modal');
         axios.get(`${config.api}/folios`, {
           params: {
             noPaquete: paquete.noPaquete,
@@ -416,6 +414,9 @@ export default {
         })
         .then((res) => {
           if(res.data) {
+            console.log(res.data.encontrado);
+            if(res.data.encontrado == 'false') 
+              errors.push(i)
             this.folios[j]["expediente"] = res.data.expediente;
             this.folios[j]["juzgado"] = res.data.juzgado;
             this.folios[j]["instanciaJ"] = res.data.insJuz;
@@ -446,15 +447,16 @@ export default {
             })
             .then(res => this.over = false);
       }
-      Swal.fire({
-              title: ``,
-              position: "top-end",
-              text: `Paquete ${this.noPaquete} encontrado.`,
-              icon: "success",
-              showConfirmButton: false,
-              timer: 1000,
-            });
-          this.over = false;
+      else
+        Swal.fire({
+          title: ``,
+          position: "top-end",
+          text: `Paquete ${this.noPaquete} encontrado.`,
+          icon: "success",
+          showConfirmButton: false,
+          timer: 1000,
+        });
+      this.over = false;
       // axios
       //   .get(`http://digitalizacion.pjcdmx.gob.mx/consulta_folio.php`, {
       //     params: { f: folio },
@@ -510,7 +512,6 @@ export default {
           },
         })
         .then((res) => {
-          console.log(res.data);
           if (!res.data.ok) {
             this.paquetePreparado = false;
             return Swal.fire(`${res.data.msg}`, "", "error").then((result) => {
@@ -669,7 +670,7 @@ export default {
                 `Folios actualizados correctamente. Favor de indicar como 'Digitalizado' el paquete.`,
                 "success"
               ).then((res) => {
-                this.$router.replace("/asignar");
+                // this.$router.replace("/asignar");
               });
             })
             .catch((err) => {
