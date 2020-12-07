@@ -1,6 +1,5 @@
 <template>
   <div class="container">
-    <pre>{{ paquetes }}</pre>
     <b-modal
       id="packages"
       scrollable
