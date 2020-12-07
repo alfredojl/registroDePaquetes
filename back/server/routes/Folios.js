@@ -4,6 +4,68 @@ const app = express();
 const Folio = require('../models/Folios');
 const Paquete = require('../models/Paquetes');
 
+app.put('/foliosSICE', async(req, res) => {
+    let folios = req.body.data.folios;
+    let infoCapturadaSICE = req.body.data.infoCapturadaSICE || "NO";
+    let noPaquete = folios[0]['noPaquete'];
+    let foliosResultado = [];
+
+    // Folio.findOneAndUpdate()
+    for (bodi of folios) {
+        var n = Folio.findOneAndUpdate({ folio: bodi.folio }, bodi, { new: true }, (err, folioDB) => {
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    err
+                })
+            }
+            console.log(folioDB);
+        })
+    }
+    Paquete.findOneAndUpdate({ noPaquete, bis }, { validado }, { new: true }, (err, paqueteDB) => {
+        if (err) {
+            console.log(err);
+            return res.status(500).json({
+                ok: false,
+                err
+            })
+        }
+        console.log(paqueteDB);
+    });
+    return res.json({
+            ok: true,
+            message: 'Actualizados'
+        })
+        // Folio.updateMany(folios)
+        //     .exec((err, foliosDB) => {
+        //         if (err) {
+        //             console.log(err);
+        //             return res.status(500).json({
+        //                 ok: false,
+        //                 err
+        //             })
+        //         }
+        //         Paquete.findOneAndUpdate({ noPaquete }, { validado: folios[0]['validado'] }, (err, paqueteDB) => {
+        //             if (err) {
+        //                 console.log(err);
+        //                 return res.status(500).json({
+        //                     ok: false,
+        //                     err
+        //                 })
+        //             }
+
+    //             return res.json({
+    //                 ok: true,
+    //                 message: 'hola final',
+    //                 folios: foliosDB
+    //             })
+    //         })
+
+    //     })
+
+
+})
+
 app.get('/foliosPaquete', async(req, res) => {
     let noPaquete = req.query.noPaquete;
     let bis = req.query.bis;
@@ -14,7 +76,7 @@ app.get('/foliosPaquete', async(req, res) => {
         folios: null
     };
 
-    Paquete.findOne({ noPaquete, bis }, (err, paqueteDB) => {
+    Paquete.find({ noPaquete, bis }, (err, paqueteDB) => {
         if (err) {
             return res.status(500).json({
                 ok: false,
@@ -93,22 +155,26 @@ app.post('/folios', async(req, res) => {
     let body = req.body.data;
     let noPaquete = req.body.noPaquete;
 
-    Folio.insertMany(body.folios,
-            (err, foliosDB) => {
-                if (err) {
-                    console.log(err);
-                    return res.status(500).json({
-                        ok: false,
-                        err
-                    })
-                }
-                res.json({
-                    ok: true,
-                    folios: foliosDB
-                })
+    body.folios.forEach(element => {
+        console.log(element);
+    });
 
-            })
-        // Paquete.updateOne()
+    // Folio.insertMany(body.folios,
+    //         (err, foliosDB) => {
+    //             if (err) {
+    //                 console.log(err);
+    //                 return res.status(500).json({
+    //                     ok: false,
+    //                     err
+    //                 })
+    //             }
+    //             res.json({
+    //                 ok: true,
+    //                 folios: foliosDB
+    //             })
+
+    //         })
+    // Paquete.updateOne()
 })
 
 app.put('/folios', async(req, res) => {

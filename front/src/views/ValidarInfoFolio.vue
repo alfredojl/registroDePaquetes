@@ -1,5 +1,6 @@
 <template>
   <div class="container">
+    <pre>{{ paquetes }}</pre>
     <b-modal
       id="packages"
       scrollable
@@ -15,7 +16,7 @@
           <b-list-group-item
             button
             variant="light"
-            @click="getFoliosVarios(paquetes[index], index)"
+            @click="getInformacionFolio(paquetes[index])"
             >Paquete: {{ paquete.noPaquete }}<br />Folio inicio:
             {{ paquete.folioInicio }}<br />Folio fin: {{ paquete.folioFin
             }}<br />Fecha expediente:
@@ -72,10 +73,16 @@
     </div> -->
     <b-overlay :show="over" blur="1rem" variant="light" rounded="lg">
     <div class="accordion" role="tablist">
-      <b-card
+      <!-- <b-card
         no-body
         class="mb-1"
         v-for="(dato, index) in infoPaquete.folios"
+        :key="dato.folio"
+      > -->
+      <b-card
+        no-body
+        class="mb-1"
+        v-for="(dato, index) in folios"
         :key="dato.folio"
       >
         <b-card-header header-tag="header" class="p-1" role="tab">
@@ -84,7 +91,7 @@
             block
             v-b-toggle="`folio-${dato.folio}`"
             variant="info"
-            >Folio - {{ dato.folio.toString() }}</b-button
+            >Folio - {{ dato.folio }}</b-button
           >
         </b-card-header>
         <b-collapse
@@ -312,6 +319,7 @@
 import axios from "axios";
 import config from "../config/config";
 import Swal from "sweetalert2";
+import { BIconPatchQuestion } from 'bootstrap-vue';
 
 export default {
   data() {
@@ -320,6 +328,7 @@ export default {
       over: null,
       spinner: false,
       noPaquete: null,
+      folios: null,
       materias: null,
       dependencias: null,
       infoPaquete: [],
@@ -360,36 +369,69 @@ export default {
           }
         });
     },
-    async getInformacionFolio() {
+    async getInformacionFolio(paquete) {
+      console.log(paquete);
       this.over = true;
       let errors = [];
+      if(this.modal === true){
+        // this.infoPaquete.folios = 
+        console.log('modal');
+        axios.get(`${config.api}/folios`, {
+          params: {
+            noPaquete: paquete.noPaquete,
+            bis: paquete.bis,
+            folioInicio: paquete.folioInicio,
+            folioFin: paquete.folioFin
+          }
+        })
+        .then(res => {
+          if (res.data.folios.length == 0) {
+            this.spinner = false;
+            return Swal.fire(
+              `No se pudo encontrar el paquete ${this.noPaquete}.`,
+              "",
+              "error"
+            );
+          }
+          this.folios = res.data.folios;
+          // this.folios.forEach((el, index) => {
+          //   if (el.referencias) {
+          //     this.referencias[index] = el.referencias;
+          //     this.selected[index] = "Oficio";
+          //   } else this.selected[index] = "Completo";
+          //   this.spinner = false;
+          // });
+        })
+        this.$bvModal.hide("packages");
+        this.modal = false;
+      }
       // this.infoPaquete.folios[index]["spinner"] = true;
       // var newval = this.infoPaquete.folios[index];
       // this.infoPaquete.folios[index] = newval;
       // this.infoPaquete.folios.push();
       // console.log(this.infoPaquete.paquete.folioInicio);
-      for(let i = this.infoPaquete.paquete.folioInicio, j = 0; i <= this.infoPaquete.paquete.folioFin; i++, j++)
+      for(let i = paquete.folioInicio, j = 0; i <= paquete.folioFin; i++, j++)
       {
         await axios.get(`http://digitalizacion.pjcdmx.gob.mx/consulta_folio.php`, {
           params: { f: i }
         })
         .then((res) => {
           if(res.data) {
-            this.infoPaquete.folios[j]["expediente"] = res.data.expediente;
-            this.infoPaquete.folios[j]["juzgado"] = res.data.juzgado;
-            this.infoPaquete.folios[j]["instanciaJ"] = res.data.insJuz;
-            this.infoPaquete.folios[j]["sala"] = res.data.Sala;
-            this.infoPaquete.folios[j]["instanciaS"] = res.data.insSal;
-            this.infoPaquete.folios[j]["actor"] = res.data.actor;
-            this.infoPaquete.folios[j]["demandado"] = res.data.demandado;
-            this.infoPaquete.folios[j]["juicio"] = res.data.juicio;
-            this.infoPaquete.folios[j]["dependencia"] =
+            this.folios[j]["expediente"] = res.data.expediente;
+            this.folios[j]["juzgado"] = res.data.juzgado;
+            this.folios[j]["instanciaJ"] = res.data.insJuz;
+            this.folios[j]["sala"] = res.data.Sala;
+            this.folios[j]["instanciaS"] = res.data.insSal;
+            this.folios[j]["actor"] = res.data.actor;
+            this.folios[j]["demandado"] = res.data.demandado;
+            this.folios[j]["juicio"] = res.data.juicio;
+            this.folios[j]["dependencia"] =
             res.data.dependencia;
           }
-          this.infoPaquete.folios[j]["spinner"] = false;
+          // this.infoPaquete.folios[j]["spinner"] = false;
         }).catch((error) => {
           if (error) {
-            errors.push(i);
+              errors.push(i);
           }
         });
       }
@@ -398,12 +440,12 @@ export default {
         return Swal.fire({
               title: ``,
               position: "top-end",
-              text: `No se obtuvieron los datos:
-              ${errors.join(', ')}`,
+              text: `No se obtuvo información de ${errors.length} datos:
+              ${errors.join(', ')}.`,
               icon: "error",
               showConfirmButton: true,
             })
-            .then(res => this.spinner = false);
+            .then(res => this.over = false);
       }
       Swal.fire({
               title: ``,
@@ -462,23 +504,57 @@ export default {
       //   this.$router.push("/");
       // else{
       await axios
-        .get(`${config.api}/foliosPaquete`, {
+        .get(`${config.api}/paquete`, {
           params: {
             noPaquete: this.noPaquete,
             bis: this.bis,
           },
         })
         .then((res) => {
+          console.log(res.data);
           if (!res.data.ok) {
             this.paquetePreparado = false;
             return Swal.fire(`${res.data.msg}`, "", "error").then((result) => {
               this.spinner = false;
-            this.infoPaquete = null;
+              this.infoPaquete = null;
             });
-          } else {
-            this.paquetePreparado = true;
-            this.infoPaquete = res.data.infoPaquete;
           }
+          else if (res.data.paquete.length > 1){
+            this.paquetes = res.data.paquete;
+            this.modal = true;
+            return this.$bvModal.show("packages");
+          }
+          else {
+            this.paquetePreparado = true;
+            axios.get(`${config.api}/folios`, {
+          params: {
+            noPaquete: res.data.paquete[0].noPaquete,
+            bis: res.data.paquete[0].bis,
+            folioInicio: res.data.paquete[0].folioInicio,
+            folioFin: res.data.paquete[0].folioFin
+          }
+        })
+        .then(res => {
+          if (res.data.folios.length == 0) {
+            this.spinner = false;
+            return Swal.fire(
+              `No se pudo encontrar el paquete ${this.noPaquete}.`,
+              "",
+              "error"
+            );
+          }
+          this.folios = res.data.folios;
+          // this.folios.forEach((el, index) => {
+          //   if (el.referencias) {
+          //     this.referencias[index] = el.referencias;
+          //     this.selected[index] = "Oficio";
+          //   } else this.selected[index] = "Completo";
+          //   this.spinner = false;
+          // });
+        })
+            this.infoPaquete.paquete = res.data.paquete;
+          }
+          this.getInformacionFolio(res.data.paquete[0]);
         })
         .catch((error) => {
           if (error) console.log(error);
@@ -487,7 +563,6 @@ export default {
           this.over = false;
         });
 
-      this.getInformacionFolio();
       
       // }
 
