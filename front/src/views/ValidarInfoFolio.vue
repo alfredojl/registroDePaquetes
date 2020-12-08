@@ -7,10 +7,7 @@
       ref=""
       title="Paquetes encontrados"
     >
-      <div
-        v-for="(paquete, index) of paquetes"
-        :key="paquete.folioInicio"
-      >
+      <div v-for="(paquete, index) of paquetes" :key="paquete.folioInicio">
         <b-list-group>
           <b-list-group-item
             button
@@ -71,235 +68,275 @@
       </b-card>
     </div> -->
     <b-overlay :show="over" blur="1rem" variant="light" rounded="lg">
-    <div class="accordion" role="tablist">
-      <!-- <b-card
+      <div class="accordion" role="tablist">
+        <!-- <b-card
         no-body
         class="mb-1"
         v-for="(dato, index) in infoPaquete.folios"
         :key="dato.folio"
       > -->
-      <b-card
-        no-body
-        class="mb-1"
-        v-for="(dato, index) in folios"
-        :key="dato.folio"
-      >
-        <b-card-header header-tag="header" class="p-1" role="tab">
-          <b-button
-            size="sm"
-            block
-            v-b-toggle="`folio-${dato.folio}`"
-            variant="info"
-            >Folio - {{ dato.folio }}</b-button
-          >
-        </b-card-header>
-        <b-collapse
-          :id="`folio-${dato.folio}`"
-          accordion="my-accordion"
-          role="tabpanel"
+        <b-card
+          no-body
+          class="mb-1"
+          v-for="(dato, index) in folios"
+          :key="dato.folio"
         >
-          <b-overlay :show="over" blur="1rem" variant="light" rounded="lg">
-            <b-card-body>
-              <center v-show="!dato['folioBuscadoSICE']">
-                <code>
-                  Favor de validar si existe información previa del folio
-                  correspondiente</code
-                >
-              </center>
-              <br />
-              <div class="container">
-                <div class="row">
-                  <div class="col-3"></div>
-                  <div class="col-6 p-0 d-flex">
-                    <b-input-group size="sm" prepend="Folio" class="mb-4">
-                      <b-form-input
-                        type="number"
-                        disabled
-                        v-model="dato['folio']"
-                        v-on:keyup.enter="search"
-                      ></b-form-input>
-                      <b-input-group-prepend>
-                        <b-button
-                          variant="secondary"
-                          @click="getInformacionFolio(dato['folio'], index)"
-                          v-show="!dato['folioBuscadoSICE']"
-                          >Buscar</b-button
+          <b-card-header header-tag="header" class="p-1" role="tab">
+            <b-button
+              size="sm"
+              block
+              v-b-toggle="`folio-${dato.folio}`"
+              variant="info"
+              >Folio - {{ dato.folio }}</b-button
+            >
+          </b-card-header>
+          <b-collapse
+            :id="`folio-${dato.folio}`"
+            accordion="my-accordion"
+            role="tabpanel"
+          >
+            <b-overlay :show="over" blur="1rem" variant="light" rounded="lg">
+              <b-card-body>
+                <center v-show="!dato['folioBuscadoSICE']">
+                  <code>
+                    Favor de validar si existe información previa del folio
+                    correspondiente</code
+                  >
+                </center>
+                <br />
+                <div class="container">
+                  <div class="row">
+                    <div class="col-3"></div>
+                    <div class="col-6 p-0 d-flex">
+                      <b-input-group size="sm" prepend="Folio" class="mb-4">
+                        <b-form-input
+                          type="number"
+                          disabled
+                          v-model="dato['folio']"
+                          v-on:keyup.enter="search"
+                        ></b-form-input>
+                        <b-input-group-prepend>
+                          <b-button
+                            variant="secondary"
+                            @click="getInformacionFolio(dato['folio'], index)"
+                            v-show="!dato['folioBuscadoSICE']"
+                            >Buscar</b-button
+                          >
+                        </b-input-group-prepend>
+                      </b-input-group>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-3"></div>
+                    <div class="col-6 p-0 d-flex">
+                      <b-input-group size="sm" prepend="Expediente" class="">
+                        <b-form-input
+                          v-model="dato['expediente']"
+                        ></b-form-input>
+                      </b-input-group>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-3"></div>
+                    <div class="col-6 p-0 d-flex">
+                      <b-input-group size="sm" prepend="Paquete" class="">
+                        <b-form-input v-model="dato['paqueteF']"></b-form-input>
+                      </b-input-group>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-3"></div>
+                    <div class="col-6 p-0 d-flex">
+                      <b-input-group size="sm" prepend="Tomo" class="">
+                        <b-form-input v-model="dato['tomo']"></b-form-input>
+                      </b-input-group>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-3"></div>
+                    <div class="col-6 p-0 d-flex">
+                      <b-input-group size="sm" prepend="Juzgado" class="">
+                        <b-form-select
+                          v-model="dato['juzgado']"
+                          :options="materias"
+                          value-field="name"
+                          text-field="name"
                         >
-                      </b-input-group-prepend>
-                    </b-input-group>
+                          <template #first> </template>
+                        </b-form-select>
+                        <!-- <b-input-group-prepend>
+                          <b-button
+                            variant="secondary"
+                            @click="dato['Juzgado'] = null"
+                            >X</b-button
+                          >
+                        </b-input-group-prepend> -->
+                      </b-input-group>
+                    </div>
                   </div>
-                </div>
-                <div class="row">
-                  <div class="col-3"></div>
-                  <div class="col-6 p-0 d-flex">
-                    <b-input-group size="sm" prepend="Expediente" class="">
-                      <b-form-input v-model="dato['expediente']"></b-form-input>
-                    </b-input-group>
+                  <div class="row">
+                    <div class="col-3"></div>
+                    <div class="col-6 p-0 d-flex">
+                      <b-input-group size="sm" prepend="Instancia" class="">
+                        <b-form-input
+                          v-model="dato['instanciaJ']"
+                        ></b-form-input>
+                      </b-input-group>
+                    </div>
                   </div>
-                </div>
-                <div class="row">
-                  <div class="col-3"></div>
-                  <div class="col-6 p-0 d-flex">
-                    <b-input-group size="sm" prepend="Paquete" class="">
-                      <b-form-input v-model="dato['paqueteF']"></b-form-input>
-                    </b-input-group>
+                  <div class="row">
+                    <div class="col-3"></div>
+                    <div class="col-6 p-0 d-flex">
+                      <b-input-group size="sm" prepend="Sala" class="">
+                        <b-form-select
+                          v-model="dato['sala']"
+                          :options="materias"
+                          value-field="name"
+                          text-field="name"
+                        >
+                          <template #first> </template>
+                        </b-form-select>
+                        <!-- <b-input-group-prepend>
+                          <b-button
+                            variant="secondary"
+                            @click="dato['Sala'] = null"
+                            >X</b-button
+                          >
+                        </b-input-group-prepend> -->
+                      </b-input-group>
+                    </div>
                   </div>
-                </div>
-                <div class="row">
-                  <div class="col-3"></div>
-                  <div class="col-6 p-0 d-flex">
-                    <b-input-group size="sm" prepend="Tomo" class="">
-                      <b-form-input v-model="dato['tomo']"></b-form-input>
-                    </b-input-group>
+                  <div class="row">
+                    <div class="col-3"></div>
+                    <div class="col-6 p-0 d-flex">
+                      <b-input-group size="sm" prepend="Instancia" class="">
+                        <b-form-input
+                          v-model="dato['instanciaS']"
+                        ></b-form-input>
+                      </b-input-group>
+                    </div>
                   </div>
-                </div>
-                <div class="row">
-                  <div class="col-3"></div>
-                  <div class="col-6 p-0 d-flex">
-                    <b-input-group size="sm" prepend="Juzgado" class="">
-                      <b-form-select
-                        v-model="dato['juzgado']"
-                        :options="materias"
-                        value-field="name"
-                        text-field="name"
+                  <div class="row">
+                    <div class="col-3"></div>
+                    <div class="col-6 p-0 d-flex">
+                      <b-input-group size="sm" prepend="Toca" class="">
+                        <b-form-input v-model="dato['toca']"></b-form-input>
+                      </b-input-group>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-3"></div>
+                    <div class="col-6 p-0 d-flex">
+                      <b-input-group size="sm" prepend="Actor" class="">
+                        <b-form-input v-model="dato['actor']"></b-form-input>
+                      </b-input-group>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-3"></div>
+                    <div class="col-6 p-0 d-flex">
+                      <b-input-group size="sm" prepend="Demandado" class="">
+                        <b-form-input
+                          v-model="dato['demandado']"
+                        ></b-form-input>
+                      </b-input-group>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-3"></div>
+                    <div class="col-6 p-0 d-flex">
+                      <b-input-group size="sm" prepend="Juicio" class="">
+                        <b-form-input v-model="dato['juicio']"></b-form-input>
+                      </b-input-group>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-3"></div>
+                    <div class="col-6 p-0 d-flex">
+                      <b-input-group size="sm" prepend="Observaciones" class="">
+                        <b-form-textarea
+                          no-resize
+                          v-model="dato['observaciones']"
+                        ></b-form-textarea>
+                      </b-input-group>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-3"></div>
+                    <div class="col-6 p-0 d-flex">
+                      <b-input-group size="sm" prepend="Dependencia" class="">
+                        <b-form-select
+                          v-model="dato['dependencia']"
+                          :options="dependencias"
+                          value-field="value"
+                          text-field="name"
+                        >
+                          <template #first> </template>
+                        </b-form-select>
+                        <!-- <b-input-group-prepend>
+                          <b-button
+                            variant="secondary"
+                            @click="dato['Dependencia'] = null"
+                            >X</b-button
+                          >
+                        </b-input-group-prepend> -->
+                      </b-input-group>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-3"></div>
+                    <div class="col-6 p-0 d-flex">
+                      <b-input-group
+                        size="sm"
+                        prepend="Número de imagenes"
+                        class=""
                       >
-                        <template #first> </template>
-                      </b-form-select>
-                      <b-input-group-prepend>
-                        <b-button
-                          variant="secondary"
-                          @click="dato['Juzgado'] = null"
-                          >X</b-button
-                        >
-                      </b-input-group-prepend>
-                    </b-input-group>
+                        <b-form-input
+                          v-model="dato['numImagenes']"
+                          type="number"
+                        ></b-form-input>
+                      </b-input-group>
+                    </div>
                   </div>
+                  <!-- </div> -->
                 </div>
-                <div class="row">
+                <div class="row mt-2">
                   <div class="col-3"></div>
                   <div class="col-6 p-0 d-flex">
-                    <b-input-group size="sm" prepend="Instancia" class="">
-                      <b-form-input v-model="dato['instanciaJ']"></b-form-input>
-                    </b-input-group>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-3"></div>
-                  <div class="col-6 p-0 d-flex">
-                    <b-input-group size="sm" prepend="Sala" class="">
-                      <b-form-select
-                        v-model="dato['sala']"
-                        :options="materias"
-                        value-field="name"
-                        text-field="name"
-                      >
-                        <template #first> </template>
-                      </b-form-select>
-                      <b-input-group-prepend>
-                        <b-button
-                          variant="secondary"
-                          @click="dato['Sala'] = null"
-                          >X</b-button
-                        >
-                      </b-input-group-prepend>
-                    </b-input-group>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-3"></div>
-                  <div class="col-6 p-0 d-flex">
-                    <b-input-group size="sm" prepend="Instancia" class="">
-                      <b-form-input v-model="dato['instanciaS']"></b-form-input>
-                    </b-input-group>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-3"></div>
-                  <div class="col-6 p-0 d-flex">
-                    <b-input-group size="sm" prepend="Toca" class="">
-                      <b-form-input v-model="dato['toca']"></b-form-input>
-                    </b-input-group>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-3"></div>
-                  <div class="col-6 p-0 d-flex">
-                    <b-input-group size="sm" prepend="Actor" class="">
-                      <b-form-input v-model="dato['actor']"></b-form-input>
-                    </b-input-group>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-3"></div>
-                  <div class="col-6 p-0 d-flex">
-                    <b-input-group size="sm" prepend="Demandado" class="">
-                      <b-form-input v-model="dato['demandado']"></b-form-input>
-                    </b-input-group>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-3"></div>
-                  <div class="col-6 p-0 d-flex">
-                    <b-input-group size="sm" prepend="Juicio" class="">
-                      <b-form-input v-model="dato['juicio']"></b-form-input>
-                    </b-input-group>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-3"></div>
-                  <div class="col-6 p-0 d-flex">
-                    <b-input-group size="sm" prepend="Observaciones" class="">
-                      <b-form-textarea
-                        no-resize
-                        v-model="dato['observaciones']"
-                      ></b-form-textarea>
-                    </b-input-group>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-3"></div>
-                  <div class="col-6 p-0 d-flex">
-                    <b-input-group size="sm" prepend="Dependencia" class="">
-                      <b-form-select
-                        v-model="dato['dependencia']"
-                        :options="dependencias"
-                        value-field="value"
-                        text-field="name"
-                      >
-                        <template #first> </template>
-                      </b-form-select>
-                      <b-input-group-prepend>
-                        <b-button
-                          variant="secondary"
-                          @click="dato['Dependencia'] = null"
-                          >X</b-button
-                        >
-                      </b-input-group-prepend>
-                    </b-input-group>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-3"></div>
-                  <div class="col-6 p-0 d-flex">
-                    <b-input-group
-                      size="sm"
-                      prepend="Número de imagenes"
-                      class=""
+                    <b-form-radio-group
+                      :name="'radio-options' + (index + 1)"
+                      :options="options"
+                      class="col-auto m-auto"
+                      v-model="folios[index]['estado']"
                     >
-                      <b-form-input
-                        v-model="dato['numImagenes']"
-                        type="number"
-                      ></b-form-input>
+                    </b-form-radio-group>
+                    <b-input-group prepend="Tomos" class=""> </b-input-group>
+                    <b-form-input
+                      class="col-3"
+                      type="number"
+                      :name="'tomos' + (index + 1)"
+                      v-model="folios[index]['tomos']"
+                    ></b-form-input>
+                    <b-input-group
+                      prepend="Oficio"
+                      class="ml-2"
+                      v-if="folios[index]['estado'] == 'Oficio'"
+                    >
                     </b-input-group>
+                    <b-form-input
+                      v-if="folios[index]['estado'] == 'Oficio'"
+                      class="col-3"
+                      type="number"
+                      :name="'referencias' + (index + 1)"
+                      v-model="folios[index]['referencias']"
+                    ></b-form-input>
                   </div>
                 </div>
-                <!-- </div> -->
-              </div>
-            </b-card-body>
-          </b-overlay>
-        </b-collapse>
-      </b-card>
-    </div>
+              </b-card-body>
+            </b-overlay>
+          </b-collapse>
+        </b-card>
+      </div>
     </b-overlay>
     <div class="row mt-4 mb-5" v-show="paquetePreparado">
       <div class="col-5"></div>
@@ -318,7 +355,7 @@
 import axios from "axios";
 import config from "../config/config";
 import Swal from "sweetalert2";
-import { BIconPatchQuestion } from 'bootstrap-vue';
+import { BIconPatchQuestion } from "bootstrap-vue";
 
 export default {
   data() {
@@ -335,6 +372,14 @@ export default {
       bis: false,
       cantidad: null,
       identificador: null,
+      options: [
+        { text: "Completo", value: "Completo" },
+        { text: "Faltante", value: "Faltante" },
+        { text: "Oficio", value: "Oficio" },
+      ],
+      tomos: [],
+      referencias: [],
+      selected: [],
     };
   },
   async created() {
@@ -371,34 +416,35 @@ export default {
     async getInformacionFolio(paquete) {
       this.over = true;
       let errors = [];
-      if(this.modal === true){
-        // this.infoPaquete.folios = 
-        axios.get(`${config.api}/folios`, {
-          params: {
-            noPaquete: paquete.noPaquete,
-            bis: paquete.bis,
-            folioInicio: paquete.folioInicio,
-            folioFin: paquete.folioFin
-          }
-        })
-        .then(res => {
-          if (res.data.folios.length == 0) {
-            this.spinner = false;
-            return Swal.fire(
-              `No se pudo encontrar el paquete ${this.noPaquete}.`,
-              "",
-              "error"
-            );
-          }
-          this.folios = res.data.folios;
-          // this.folios.forEach((el, index) => {
-          //   if (el.referencias) {
-          //     this.referencias[index] = el.referencias;
-          //     this.selected[index] = "Oficio";
-          //   } else this.selected[index] = "Completo";
-          //   this.spinner = false;
-          // });
-        })
+      if (this.modal === true) {
+        // this.infoPaquete.folios =
+        axios
+          .get(`${config.api}/folios`, {
+            params: {
+              noPaquete: paquete.noPaquete,
+              bis: paquete.bis,
+              folioInicio: paquete.folioInicio,
+              folioFin: paquete.folioFin,
+            },
+          })
+          .then((res) => {
+            if (res.data.folios.length == 0) {
+              this.spinner = false;
+              return Swal.fire(
+                `No se pudo encontrar el paquete ${this.noPaquete}.`,
+                "",
+                "error"
+              );
+            }
+            this.folios = res.data.folios;
+            this.folios.forEach((el, index) => {
+              if (el.referencias) {
+                this.referencias[index] = el.referencias;
+                this.selected[index] = "Oficio";
+              } else this.selected[index] = "Completo";
+              // this.spinner = false;
+            });
+          });
         this.$bvModal.hide("packages");
         this.modal = false;
       }
@@ -407,47 +453,45 @@ export default {
       // this.infoPaquete.folios[index] = newval;
       // this.infoPaquete.folios.push();
       // console.log(this.infoPaquete.paquete.folioInicio);
-      for(let i = paquete.folioInicio, j = 0; i <= paquete.folioFin; i++, j++)
-      {
-        await axios.get(`http://digitalizacion.pjcdmx.gob.mx/consulta_folio.php`, {
-          params: { f: i }
-        })
-        .then((res) => {
-          if(res.data) {
-            console.log(res.data.encontrado);
-            if(res.data.encontrado == 'false') 
-              errors.push(i)
-            this.folios[j]["expediente"] = res.data.expediente;
-            this.folios[j]["juzgado"] = res.data.juzgado;
-            this.folios[j]["instanciaJ"] = res.data.insJuz;
-            this.folios[j]["sala"] = res.data.Sala;
-            this.folios[j]["instanciaS"] = res.data.insSal;
-            this.folios[j]["actor"] = res.data.actor;
-            this.folios[j]["demandado"] = res.data.demandado;
-            this.folios[j]["juicio"] = res.data.juicio;
-            this.folios[j]["dependencia"] =
-            res.data.dependencia;
-          }
-          // this.infoPaquete.folios[j]["spinner"] = false;
-        }).catch((error) => {
-          if (error) {
-              errors.push(i);
-          }
-        });
-      }
-      if(errors.length > 0){
+      // for(let i = paquete.folioInicio, j = 0; i <= paquete.folioFin; i++, j++)
+      // {
+      //   await axios.get(`http://digitalizacion.pjcdmx.gob.mx/consulta_folio.php`, {
+      //     params: { f: i }
+      //   })
+      //   .then((res) => {
+      //     if(res.data) {
+      //       console.log(res.data.encontrado);
+      //       if(res.data.encontrado == 'false')
+      //         errors.push(i)
+      //       this.folios[j]["expediente"] = res.data.expediente;
+      //       this.folios[j]["juzgado"] = res.data.juzgado;
+      //       this.folios[j]["instanciaJ"] = res.data.insJuz;
+      //       this.folios[j]["sala"] = res.data.Sala;
+      //       this.folios[j]["instanciaS"] = res.data.insSal;
+      //       this.folios[j]["actor"] = res.data.actor;
+      //       this.folios[j]["demandado"] = res.data.demandado;
+      //       this.folios[j]["juicio"] = res.data.juicio;
+      //       this.folios[j]["dependencia"] =
+      //       res.data.dependencia;
+      //     }
+      //     // this.infoPaquete.folios[j]["spinner"] = false;
+      //   }).catch((error) => {
+      //     if (error) {
+      //         errors.push(i);
+      //     }
+      //   });
+      // }
+      if (errors.length > 0) {
         this.spinner = false;
         return Swal.fire({
-              title: ``,
-              position: "top-end",
-              text: `No se obtuvo información de ${errors.length} datos:
-              ${errors.join(', ')}.`,
-              icon: "error",
-              showConfirmButton: true,
-            })
-            .then(res => this.over = false);
-      }
-      else
+          title: ``,
+          position: "top-end",
+          text: `No se obtuvo información de ${errors.length} datos:
+              ${errors.join(", ")}.`,
+          icon: "error",
+          showConfirmButton: true,
+        }).then((res) => (this.over = false));
+      } else
         Swal.fire({
           title: ``,
           position: "top-end",
@@ -491,15 +535,15 @@ export default {
       //   });
     },
     async search() {
-      if(!this.noPaquete)
+      if (!this.noPaquete)
         return Swal.fire({
-              title: ``,
-              position: "top-end",
-              text: `Ingrese un paquete`,
-              icon: "info",
-              showConfirmButton: false,
-              timer: 1000,
-            });
+          title: ``,
+          position: "top-end",
+          text: `Ingrese un paquete`,
+          icon: "info",
+          showConfirmButton: false,
+          timer: 1000,
+        });
       this.spinner = true;
       // if (!this.noPaquete)
       //   this.$router.push("/");
@@ -518,40 +562,39 @@ export default {
               this.spinner = false;
               this.infoPaquete = null;
             });
-          }
-          else if (res.data.paquete.length > 1){
+          } else if (res.data.paquete.length > 1) {
             this.paquetes = res.data.paquete;
             this.modal = true;
             return this.$bvModal.show("packages");
-          }
-          else {
+          } else {
             this.paquetePreparado = true;
-            axios.get(`${config.api}/folios`, {
-          params: {
-            noPaquete: res.data.paquete[0].noPaquete,
-            bis: res.data.paquete[0].bis,
-            folioInicio: res.data.paquete[0].folioInicio,
-            folioFin: res.data.paquete[0].folioFin
-          }
-        })
-        .then(res => {
-          if (res.data.folios.length == 0) {
-            this.spinner = false;
-            return Swal.fire(
-              `No se pudo encontrar el paquete ${this.noPaquete}.`,
-              "",
-              "error"
-            );
-          }
-          this.folios = res.data.folios;
-          // this.folios.forEach((el, index) => {
-          //   if (el.referencias) {
-          //     this.referencias[index] = el.referencias;
-          //     this.selected[index] = "Oficio";
-          //   } else this.selected[index] = "Completo";
-          //   this.spinner = false;
-          // });
-        })
+            axios
+              .get(`${config.api}/folios`, {
+                params: {
+                  noPaquete: res.data.paquete[0].noPaquete,
+                  bis: res.data.paquete[0].bis,
+                  folioInicio: res.data.paquete[0].folioInicio,
+                  folioFin: res.data.paquete[0].folioFin,
+                },
+              })
+              .then((res) => {
+                if (res.data.folios.length == 0) {
+                  this.spinner = false;
+                  return Swal.fire(
+                    `No se pudo encontrar el paquete ${this.noPaquete}.`,
+                    "",
+                    "error"
+                  );
+                }
+                this.folios = res.data.folios;
+                this.folios.forEach((el, index) => {
+                  if (el.referencias) {
+                    this.referencias[index] = el.referencias;
+                    this.selected[index] = "Oficio";
+                  } else this.selected[index] = "Completo";
+                  // this.spinner = false;
+                });
+              });
             this.infoPaquete.paquete = res.data.paquete;
           }
           this.getInformacionFolio(res.data.paquete[0]);
@@ -563,7 +606,6 @@ export default {
           this.over = false;
         });
 
-      
       // }
 
       // AQUÍ //
@@ -659,7 +701,7 @@ export default {
           // <-- if confirmed
           // this.infoPaquete.paquete["infoCapturadaSICE"] = true;
           let data = {
-            folios: this.infoPaquete.folios,
+            folios: this.folios,
             infoCapturadaSICE: "SI",
           };
           axios

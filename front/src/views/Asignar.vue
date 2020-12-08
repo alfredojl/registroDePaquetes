@@ -195,6 +195,7 @@ export default {
       verificadores: null,
       preparador: null,
       preparadores: null,
+      paquetes: [],
       turnos: ["Matutino", "Vespertino"],
     };
   },

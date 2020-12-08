@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 
+const MongoClient = require("mongodb").MongoClient;
 const Folio = require('../models/Folios');
 const Paquete = require('../models/Paquetes');
 
@@ -10,28 +11,73 @@ app.put('/foliosSICE', async(req, res) => {
     let noPaquete = folios[0]['noPaquete'];
     let foliosResultado = [];
 
-    // Folio.findOneAndUpdate()
-    for (bodi of folios) {
-        var n = Folio.findOneAndUpdate({ folio: bodi.folio }, bodi, { new: true }, (err, folioDB) => {
-            if (err) {
-                return res.status(500).json({
-                    ok: false,
-                    err
-                })
-            }
-            console.log(folioDB);
-        })
-    }
-    Paquete.findOneAndUpdate({ noPaquete, bis }, { validado }, { new: true }, (err, paqueteDB) => {
-        if (err) {
-            console.log(err);
-            return res.status(500).json({
-                ok: false,
-                err
+    let foliosSICE = folios.map(el => {
+        return {
+            Folio: el.folio,
+            Expediente: el.expediente,
+            Paquete: el.paquete,
+            Tomo: el.tomos,
+            Juzgado: el.juzgado,
+            JuzgadoInstancia: el.instanciaJ,
+            Sala: el.sala,
+            SalaInstancia: el.instanciaS,
+            Toca: el.toca,
+            Actor: el.actor,
+            Demandado: el.demandado,
+            Juicio: el.juicio,
+            Observaciones: el.observaciones,
+            Dependencia: el.dependencia,
+            NumeroImagenes: el.numImagenes
+        };
+    })
+
+    console.log(foliosSICE);
+
+    MongoClient.connect(
+            "mongodb://pjcdmx:pjcdmx@127.0.0.1:27017/archivosSICE?authSource=admin", { useUnifiedTopology: true },
+            (err, res) => {
+                if (err) throw new Error(err);
+
+                console.log("BD SICE ONLINE");
+
+                const archivo = res.db("archivosSICE").collection("InfoFolio");
+                archivo.insertMany(foliosSICE)
+                    .then(foliosDB => {
+                        console.log(foliosDB);
+                        return res.json({
+                            ok: true,
+                            folios: foliosDB
+                        })
+                    })
+                    .catch(err => {
+                        return res.status(500).json({
+                            ok: false,
+                            err
+                        })
+                    });
             })
-        }
-        console.log(paqueteDB);
-    });
+        // Folio.findOneAndUpdate()
+        // for (bodi of folios) {
+        //     var n = Folio.findOneAndUpdate({ folio: bodi.folio }, bodi, { new: true }, (err, folioDB) => {
+        //         if (err) {
+        //             return res.status(500).json({
+        //                 ok: false,
+        //                 err
+        //             })
+        //         }
+        //         console.log(folioDB);
+        //     })
+        // }
+        // Paquete.findOneAndUpdate({ noPaquete, bis }, { validado }, { new: true }, (err, paqueteDB) => {
+        //     if (err) {
+        //         console.log(err);
+        //         return res.status(500).json({
+        //             ok: false,
+        //             err
+        //         })
+        //     }
+        //     console.log(paqueteDB);
+        // });
     return res.json({
             ok: true,
             message: 'Actualizados'
@@ -97,20 +143,20 @@ app.get('/foliosPaquete', async(req, res) => {
 
         infoPaquete.paquete = paqueteDB;
 
-        Folio.find({ noPaquete }, (err, folios) => {
-            if (err)
-                return res.status(500).json({
-                    ok: false,
-                    err
-                })
+        // Folio.find({ noPaquete }, (err, folios) => {
+        //     if (err)
+        //         return res.status(500).json({
+        //             ok: false,
+        //             err
+        //         })
 
-            infoPaquete.folios = folios;
+        //     infoPaquete.folios = folios;
 
-            return res.json({
-                ok: true,
-                infoPaquete
-            });
-        })
+        return res.json({
+            ok: true,
+            infoPaquete
+        });
+        // })
     })
 })
 

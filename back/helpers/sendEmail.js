@@ -46,11 +46,11 @@ const getPaquetes = () => {
         // MongoClient.connect('mongodb://pjcdmx:pjcdmx@172.26.60.60:27017/archivosSICE', { useUnifiedTopology: true },
         async(err, res) => {
 
+            if (err) throw new Error(err);
+
             moment.locale('es-mx')
             let yesterday = moment().subtract(1, 'days').format('L');
 
-
-            if (err) throw err;
             console.log("BD ONLINE");
 
             const archivo = res.db("archivosSICE").collection("InfoFolio");
