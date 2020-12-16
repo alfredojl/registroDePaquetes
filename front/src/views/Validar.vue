@@ -191,12 +191,14 @@ export default {
             this.cantidad = res.data.paquete[0].cantidad;
             this.identificador = res.data.paquete[0].identificador;
             this.paquetes = res.data.paquete;
+            this.showBis = res.data.paquete[0].bis;
             return this.$bvModal.show("packages");
           } else {
             this.spinner = true;
             this.cantidad = res.data.paquete[0].cantidad;
             this.identificador = res.data.paquete[0].identificador;
             localStorage.noPaquete = this.noPaquete;
+            this.showBis = res.data.paquete[0].bis;
             axios
               .get(`${config.api}/folios`, {
                 params: {
@@ -285,6 +287,8 @@ export default {
         .then((res) => {
           this.cantidad = res.data.paquete[0].cantidad;
           this.identificador = res.data.paquete[0].identificador;
+            console.log(res.data.paquete);
+            this.showBis = res.data.paquete[0].bis;
           if (res.data.paquete.length === 0) {
             return Swal.fire(
               `No se encontró el paquete ${this.noPaquete}.`,
@@ -307,7 +311,6 @@ export default {
                 },
               })
               .then((res) => {
-                this.showBis = res.data.paquete.bis;
                 if (res.data.folios.length == 0) {
                   this.spinner = false;
                   return Swal.fire(

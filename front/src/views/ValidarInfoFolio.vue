@@ -29,7 +29,7 @@
       <div class="col-4"></div>
       <div class="col-6 p-0 d-flex">
         <b-input-group
-          :prepend="`Información relacionada al Paquete [${noPaquete}]`"
+          :prepend="`Cargados ${count} de ${folios  ? '0' : folios.length}`"
         >
         </b-input-group>
       </div>
@@ -140,7 +140,7 @@
                     <div class="col-3"></div>
                     <div class="col-6 p-0 d-flex">
                       <b-input-group size="sm" prepend="Paquete" class="">
-                        <b-form-input v-model="dato['paqueteF']"></b-form-input>
+                        <b-form-input v-model="dato['paquete']"></b-form-input>
                       </b-input-group>
                     </div>
                   </div>
@@ -369,6 +369,7 @@ export default {
       dependencias: null,
       infoPaquete: [],
       paquetes: [],
+      count: null,
       bis: false,
       cantidad: null,
       identificador: null,
@@ -453,34 +454,37 @@ export default {
       // this.infoPaquete.folios[index] = newval;
       // this.infoPaquete.folios.push();
       // console.log(this.infoPaquete.paquete.folioInicio);
-      // for(let i = paquete.folioInicio, j = 0; i <= paquete.folioFin; i++, j++)
-      // {
-      //   await axios.get(`http://digitalizacion.pjcdmx.gob.mx/consulta_folio.php`, {
-      //     params: { f: i }
-      //   })
-      //   .then((res) => {
-      //     if(res.data) {
-      //       console.log(res.data.encontrado);
-      //       if(res.data.encontrado == 'false')
-      //         errors.push(i)
-      //       this.folios[j]["expediente"] = res.data.expediente;
-      //       this.folios[j]["juzgado"] = res.data.juzgado;
-      //       this.folios[j]["instanciaJ"] = res.data.insJuz;
-      //       this.folios[j]["sala"] = res.data.Sala;
-      //       this.folios[j]["instanciaS"] = res.data.insSal;
-      //       this.folios[j]["actor"] = res.data.actor;
-      //       this.folios[j]["demandado"] = res.data.demandado;
-      //       this.folios[j]["juicio"] = res.data.juicio;
-      //       this.folios[j]["dependencia"] =
-      //       res.data.dependencia;
-      //     }
-      //     // this.infoPaquete.folios[j]["spinner"] = false;
-      //   }).catch((error) => {
-      //     if (error) {
-      //         errors.push(i);
-      //     }
-      //   });
-      // }
+      for(let i = paquete.folioInicio, j = 0; i <= paquete.folioFin; i++, j++)
+      {
+        await axios.get(`http://digitalizacion.pjcdmx.gob.mx/consulta_folio.php`, {
+          params: { f: i }
+        })
+        .then((res) => {
+          if(res.data) {
+            if(res.data.encontrado == 'false')
+              errors.push(i)
+            this.folios[j]["expediente"] = res.data.expediente;
+            this.folios[j]["toca"] = res.data.toca;
+            this.folios[j]["paquete"] = this.noPaquete;
+            this.folios[j]["juzgado"] = res.data.juzgado;
+            this.folios[j]["instanciaJ"] = res.data.insJuz;
+            this.folios[j]["sala"] = res.data.Sala;
+            this.folios[j]["instanciaS"] = res.data.insSal;
+            this.folios[j]["actor"] = res.data.actor;
+            this.folios[j]["demandado"] = res.data.demandado;
+            this.folios[j]["juicio"] = res.data.juicio;
+            this.folios[j]["dependencia"] =
+            res.data.dependencia;
+            this.folios[j]["observaciones"] = res.data.observaciones || null;
+            this.count++;
+          }
+          // this.infoPaquete.folios[j]["spinner"] = false;
+        }).catch((error) => {
+          if (error) {
+              errors.push(i);
+          }
+        });
+      }
       if (errors.length > 0) {
         this.spinner = false;
         return Swal.fire({
@@ -535,6 +539,7 @@ export default {
       //   });
     },
     async search() {
+      this.count = 0;
       if (!this.noPaquete)
         return Swal.fire({
           title: ``,
@@ -709,7 +714,7 @@ export default {
             .then((res) => {
               Swal.fire(
                 `¡Hecho!`,
-                `Folios actualizados correctamente. Favor de indicar como 'Digitalizado' el paquete.`,
+                `Folios actualizados correctamente.`,
                 "success"
               ).then((res) => {
                 // this.$router.replace("/asignar");

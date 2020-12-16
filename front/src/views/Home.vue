@@ -99,7 +99,7 @@
         <b-input-group prepend="Paquete" class="">
           <b-form-input
             type="text"
-            :value="[noPaquete, bis ? 'BIS' : null, cantidad ? identificador + '/' + cantidad : ''].join(' ')"
+            :value="[noPaquete, showBis ? 'BIS' : null, cantidad ? identificador + '/' + cantidad : ''].join(' ')"
             disabled
           ></b-form-input>
         </b-input-group>

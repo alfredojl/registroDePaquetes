@@ -15,7 +15,7 @@ app.put('/foliosSICE', async(req, res) => {
         return {
             Folio: el.folio,
             Expediente: el.expediente,
-            Paquete: el.paquete,
+            Paquete: el.noPaquete,
             Tomo: el.tomos,
             Juzgado: el.juzgado,
             JuzgadoInstancia: el.instanciaJ,
@@ -34,13 +34,14 @@ app.put('/foliosSICE', async(req, res) => {
     console.log(foliosSICE);
 
     MongoClient.connect(
-            "mongodb://pjcdmx:pjcdmx@127.0.0.1:27017/archivosSICE?authSource=admin", { useUnifiedTopology: true },
-            (err, res) => {
+            "mongodb://pjcdmx:pjcdmx@172.26.60.60:27017/archivosSICE?authSource=admin", { useUnifiedTopology: true },
+            (err, result) => {
+                console.log('Dentro');
                 if (err) throw new Error(err);
 
                 console.log("BD SICE ONLINE");
 
-                const archivo = res.db("archivosSICE").collection("InfoFolio");
+                const archivo = result.db("archivosSICE").collection("InfoFolio");
                 archivo.insertMany(foliosSICE)
                     .then(foliosDB => {
                         console.log(foliosDB);
@@ -78,10 +79,10 @@ app.put('/foliosSICE', async(req, res) => {
         //     }
         //     console.log(paqueteDB);
         // });
-    return res.json({
-            ok: true,
-            message: 'Actualizados'
-        })
+        // // return res.json({
+        // //         ok: true,
+        // //         message: 'Actualizados'
+        // //     })
         // Folio.updateMany(folios)
         //     .exec((err, foliosDB) => {
         //         if (err) {
