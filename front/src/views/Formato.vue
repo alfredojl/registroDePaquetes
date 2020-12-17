@@ -238,6 +238,12 @@ Preparador: ${this.preparador}`
         .then((res) => {
           this.folios = res.data.folios;
           this.qr();
+          this.folios.forEach((el, index) => {
+            if(el.estado == "Faltante") {
+              this.folios[index].tomos = "********"; 
+              this.folios[index].referencias = "********"; 
+            }
+          })
           // this.folios.forEach((el, index) => {
           //   if (el.referencias) {
           //     this.referencias[index] = el.referencias;
