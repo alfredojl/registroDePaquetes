@@ -12,7 +12,7 @@
           v-model="datos"
         ></b-form-textarea>
       </div>
-      <pre>{{ noPaquete }}</pre>
+      <pre>{{ noPaquete }} {{ bis ? 'BIS' : '' }} {{ identificador ? identificador + '/' : '' }}{{ cantidad }}</pre>
 
       <div class="row mt-2 justify-content-center">
         <b-col cols="6"><b-button @click="qr" variant="primary">Agregar</b-button></b-col>

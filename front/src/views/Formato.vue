@@ -209,7 +209,7 @@ export default {
   methods: {
     qr() {
       QR.toDataURL(
-        `${this.noPaquete} 
+        `${this.noPaquete} ${ this.bis ? 'BIS' : '' } ${ this.identificador ? this.identificador + '/' : '' }${ this.cantidad }
 Folio inicio: ${this.folioInicio}
 Folio fin: ${this.folioFin}
 Fecha expediente: ${this.fechaExpediente}
@@ -237,13 +237,13 @@ Preparador: ${this.preparador}`
         })
         .then((res) => {
           this.folios = res.data.folios;
-          this.qr();
           this.folios.forEach((el, index) => {
             if(el.estado == "Faltante") {
               this.folios[index].tomos = "********"; 
-              this.folios[index].referencias = "********"; 
+              this.folios[index].referencias = "********";
             }
           })
+          this.qr();
           // this.folios.forEach((el, index) => {
           //   if (el.referencias) {
           //     this.referencias[index] = el.referencias;
