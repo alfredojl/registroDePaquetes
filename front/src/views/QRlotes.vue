@@ -12,7 +12,7 @@
           v-model="datos"
         ></b-form-textarea>
       </div>
-      <pre>{{ noPaquete }} {{ bis ? 'BIS' : '' }} {{ identificador ? identificador + '/' : '' }}{{ cantidad }}</pre>
+      <pre></pre>
 
       <div class="row mt-2 justify-content-center">
         <b-col cols="6"><b-button @click="qr" variant="primary">Agregar</b-button></b-col>
@@ -25,7 +25,7 @@
       v-for="(images, index) in qrvue" :key="images"
       :img-src="images"
     >
-    {{ paquetes[index] }}
+    {{ paquetes[index] }} {{ bis ? 'BIS' : '' }} {{ identificador ? identificador + '/' : '' }}{{ cantidad }}
         </b-card>
 
     </div>
