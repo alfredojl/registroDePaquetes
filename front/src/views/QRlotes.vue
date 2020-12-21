@@ -25,7 +25,7 @@
       v-for="(images, index) in qrvue" :key="images"
       :img-src="images"
     >
-    {{ paquetes[index] }} {{ bis ? 'BIS' : '' }} {{ identificador ? identificador + '/' : '' }}{{ cantidad }}
+    {{ paquetes[index] }}
         </b-card>
 
     </div>
@@ -57,7 +57,6 @@ this.datos
         .catch((err) => {
           console.log(err);
         });
-        this.paquetes.push(this.datos.slice(0, 5));
         this.$refs.folios.$el.focus();
     },
   },
