@@ -12,7 +12,7 @@
           v-model="datos"
         ></b-form-textarea>
       </div>
-      <pre></pre>
+      <pre>{{ noPaquete }}</pre>
 
       <div class="row mt-2 justify-content-center">
         <b-col cols="6"><b-button @click="qr" variant="primary">Agregar</b-button></b-col>
@@ -21,7 +21,7 @@
     <div class="row">
       <!-- <img v-for="(images, index) in qrvue" :key="images" :src="images" alt="" class="bottom-qr m-2" /> -->
       <b-card
-      class="p-2 bottom-qr m-4"
+      class="p-2 bottom-qr m-4 text-center"
       v-for="(images, index) in qrvue" :key="images"
       :img-src="images"
     >
@@ -57,6 +57,8 @@ this.datos
         .catch((err) => {
           console.log(err);
         });
+        this.paquetes.push(this.datos.split(/\n/g)[0]);
+        // this.paquetes.push(this.datos.slice(0, 5));
         this.$refs.folios.$el.focus();
     },
   },

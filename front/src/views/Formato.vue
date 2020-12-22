@@ -209,7 +209,7 @@ export default {
   methods: {
     qr() {
       QR.toDataURL(
-        `${this.noPaquete} ${ this.bis ? 'BIS' : '' } ${ this.identificador ? this.identificador + '/' : '' }${ this.cantidad }
+        `${this.noPaquete} ${ this.bis ? 'BIS' : '' } ${ this.identificador ? this.identificador + '/' + this.cantidad: '' }
 Folio inicio: ${this.folioInicio}
 Folio fin: ${this.folioFin}
 Fecha expediente: ${this.fechaExpediente}
