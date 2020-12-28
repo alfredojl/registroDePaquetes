@@ -213,8 +213,8 @@ export default {
 Folio inicio: ${this.folioInicio}
 Folio fin: ${this.folioFin}
 Fecha expediente: ${this.fechaExpediente}
-Verificador: ${this.verificador}
-Preparador: ${this.preparador}`
+Lider de equipo: ${this.verificador ? this.verificador : 'Sin asignar'}`
+// Preparador: ${this.preparador ? this.preparador : 'Sin asignar'}`
       )
         .then((url) => {
           this.qrvue = url;

@@ -161,6 +161,23 @@ app.get('/foliosPaquete', async(req, res) => {
     })
 })
 
+app.get('/folio', (req, res) => {
+    let folio = req.query.folio;
+
+    Folio.find({ folio }, (err, folioDB) => {
+        if (err)
+            return res.status(500).json({
+                ok: false,
+                err
+            });
+
+        res.json({
+            ok: true,
+            folio: folioDB
+        });
+    })
+})
+
 app.get('/folios', async(req, res) => {
     let noPaquete = req.query.noPaquete;
     let bis = req.query.bis;

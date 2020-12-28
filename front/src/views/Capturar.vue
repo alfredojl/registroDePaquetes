@@ -19,6 +19,7 @@
           <b-form-input
             type="number"
             autofocus
+            lazy
             v-model="noPaquete"
             v-on:keyup.enter="search()"
           ></b-form-input>
@@ -154,7 +155,7 @@
       <div class="row">
         <div class="col-3"></div>
         <div class="col-6 p-0 d-flex">
-          <b-input-group prepend="Verificador" class="">
+          <b-input-group prepend="Lider de equipo" class="">
             <b-form-input
               type="text"
               disabled
@@ -199,6 +200,7 @@
               :options="digitalizadores"
               value-field="name"
               text-field="id"
+              @change="changeEstado()"
             ></b-form-select>
           </b-input-group>
         </div>
@@ -325,9 +327,13 @@ export default {
     this.search();
   },
   methods: {
+    changeEstado() {
+      this.estado = "Digitalizado"
+    },
     today() {
       this.fechaCosido = new Date();
       this.fechaCosido = this.fechaCosido.toISOString().slice(0, 10);
+      this.estado = "Cosido"
     },
     todayP() {
       this.fechaPreparacion = new Date();
@@ -430,6 +436,7 @@ export default {
           this.validador = res.data.paquete[0].validador;
           this.preparador = res.data.paquete[0].preparador;
           this.verificador = res.data.paquete[0].verificador;
+          this.digitalizador = res.data.paquete[0].digitalizador;
           this.noFojas = res.data.paquete[0].noFojas;
           this.observaciones = res.data.paquete[0].observaciones;
           this.getPreparadores();

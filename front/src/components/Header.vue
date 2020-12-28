@@ -17,7 +17,7 @@
 
       <b-navbar-nav class="ml-auto">
         <span class="text-white text-uppercase mr-3 my-auto" v-text="setCurrentUser()"></span>
-        <b-button  size="sm" @click="logOut()" class="p-0">Cerrar sesión</b-button>
+        <b-button  size="sm" @click="logOut()" class="p-1">Cerrar sesión</b-button>
 
       </b-navbar-nav>
     </b-collapse>

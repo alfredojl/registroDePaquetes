@@ -84,6 +84,9 @@ let paqueteSchema = new Schema({
     noLote: {
         type: Number
     },
+    fechaEntregado: {
+        type: Date,
+    },
     revisado: {
         type: Boolean,
         default: false
