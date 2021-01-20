@@ -7,99 +7,98 @@ const Paquete = require('../models/Paquetes');
 
 app.put('/foliosSICE', async(req, res) => {
     let folios = req.body.data.folios;
-    let infoCapturadaSICE = req.body.data.infoCapturadaSICE || "NO";
-    let noPaquete = folios[0]['noPaquete'];
     let foliosResultado = [];
 
-    let foliosSICE = folios.map(el => {
-        return {
-            Folio: el.folio,
-            Expediente: el.expediente,
-            Paquete: el.noPaquete,
-            Tomo: el.tomos,
-            Juzgado: el.juzgado,
-            JuzgadoInstancia: el.instanciaJ,
-            Sala: el.sala,
-            SalaInstancia: el.instanciaS,
-            Toca: el.toca,
-            Actor: el.actor,
-            Demandado: el.demandado,
-            Juicio: el.juicio,
-            Observaciones: el.observaciones,
-            Dependencia: el.dependencia,
-            NumeroImagenes: el.numImagenes
-        };
-    })
+    // let foliosSICE = folios.map(el => {
+    //     return {
+    //         Folio: el.folio,
+    //         Expediente: el.expediente,
+    //         Paquete: el.noPaquete,
+    //         Tomo: el.tomos,
+    //         Juzgado: el.juzgado,
+    //         JuzgadoInstancia: el.instanciaJ,
+    //         Sala: el.sala,
+    //         SalaInstancia: el.instanciaS,
+    //         Toca: el.toca,
+    //         Actor: el.actor,
+    //         Demandado: el.demandado,
+    //         Juicio: el.juicio,
+    //         Observaciones: el.observaciones,
+    //         Dependencia: el.dependencia,
+    //         NumeroImagenes: el.numImagenes
+    //     };
+    // })
 
-    console.log(foliosSICE);
+    // console.log(foliosSICE);
 
-    MongoClient.connect(
-            "mongodb://pjcdmx:pjcdmx@172.26.60.60:27017/archivosSICE?authSource=admin", { useUnifiedTopology: true },
-            (err, result) => {
-                console.log('Dentro');
-                if (err) throw new Error(err);
+    // MongoClient.connect(
+    //         "mongodb://pjcdmx:pjcdmx@172.26.60.60:27017/archivosSICE?authSource=admin", { useUnifiedTopology: true },
+    //         (err, result) => {
+    //             if (err) throw new Error(err);
 
-                console.log("BD SICE ONLINE");
-
-                const archivo = result.db("archivosSICE").collection("InfoFolio");
-                archivo.insertMany(foliosSICE)
-                    .then(foliosDB => {
-                        console.log(foliosDB);
-                        return res.json({
-                            ok: true,
-                            folios: foliosDB
-                        })
-                    })
-                    .catch(err => {
-                        return res.status(500).json({
-                            ok: false,
-                            err
-                        })
-                    });
+    //             const archivo = result.db("registro").collection("folios");
+    //             archivo.insertMany(foliosSICE)
+    //                 .then(foliosDB => {
+    //                     console.log(foliosDB);
+    //                     return res.json({
+    //                         ok: true,
+    //                         folios: foliosDB
+    //                     })
+    //                 })
+    //                 .catch(err => {
+    //                     return res.status(500).json({
+    //                         ok: false,
+    //                         err
+    //                     })
+    //                 });
+    //         })
+    // Folio.findOneAndUpdate()
+    for (bodi of folios) {
+        var n = Folio.updateOne({ folio: bodi.folio, bis: bodi.bis, tomo: bodi.tomo }, { $set: bodi }, { new: true, upsert: true }, (err, folioDB) => {
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    err
+                })
+            }
+            res.json({
+                ok: true,
+                folioDB
             })
-        // Folio.findOneAndUpdate()
-        // for (bodi of folios) {
-        //     var n = Folio.findOneAndUpdate({ folio: bodi.folio }, bodi, { new: true }, (err, folioDB) => {
-        //         if (err) {
-        //             return res.status(500).json({
-        //                 ok: false,
-        //                 err
-        //             })
-        //         }
-        //         console.log(folioDB);
-        //     })
-        // }
-        // Paquete.findOneAndUpdate({ noPaquete, bis }, { validado }, { new: true }, (err, paqueteDB) => {
-        //     if (err) {
-        //         console.log(err);
-        //         return res.status(500).json({
-        //             ok: false,
-        //             err
-        //         })
-        //     }
-        //     console.log(paqueteDB);
-        // });
-        // // return res.json({
-        // //         ok: true,
-        // //         message: 'Actualizados'
-        // //     })
-        // Folio.updateMany(folios)
-        //     .exec((err, foliosDB) => {
-        //         if (err) {
-        //             console.log(err);
-        //             return res.status(500).json({
-        //                 ok: false,
-        //                 err
-        //             })
-        //         }
-        //         Paquete.findOneAndUpdate({ noPaquete }, { validado: folios[0]['validado'] }, (err, paqueteDB) => {
-        //             if (err) {
-        //                 console.log(err);
-        //                 return res.status(500).json({
-        //                     ok: false,
-        //                     err
-        //                 })
-        //             }
+            console.log(folioDB);
+        })
+    }
+    // Paquete.findOneAndUpdate({ noPaquete, bis }, { validado }, { new: true }, (err, paqueteDB) => {
+    //     if (err) {
+    //         console.log(err);
+    //         return res.status(500).json({
+    //             ok: false,
+    //             err
+    //         })
+    //     }
+    //     console.log(paqueteDB);
+    // });
+    // // return res.json({
+    // //         ok: true,
+    // //         message: 'Actualizados'
+    // //     })
+    // Folio.updateMany(folios)
+    //     .exec((err, foliosDB) => {
+    //         if (err) {
+    //             console.log(err);
+    //             return res.status(500).json({
+    //                 ok: false,
+    //                 err
+    //             })
+    //         }
+    //         Paquete.findOneAndUpdate({ noPaquete }, { validado: folios[0]['validado'] }, (err, paqueteDB) => {
+    //             if (err) {
+    //                 console.log(err);
+    //                 return res.status(500).json({
+    //                     ok: false,
+    //                     err
+    //                 })
+    //             }
 
     //             return res.json({
     //                 ok: true,

@@ -11,6 +11,9 @@ let foliosSchema = new Schema({
         required: true,
         unique: false
     },
+    fojas: {
+        type: Number
+    },
     tomos: {
         type: Number
     },

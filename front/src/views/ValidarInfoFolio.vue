@@ -27,12 +27,29 @@
     </b-modal>
     <div class="row mt-4">
       <div class="col-4"></div>
-      <div class="col-6 p-0 d-flex">
-        <b-input-group
-          :prepend="`Cargados ${count} de ${folios  ? '0' : folios.length}`"
+      <div class="col-6 p-0">
+        <!-- <b-input-group
+          :prepend="`Cargados ${count} de ${folios ? folios.length : '0'}`"
         >
-        </b-input-group>
+        </b-input-group> -->
+        <b-progress
+          :precision="2"
+          height="2rem"
+          :max="folios ? folios.length : '0'"
+          show-progress
+          animated
+        >
+          <b-progress-bar :value="count">
+            {{ count }} de {{ folios ? folios.length : "0" }}
+          </b-progress-bar>
+        </b-progress>
+        <!-- <b-skeleton-wrapper :loading="loading">
+      </b-skeleton-wrapper> -->
       </div>
+    </div>
+    <div class="row p-0 mt-4">
+      <div class="col-4"></div>
+      <div class="col-6"></div>
     </div>
     <div class="row mt-4">
       <div class="col-4"></div>
@@ -68,7 +85,7 @@
       </b-card>
     </div> -->
     <b-overlay :show="over" blur="1rem" variant="light" rounded="lg">
-      <div class="accordion" role="tablist">
+      <div class="accordion mt-2" role="tablist">
         <!-- <b-card
         no-body
         class="mb-1"
@@ -79,19 +96,39 @@
           no-body
           class="mb-1"
           v-for="(dato, index) in folios"
-          :key="dato.folio"
+          :key="dato.folio + '-' + index"
         >
           <b-card-header header-tag="header" class="p-1" role="tab">
+            <div class="row">
+            <b-button-group class="col-12">
             <b-button
               size="sm"
               block
-              v-b-toggle="`folio-${dato.folio}`"
-              variant="info"
-              >Folio - {{ dato.folio }}</b-button
+              v-b-toggle="`folio-${dato.folio}-` + index"
+              :variant="`${dato.tomo ? 'light' : 'info'}`"
+              >Folio {{ dato.folio }} {{ dato.tomo ? 'Tomo ' : ''}}{{ dato.tomo || ''}}</b-button
             >
+            <b-button class="p-1 " size="md" variant='dark'
+            v-show="!dato.tomo"
+            @click="agregaTomo(dato.folio, index)"
+            >
+              <b-icon-plus-circle>
+              </b-icon-plus-circle>
+            <!--  <span>tomo</span> -->
+            </b-button>
+            <b-button
+              v-show="!dato.tomo"
+              class="p-1"
+              size="md"
+              @click="deleteTomo(index)"
+            >
+              <b-icon-dash-circle></b-icon-dash-circle>
+            </b-button>
+            </b-button-group>
+            </div>
           </b-card-header>
           <b-collapse
-            :id="`folio-${dato.folio}`"
+            :id="`folio-${dato.folio}-` + index"
             accordion="my-accordion"
             role="tabpanel"
           >
@@ -105,6 +142,39 @@
                 </center>
                 <br />
                 <div class="container">
+                  <div class="row mt-2 mb-2">
+                  <div class="col-3"></div>
+                  <div class="col-6 p-0 d-flex">
+                    <b-form-radio-group
+                      :name="'radio-options' + (index + 1)"
+                      :options="options"
+                      class="col-auto m-auto"
+                      v-model="folios[index]['estado']"
+                    >
+                    </b-form-radio-group>
+                    <!-- <b-input-group prepend="Tomos" class="">
+                    <b-form-input
+                      class="col-3"
+                      type="number"
+                      :name="'tomos' + (index + 1)"
+                      v-model="folios[index]['tomos']"
+                    ></b-form-input>
+                    </b-input-group> -->
+                    <b-input-group
+                      prepend="Oficio"
+                      class="ml-2"
+                      v-if="folios[index]['estado'] == 'Oficio'"
+                    >
+                    <b-form-input
+                      v-if="folios[index]['estado'] == 'Oficio'"
+                      class="col-3"
+                      type="number"
+                      :name="'referencias' + (index + 1)"
+                      v-model="folios[index]['referencias']"
+                    ></b-form-input>
+                    </b-input-group>
+                  </div>
+                </div>
                   <div class="row">
                     <div class="col-3"></div>
                     <div class="col-6 p-0 d-flex">
@@ -112,17 +182,29 @@
                         <b-form-input
                           type="number"
                           disabled
+                          class="text-center"
                           v-model="dato['folio']"
                           v-on:keyup.enter="search"
                         ></b-form-input>
                         <b-input-group-prepend>
-                          <b-button
+                          <!-- <b-button
                             variant="secondary"
                             @click="getInformacionFolio(dato['folio'], index)"
                             v-show="!dato['folioBuscadoSICE']"
                             >Buscar</b-button
-                          >
+                          > -->
                         </b-input-group-prepend>
+                      </b-input-group>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-3"></div>
+                    <div class="col-6 p-0 d-flex">
+                      <b-input-group size="sm" prepend="Fojas" class="">
+                        <b-form-input
+                          type="number"
+                          v-model="dato['fojas']"
+                        ></b-form-input>
                       </b-input-group>
                     </div>
                   </div>
@@ -140,7 +222,7 @@
                     <div class="col-3"></div>
                     <div class="col-6 p-0 d-flex">
                       <b-input-group size="sm" prepend="Paquete" class="">
-                        <b-form-input v-model="dato['paquete']"></b-form-input>
+                        <b-form-input v-model="dato['noPaquete']"></b-form-input>
                       </b-input-group>
                     </div>
                   </div>
@@ -253,26 +335,12 @@
                   <div class="row">
                     <div class="col-3"></div>
                     <div class="col-6 p-0 d-flex">
-                      <b-input-group size="sm" prepend="Observaciones" class="">
-                        <b-form-textarea
-                          no-resize
-                          v-model="dato['observaciones']"
-                        ></b-form-textarea>
-                      </b-input-group>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-3"></div>
-                    <div class="col-6 p-0 d-flex">
                       <b-input-group size="sm" prepend="Dependencia" class="">
-                        <b-form-select
+                        <b-form-input
                           v-model="dato['dependencia']"
-                          :options="dependencias"
-                          value-field="value"
-                          text-field="name"
                         >
                           <template #first> </template>
-                        </b-form-select>
+                        </b-form-input>
                         <!-- <b-input-group-prepend>
                           <b-button
                             variant="secondary"
@@ -286,6 +354,17 @@
                   <div class="row">
                     <div class="col-3"></div>
                     <div class="col-6 p-0 d-flex">
+                      <b-input-group size="sm" prepend="Observaciones" class="">
+                        <b-form-textarea
+                          no-resize
+                          v-model="dato['observaciones']"
+                        ></b-form-textarea>
+                      </b-input-group>
+                    </div>
+                  </div>
+                  <!-- <div class="row">
+                    <div class="col-3"></div>
+                    <div class="col-6 p-0 d-flex">
                       <b-input-group
                         size="sm"
                         prepend="Número de imagenes"
@@ -297,41 +376,28 @@
                         ></b-form-input>
                       </b-input-group>
                     </div>
-                  </div>
+                  </div> -->
                   <!-- </div> -->
                 </div>
-                <div class="row mt-2">
-                  <div class="col-3"></div>
-                  <div class="col-6 p-0 d-flex">
-                    <b-form-radio-group
-                      :name="'radio-options' + (index + 1)"
-                      :options="options"
-                      class="col-auto m-auto"
-                      v-model="folios[index]['estado']"
-                    >
-                    </b-form-radio-group>
-                    <b-input-group prepend="Tomos" class=""> </b-input-group>
-                    <b-form-input
-                      class="col-3"
-                      type="number"
-                      :name="'tomos' + (index + 1)"
-                      v-model="folios[index]['tomos']"
-                    ></b-form-input>
+                    <!-- {{ folios[index]['fojas'] }}
+                  <div class="row mt-2" v-if="folios[index]['tomos']" 
+                    v-for="ob in range(folios[index].tomos, index)" :key="ob.tomo"
+                  >
+                  <div class="col-3">
                     <b-input-group
-                      prepend="Oficio"
-                      class="ml-2"
-                      v-if="folios[index]['estado'] == 'Oficio'"
-                    >
-                    </b-input-group>
+                      :prepend="'Tomo ' + `${ ob.tomo == 0 ? 'original' : ob.tomo }`"
+                      class="col-7 p-0"
+                      >
                     <b-form-input
-                      v-if="folios[index]['estado'] == 'Oficio'"
-                      class="col-3"
-                      type="number"
-                      :name="'referencias' + (index + 1)"
-                      v-model="folios[index]['referencias']"
+                      v-if="folios[index]['tomos']"
+                      class="col-auto"
+                      v-model="folios[index]['fojas'][ob.tomo]['fojas']"
+                      type="text"
+                      :name="'fojas' + (ob.tomo + 1)"
                     ></b-form-input>
+                    </b-input-group>
                   </div>
-                </div>
+                </div> -->
               </b-card-body>
             </b-overlay>
           </b-collapse>
@@ -339,10 +405,11 @@
       </div>
     </b-overlay>
     <div class="row mt-4 mb-5" v-show="paquetePreparado">
-      <div class="col-5"></div>
+      <div class="col-4"></div>
       <div class="col-6 p-0 d-flex">
-        <b-button-group>
-          <b-button variant="success" @click="save()">Guardar</b-button>
+        <b-button-group size="sm">
+          <b-button variant="success" @click="save()">Guardar todo validado</b-button>
+          <b-button variant="success" @click="saveWithoutValidar()">Guardar sin validar</b-button>
           <b-button variant="info" @click="goBack()">Regresar</b-button>
         </b-button-group>
       </div>
@@ -390,6 +457,50 @@ export default {
     await this.search();
   },
   methods: {
+    // range(num, index) {
+    //   if(this.folios[index].fojas)
+    //     return this.folios[index].fojas;
+    //   else {
+    //     this.folios[index].fojas = [parseInt(num)];
+    //     console.log(this.folios[index].fojas);
+    //     for(let i = 0; i <= parseInt(num); i++) {
+    //       this.folios[index].fojas[i] = {
+    //         tomo: i,
+    //         fojas: null
+    //       };
+    //     }
+    //     return this.folios[index].fojas
+    //   }
+    // },
+    deleteTomo(index) {
+      if(!this.folios[index].tomos)
+        return;
+      this.folios.splice(this.folios[index].tomos + index, 1);
+      this.folios[index].tomos --;
+    },
+    agregaTomo(folio, index) {
+      // console.log(this.folios[index].tomos ? this.folios[index].tomos + 1 : index + 1);
+      this.folios.splice((this.folios[index].tomos ? this.folios[index].tomos + 1 + index: index + 1), 0, {
+        bis: this.folios[index].bis,
+        estado: 'Completo',
+        folio,
+        tomo: this.folios[index].tomos + 1 || 1,
+        expediente: this.folios[index].expediente,
+        toca: this.folios[index].toca,
+        noPaquete: this.folios[index].noPaquete,
+        juzgado: this.folios[index].juzgado,
+        instanciaJ: this.folios[index].insJuz,
+        sala: this.folios[index].Sala,
+        instanciaS: this.folios[index].insSal,
+        actor: this.folios[index].actor,
+        demandado: this.folios[index].demandado,
+        juicio: this.folios[index].juicio,
+        dependencia: this.folios[index].dependencia,
+        observaciones: this.folios[index].observaciones || null
+      })
+      this.folios[index].tomos ? this.folios[index].tomos++ : this.folios[index].tomos = 1;
+      // console.log(this.folios);
+    },
     getMaterias() {
       axios
         .get(`${config.api}/materias`)
@@ -454,36 +565,38 @@ export default {
       // this.infoPaquete.folios[index] = newval;
       // this.infoPaquete.folios.push();
       // console.log(this.infoPaquete.paquete.folioInicio);
-      for(let i = paquete.folioInicio, j = 0; i <= paquete.folioFin; i++, j++)
-      {
-        await axios.get(`http://digitalizacion.pjcdmx.gob.mx/consulta_folio.php`, {
-          params: { f: i }
-        })
-        .then((res) => {
-          if(res.data) {
-            if(res.data.encontrado == 'false')
-              errors.push(i)
-            this.folios[j]["expediente"] = res.data.expediente;
-            this.folios[j]["toca"] = res.data.toca;
-            this.folios[j]["paquete"] = this.noPaquete;
-            this.folios[j]["juzgado"] = res.data.juzgado;
-            this.folios[j]["instanciaJ"] = res.data.insJuz;
-            this.folios[j]["sala"] = res.data.Sala;
-            this.folios[j]["instanciaS"] = res.data.insSal;
-            this.folios[j]["actor"] = res.data.actor;
-            this.folios[j]["demandado"] = res.data.demandado;
-            this.folios[j]["juicio"] = res.data.juicio;
-            this.folios[j]["dependencia"] =
-            res.data.dependencia;
-            this.folios[j]["observaciones"] = res.data.observaciones || null;
-            this.count++;
-          }
-          // this.infoPaquete.folios[j]["spinner"] = false;
-        }).catch((error) => {
-          if (error) {
+      for (
+        let i = paquete.folioInicio, j = 0;
+        i <= paquete.folioFin;
+        i++, j++
+      ) {
+        await axios
+          .get(`http://digitalizacion.pjcdmx.gob.mx/consulta_folio.php`, {
+            params: { f: i },
+          })
+          .then((res) => {
+            if (res.data) {
+              if (res.data.encontrado == "false") errors.push(i);
+              this.folios[j]["expediente"] = res.data.expediente;
+              this.folios[j]["toca"] = res.data.toca;
+              this.folios[j]["juzgado"] = res.data.juzgado;
+              this.folios[j]["instanciaJ"] = res.data.insJuz;
+              this.folios[j]["sala"] = res.data.Sala;
+              this.folios[j]["instanciaS"] = res.data.insSal;
+              this.folios[j]["actor"] = res.data.actor;
+              this.folios[j]["demandado"] = res.data.demandado;
+              this.folios[j]["juicio"] = res.data.juicio;
+              this.folios[j]["dependencia"] = res.data.dependencia;
+              this.folios[j]["observaciones"] = res.data.observaciones || null;
+              this.count++;
+            }
+            // this.infoPaquete.folios[j]["spinner"] = false;
+          })
+          .catch((error) => {
+            if (error) {
               errors.push(i);
-          }
-        });
+            }
+          });
       }
       if (errors.length > 0) {
         this.spinner = false;
@@ -690,10 +803,10 @@ export default {
       //     this.spinner = false;
       //   });
     },
-    save() {
+    saveWithoutValidar() {
       Swal.fire({
-        title: "Información referente a sistema SICE",
-        text: "¿Está seguro que se capturó la información correctamente?",
+        title: "¿Está seguro de guardar la información?",
+        text: "No se ha asignado como «Validado», por lo que no se subirá a SICE.",
         showCancelButton: true,
         confirmButtonColor: "#28a745",
         cancelButtonColor: "#dc3545",
@@ -705,9 +818,56 @@ export default {
         if (result.value) {
           // <-- if confirmed
           // this.infoPaquete.paquete["infoCapturadaSICE"] = true;
+          this.folios.forEach(el => {
+            el.validado = false;
+          })
+          console.log(this.folios);
           let data = {
             folios: this.folios,
-            infoCapturadaSICE: "SI",
+          };
+          axios
+            .put(`${config.api}/foliosSICE`, { data })
+            .then((res) => {
+              Swal.fire(
+                `¡Hecho!`,
+                `Folios actualizados correctamente.`,
+                "success"
+              ).then((res) => {
+                // this.$router.replace("/asignar");
+              });
+            })
+            .catch((err) => {
+              Swal.fire(
+                `¡Error!`,
+                `Ocurrió un error al intentar actualizar los folios.`,
+                "error"
+              );
+              console.log(err);
+            });
+        }
+      });
+    },
+    save() {
+      Swal.fire({
+        title: "¿Está seguro de guardar la información?",
+        text: "La información se subirá a SICE como la guarde.",
+        showCancelButton: true,
+        confirmButtonColor: "#28a745",
+        cancelButtonColor: "#dc3545",
+        confirmButtonText: "Continuar",
+        cancelButtonText: "Cancelar",
+        buttonsStyling: true,
+      }).then((result) => {
+        // <--
+        if (result.value) {
+          // <-- if confirmed
+          // this.infoPaquete.paquete["infoCapturadaSICE"] = true;
+          this.folios.forEach(el => {
+            el.validado = true;
+          })
+          console.log(this.folios);
+          let data = {
+            folios: this.folios,
           };
           axios
             .put(`${config.api}/foliosSICE`, { data })
