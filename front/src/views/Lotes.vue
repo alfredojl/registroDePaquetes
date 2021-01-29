@@ -34,6 +34,7 @@
           <b-form-textarea
             type="textarea"
             ref="folio"
+            :state="valida"
             @keydown.delete="agrega"
             size="sm"
             v-model="noPaquete"
@@ -42,6 +43,7 @@
         </b-input-group>
       </div>
     </div>
+    <pre>{{ noPaquete }}</pre>
     <b-row class="mt-3 justify-content-center">
       <b-col lg="2">
         <b-button
@@ -108,7 +110,7 @@
           <b-form-textarea
             type="textarea"
             ref="folio"
-            @keydown.delete="busca"
+            @keypress="busca"
             size="sm"
             v-model="noPaquete"
             no-resize
@@ -224,6 +226,11 @@ export default {
       paquetes: [],
     };
   },
+  computed: {
+    valida(){
+      this.noPaquete = this.noPaquete.split(/\n/g)[0];
+    }
+  },
   methods: {
     upDate() {
       axios
@@ -250,7 +257,6 @@ export default {
       this.paquetes.forEach((el) => {
         el.fechaEntregado = fecha.toISOString().slice(0, 10);
       });
-      this.upDate();
     },
     addDateD() {
       this.spinner = true;
@@ -258,8 +264,8 @@ export default {
       fecha = fecha.toISOString().slice(0, 10);
       this.paquetes.forEach((el) => {
         el.fechaDevolucion = fecha;
+        el.push();
       });
-      this.upDate();
     },
     busca(){
       console.log('entrando');
@@ -332,7 +338,9 @@ export default {
       //   this.$refs.folio.focus();
       //   return
       // }
-      this.noPaquete = this.noPaquete.split(/\n/g)[0];
+      this.noPaquete = this.noPaquete.split('\n')[0];
+      if(this.noPaquete.length < 1)
+        return
       // let fecha = new Date();
       let paquete = {
         noLote: this.noLote,
@@ -342,8 +350,8 @@ export default {
         fechaDevolucion: null,
       };
       this.paquetes.push(paquete);
-      this.$refs.folio.focus();
       this.noPaquete = "";
+      this.$refs.folio.focus();
     },
     download() {
       let doc = new jspdf();

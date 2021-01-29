@@ -384,10 +384,10 @@ export default {
           axios.put(`${config.api}/paquete`, {
             verificador: this.verificador,
             preparador: this.preparador,
-            bis: this.bis,
+            bis: (this.bis == 'true'),
             fechaAsignacion: this.fechaAsignacion,
             turno: this.turno,
-            noPaquete: this.noPaquete,
+            noPaquete: parseInt(this.noPaquete),
             folioInicio: this.folioInicio
           })
           .then(res => {
@@ -406,8 +406,6 @@ export default {
           })
         }
       });
-      if(this.estado == 'Preparado')
-        return Swal.fire("Seleccione un digitalizador.", "", "info");
     },
   },
 };

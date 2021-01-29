@@ -516,7 +516,7 @@ export default {
           };
           this.spinner = true;
           axios
-            .put(`${config.api}/captura`, data)
+            .put(`${config.api}/paquete`, data)
             .then((res) => {
               // Swal.fire(
               //   "¡Hecho!",

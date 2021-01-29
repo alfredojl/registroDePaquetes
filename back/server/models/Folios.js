@@ -35,10 +35,6 @@ let foliosSchema = new Schema({
         type: Number,
         required: true
     },
-    folioBuscadoSICE: {
-        type: Boolean,
-        default: false
-    },
     expediente: {
         type: String
     },
@@ -46,7 +42,8 @@ let foliosSchema = new Schema({
         type: String
     },
     tomo: {
-        type: String
+        type: String,
+        default: null
     },
     juzgado: {
         type: String
@@ -79,8 +76,10 @@ let foliosSchema = new Schema({
         type: String
     },
     numImagenes: {
-        type: String,
-        type: Number
+        type: String
+    },
+    validado: {
+        type: Boolean
     },
 });
 

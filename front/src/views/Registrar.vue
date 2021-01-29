@@ -7,6 +7,7 @@
           <b-form-input
             type="number"
             autofocus
+            :state="validaPaquete"
             v-model="noPaquete"
             v-on:keyup.enter="save()"
           ></b-form-input>
@@ -117,7 +118,7 @@ import Swal from "sweetalert2";
 export default {
   data() {
     return {
-      noPaquete: null,
+      noPaquete: '',
       digitalizador: null,
       numeral: null,
       cantidad: null,
@@ -133,6 +134,11 @@ export default {
     };
   },
   computed: {
+    validaPaquete() {
+      if(this.noPaquete.length > 5)
+        return false;
+      return true;
+    },
     valida(){
       if(this.folioFin < this.folioInicio || (this.folioFin - this.folioInicio) >= 99 || (this.folioFin - this.folioInicio) < 0)
         return false
@@ -156,7 +162,7 @@ export default {
       this.digitalizador = null;
     },
     save() {
-      if(!this.valida)
+      if(!this.valida || !this.validaPaquete)
         return Swal.fire('Asegúrese de que los datos estén correctos.', '', 'info')
       // if(!this.noPaquete || !this.folioInicio || !this.folioFin || !this.fechaExpediente)
       //   return Swal.fire(`Complete todos los campos.`, ``, "info");
@@ -177,7 +183,8 @@ export default {
           data,
         })
         .then((res) => {
-          if (!res.data.message != 'existente')
+          if(!res.data.ok)
+            return Swal.fire('Info', res.data.message, 'info');
             return Swal.fire({
               title: `¡Hecho!`,
               position: "top-end",

@@ -49,7 +49,7 @@ app.post('/paquete', async(req, res) => {
     let folioFin = body.folioFin;
     let bis = body.bis;
 
-    Paquete.find({ noPaquete, bis, folioInicio, folioFin }, {}, (err, encontradoDB) => {
+    await Paquete.find({ noPaquete, bis, folioInicio, folioFin }, {}, async(err, encontradoDB) => {
         if (err)
             return res.status(500).json({
                 ok: false,
@@ -58,11 +58,23 @@ app.post('/paquete', async(req, res) => {
 
         if (encontradoDB.length > 0) {
             return res.json({
-                ok: true,
-                message: "existente",
+                ok: false,
+                message: "El paquete ya existe. Verifique la información.",
             })
-        } else
-            Paquete.create(body, async(err, paqueteDB) => {
+        }
+        await Folio.find({ folio: { $gte: folioInicio, $lte: folioFin } }, async(err, foliosDB) => {
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    err
+                });
+            }
+            if (foliosDB.length > 0)
+                return res.json({
+                    ok: false,
+                    message: `Conflicto con paquete ${foliosDB[0].noPaquete} y folios ${foliosDB.map(el => el.folio).join(', ')}.`
+                })
+            await Paquete.create(body, async(err, paqueteDB) => {
                 if (err) {
                     return res.status(500).json({
                         ok: false,
@@ -111,33 +123,14 @@ app.post('/paquete', async(req, res) => {
                     paquete: paqueteDB
                 });
             });
+        })
 
     })
 })
 
 app.put('/paquete', async(req, res) => {
-
-    let noPaquete = req.body.noPaquete;
-    let bis = req.body.bis;
-    let folioInicio = req.body.folioInicio;
-    let fechaAsignacion = req.body.fechaAsignacion;
-    let folioFin = req.body.folioFin;
-    let fechaExpediente = req.body.fechaExpediente;
-    let verificador = req.body.verificador;
-    let preparador = req.body.preparador;
-    let turno = req.body.turno;
-    let digitalizador = req.body.digitalizador;
-    let noFojas = req.body.noFojas;
-    let registrado = req.body.registrado;
-
-    await Paquete.updateOne({ noPaquete, bis, folioInicio }, {
-        noPaquete,
-        verificador,
-        fechaAsignacion,
-        noFojas,
-        preparador,
-        turno
-    }, { new: true }, async(err, paqueteDB) => {
+    let body = req.body.data;
+    await Paquete.updateOne({ noPaquete: body.noPaquete, bis: body.bis, folioInicio: body.folioInicio }, body, { new: true }, async(err, paqueteDB) => {
         if (err) {
             return res.status(500).json({
                 ok: false,
@@ -154,26 +147,9 @@ app.put('/paquete', async(req, res) => {
 app.put('/captura', (req, res) => {
     let noPaquete = req.body.noPaquete;
     let bis = req.body.bis;
-    let digitalizador = req.body.digitalizador;
     let folioInicio = req.body.folioInicio;
-    let noFojas = req.body.noFojas;
-    let fechaCosido = req.body.fechaCosido;
-    let estado = req.body.estado;
-    let cosedor = req.body.cosedor;
-    let fechaPreparacion = req.body.fechaPreparacion;
-    let observaciones = req.body.observaciones;
-    let preparador = req.body.preparador;
-
-    Paquete.updateOne({ noPaquete, bis, folioInicio }, {
-        digitalizador,
-        noFojas,
-        cosedor,
-        estado,
-        fechaPreparacion,
-        fechaCosido,
-        observaciones,
-        preparador
-    }, { new: true }, (err, paqueteDB) => {
+    let body = req.body
+    Paquete.updateOne({ noPaquete, bis, folioInicio }, body, { new: true }, (err, paqueteDB) => {
         if (err) {
             return res.status(500).json({
                 ok: false,

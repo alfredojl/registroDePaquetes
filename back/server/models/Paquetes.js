@@ -87,13 +87,17 @@ let paqueteSchema = new Schema({
     fechaEntregado: {
         type: Date,
     },
-    revisado: {
+    // revisado: {
+    //     type: Boolean,
+    //     default: false
+    // },
+    // infoCapturadaSICE: {
+    //     type: String
+    // },
+    local: {
         type: Boolean,
         default: false
     },
-    infoCapturadaSICE: {
-        type: String
-    }
 });
 
 // usuarioSchema.plugin(uniqueValidator, { message: '{PATH} ya existe, debe de ser único.' });

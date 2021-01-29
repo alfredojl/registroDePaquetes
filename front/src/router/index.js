@@ -42,7 +42,7 @@ const routes = [{
     {
         path: "/validar",
         name: "Validar",
-        component: Validar,
+        component: ValidarInfoFolio,
         beforeEnter: (to, from, next) => {
             if (isAuthenticated()) next();
             else next(false);
@@ -138,15 +138,15 @@ const routes = [{
             else next(false);
         },
     },
-    {
-        path: '/validarInfoFolio',
-        name: 'ValidarInfoFolio',
-        component: ValidarInfoFolio,
-        // beforeEnter: (to, from, next) => {
-        //     if (isAuthenticated()) next();
-        //     else next(false);
-        // },
-    },
+    // {
+    //     path: '/validarInfoFolio',
+    //     name: 'ValidarInfoFolio',
+    //     component: ValidarInfoFolio,
+    //     // beforeEnter: (to, from, next) => {
+    //     //     if (isAuthenticated()) next();
+    //     //     else next(false);
+    //     // },
+    // },
 ];
 
 const isAuthenticated = () => {

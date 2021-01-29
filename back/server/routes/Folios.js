@@ -8,6 +8,7 @@ const Paquete = require('../models/Paquetes');
 app.put('/foliosSICE', async(req, res) => {
     let folios = req.body.data.folios;
     let foliosResultado = [];
+    let errors = [];
 
     // let foliosSICE = folios.map(el => {
     //     return {
@@ -54,51 +55,51 @@ app.put('/foliosSICE', async(req, res) => {
     //         })
     // Folio.findOneAndUpdate()
     for (bodi of folios) {
-        var n = Folio.updateOne({ folio: bodi.folio, bis: bodi.bis, tomo: bodi.tomo }, { $set: bodi }, { new: true, upsert: true }, (err, folioDB) => {
+        await Folio.updateOne({ folio: bodi.folio, bis: bodi.bis, tomo: bodi.tomo }, { $set: bodi }, { new: true, upsert: true }, (err, folioDB) => {
             if (err) {
-                return res.status(500).json({
-                    ok: false,
-                    err
-                })
+                errors.push(err)
             }
-            res.json({
-                ok: true,
-                folioDB
-            })
-            console.log(folioDB);
+            foliosResultado.push(folioDB);
         })
     }
-    // Paquete.findOneAndUpdate({ noPaquete, bis }, { validado }, { new: true }, (err, paqueteDB) => {
-    //     if (err) {
-    //         console.log(err);
-    //         return res.status(500).json({
-    //             ok: false,
-    //             err
-    //         })
-    //     }
-    //     console.log(paqueteDB);
-    // });
-    // // return res.json({
-    // //         ok: true,
-    // //         message: 'Actualizados'
-    // //     })
-    // Folio.updateMany(folios)
-    //     .exec((err, foliosDB) => {
-    //         if (err) {
-    //             console.log(err);
-    //             return res.status(500).json({
-    //                 ok: false,
-    //                 err
-    //             })
-    //         }
-    //         Paquete.findOneAndUpdate({ noPaquete }, { validado: folios[0]['validado'] }, (err, paqueteDB) => {
-    //             if (err) {
-    //                 console.log(err);
-    //                 return res.status(500).json({
-    //                     ok: false,
-    //                     err
-    //                 })
-    //             }
+    res.json({
+            ok: true,
+            result: {
+                errors,
+                foliosResultado
+            }
+        })
+        // Paquete.findOneAndUpdate({ noPaquete, bis }, { validado }, { new: true }, (err, paqueteDB) => {
+        //     if (err) {
+        //         console.log(err);
+        //         return res.status(500).json({
+        //             ok: false,
+        //             err
+        //         })
+        //     }
+        //     console.log(paqueteDB);
+        // });
+        // // return res.json({
+        // //         ok: true,
+        // //         message: 'Actualizados'
+        // //     })
+        // Folio.updateMany(folios)
+        //     .exec((err, foliosDB) => {
+        //         if (err) {
+        //             console.log(err);
+        //             return res.status(500).json({
+        //                 ok: false,
+        //                 err
+        //             })
+        //         }
+        //         Paquete.findOneAndUpdate({ noPaquete }, { validado: folios[0]['validado'] }, (err, paqueteDB) => {
+        //             if (err) {
+        //                 console.log(err);
+        //                 return res.status(500).json({
+        //                     ok: false,
+        //                     err
+        //                 })
+        //             }
 
     //             return res.json({
     //                 ok: true,

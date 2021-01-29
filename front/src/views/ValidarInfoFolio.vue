@@ -25,39 +25,17 @@
         </b-list-group>
       </div>
     </b-modal>
-    <div class="row mt-4">
-      <div class="col-4"></div>
-      <div class="col-6 p-0">
-        <!-- <b-input-group
-          :prepend="`Cargados ${count} de ${folios ? folios.length : '0'}`"
-        >
-        </b-input-group> -->
-        <b-progress
-          :precision="2"
-          height="2rem"
-          :max="folios ? folios.length : '0'"
-          show-progress
-          animated
-        >
-          <b-progress-bar :value="count">
-            {{ count }} de {{ folios ? folios.length : "0" }}
-          </b-progress-bar>
-        </b-progress>
-        <!-- <b-skeleton-wrapper :loading="loading">
-      </b-skeleton-wrapper> -->
-      </div>
-    </div>
     <div class="row p-0 mt-4">
       <div class="col-4"></div>
       <div class="col-6"></div>
     </div>
     <div class="row mt-4">
-      <div class="col-4"></div>
+      <div class="col-3"></div>
       <div class="col-6 p-0 d-flex">
-        <b-input-group prepend="Paquete" class="">
           <b-form-input
             type="number"
             autofocus
+            placeholder="Paquete"
             v-model="noPaquete"
             lazy
             v-on:keyup.enter="search"
@@ -70,10 +48,7 @@
           >
             BIS
           </b-form-checkbox>
-          <b-input-group-prepend>
             <b-button variant="secondary" @click="search()">Buscar</b-button>
-          </b-input-group-prepend>
-        </b-input-group>
       </div>
     </div>
     <!-- <div v-if="spinner" class="text-center mt-3">
@@ -84,6 +59,19 @@
         <b-skeleton animation="fade" width="70%"></b-skeleton>
       </b-card>
     </div> -->
+    <b-progress
+          :precision="2"
+          height="2rem"
+          :max="maxBar ? maxBar : '0'"
+          show-progress
+          class="mt-2"
+          animated
+          v-show="!paquete.local"
+        >
+          <b-progress-bar :value="count">
+            {{ count }} de {{ maxBar ? maxBar : "0" }}
+          </b-progress-bar>
+        </b-progress>
     <b-overlay :show="over" blur="1rem" variant="light" rounded="lg">
       <div class="accordion mt-2" role="tablist">
         <!-- <b-card
@@ -133,18 +121,9 @@
             role="tabpanel"
           >
             <b-overlay :show="over" blur="1rem" variant="light" rounded="lg">
-              <b-card-body>
-                <center v-show="!dato['folioBuscadoSICE']">
-                  <code>
-                    Favor de validar si existe información previa del folio
-                    correspondiente</code
-                  >
-                </center>
-                <br />
-                <div class="container">
-                  <div class="row mt-2 mb-2">
+                  <div class="row mt-3 mb-0">
                   <div class="col-3"></div>
-                  <div class="col-6 p-0 d-flex">
+                  <div class="col-auto p-0 d-flex">
                     <b-form-radio-group
                       :name="'radio-options' + (index + 1)"
                       :options="options"
@@ -175,6 +154,8 @@
                     </b-input-group>
                   </div>
                 </div>
+              <b-card-body>
+                <div class="container">
                   <div class="row">
                     <div class="col-3"></div>
                     <div class="col-6 p-0 d-flex">
@@ -404,7 +385,7 @@
         </b-card>
       </div>
     </b-overlay>
-    <div class="row mt-4 mb-5" v-show="paquetePreparado">
+    <div class="row mt-4 mb-5">
       <div class="col-4"></div>
       <div class="col-6 p-0 d-flex">
         <b-button-group size="sm">
@@ -427,7 +408,8 @@ import { BIconPatchQuestion } from "bootstrap-vue";
 export default {
   data() {
     return {
-      paquetePreparado: true,
+      paquetePreparado: null,
+      paquete: {},
       over: null,
       spinner: false,
       noPaquete: null,
@@ -440,6 +422,7 @@ export default {
       bis: false,
       cantidad: null,
       identificador: null,
+      maxBar: null,
       options: [
         { text: "Completo", value: "Completo" },
         { text: "Faltante", value: "Faltante" },
@@ -526,6 +509,13 @@ export default {
         });
     },
     async getInformacionFolio(paquete) {
+      if(paquete.local){
+        this.$bvModal.hide("packages");
+        this.modal = false;
+        this.over = false;
+        return
+      }
+      this.paquete = paquete;
       this.over = true;
       let errors = [];
       if (this.modal === true) {
@@ -565,6 +555,7 @@ export default {
       // this.infoPaquete.folios[index] = newval;
       // this.infoPaquete.folios.push();
       // console.log(this.infoPaquete.paquete.folioInicio);
+      this.maxBar = paquete.folioFin - paquete.folioInicio + 1;
       for (
         let i = paquete.folioInicio, j = 0;
         i <= paquete.folioFin;
@@ -588,6 +579,7 @@ export default {
               this.folios[j]["juicio"] = res.data.juicio;
               this.folios[j]["dependencia"] = res.data.dependencia;
               this.folios[j]["observaciones"] = res.data.observaciones || null;
+              this.folios[j]["validado"] = false,
               this.count++;
             }
             // this.infoPaquete.folios[j]["spinner"] = false;
@@ -652,6 +644,7 @@ export default {
       //   });
     },
     async search() {
+      this.over = true;
       this.count = 0;
       if (!this.noPaquete)
         return Swal.fire({
@@ -666,6 +659,12 @@ export default {
       // if (!this.noPaquete)
       //   this.$router.push("/");
       // else{
+      if(!this.noPaquete)
+        return Swal.fire(
+          '',
+          'Primero ingrese un paquete.',
+          'info'
+        ).then(res => this.over = false);
       await axios
         .get(`${config.api}/paquete`, {
           params: {
@@ -674,35 +673,34 @@ export default {
           },
         })
         .then((res) => {
-          if (!res.data.ok) {
-            this.paquetePreparado = false;
-            return Swal.fire(`${res.data.msg}`, "", "error").then((result) => {
+          if (res.data.paquete.length == 0) {
+            return Swal.fire(`No se encontró el paquete ${this.noPaquete}.`, "", "error").then((result) => {
               this.spinner = false;
-              this.infoPaquete = null;
+              this.folios = [];
             });
           } else if (res.data.paquete.length > 1) {
             this.paquetes = res.data.paquete;
             this.modal = true;
             return this.$bvModal.show("packages");
           } else {
-            this.paquetePreparado = true;
+            this.paquete = res.data.paquete[0]
             axios
               .get(`${config.api}/folios`, {
                 params: {
-                  noPaquete: res.data.paquete[0].noPaquete,
-                  bis: res.data.paquete[0].bis,
-                  folioInicio: res.data.paquete[0].folioInicio,
-                  folioFin: res.data.paquete[0].folioFin,
+                  noPaquete: this.paquete.noPaquete,
+                  bis: this.paquete.bis,
+                  folioInicio: this.paquete.folioInicio,
+                  folioFin: this.paquete.folioFin,
                 },
               })
               .then((res) => {
                 if (res.data.folios.length == 0) {
-                  this.spinner = false;
                   return Swal.fire(
                     `No se pudo encontrar el paquete ${this.noPaquete}.`,
                     "",
                     "error"
-                  );
+                  )
+                  .then(res => this.over = false);
                 }
                 this.folios = res.data.folios;
                 this.folios.forEach((el, index) => {
@@ -715,13 +713,13 @@ export default {
               });
             this.infoPaquete.paquete = res.data.paquete;
           }
-          this.getInformacionFolio(res.data.paquete[0]);
+          this.getInformacionFolio(this.paquete);
+          this.over = false;
         })
         .catch((error) => {
           if (error) console.log(error);
 
           this.spinner = false;
-          this.over = false;
         });
 
       // }
@@ -815,26 +813,29 @@ export default {
         buttonsStyling: true,
       }).then((result) => {
         // <--
+        this.paquete.local = true;
         if (result.value) {
-          // <-- if confirmed
-          // this.infoPaquete.paquete["infoCapturadaSICE"] = true;
           this.folios.forEach(el => {
             el.validado = false;
           })
-          console.log(this.folios);
+          // <-- if confirmed
+          // this.infoPaquete.paquete["infoCapturadaSICE"] = true;
           let data = {
             folios: this.folios,
           };
           axios
             .put(`${config.api}/foliosSICE`, { data })
             .then((res) => {
-              Swal.fire(
-                `¡Hecho!`,
-                `Folios actualizados correctamente.`,
-                "success"
-              ).then((res) => {
-                // this.$router.replace("/asignar");
-              });
+              axios.put(`${config.api}/paquete`, { data: this.paquete })
+              .then(res => {
+                Swal.fire(
+                  `¡Hecho!`,
+                  `Folios actualizados correctamente.`,
+                  "success"
+                ).then((res) => {
+                  // this.$router.replace("/asignar");
+                });
+              })
             })
             .catch((err) => {
               Swal.fire(
@@ -862,23 +863,26 @@ export default {
         if (result.value) {
           // <-- if confirmed
           // this.infoPaquete.paquete["infoCapturadaSICE"] = true;
+          this.paquete.local = true;
           this.folios.forEach(el => {
             el.validado = true;
           })
-          console.log(this.folios);
           let data = {
             folios: this.folios,
           };
           axios
             .put(`${config.api}/foliosSICE`, { data })
             .then((res) => {
-              Swal.fire(
-                `¡Hecho!`,
-                `Folios actualizados correctamente.`,
-                "success"
-              ).then((res) => {
-                // this.$router.replace("/asignar");
-              });
+              axios.put(`${config.api}/paquete`, { data: this.paquete })
+              .then(res => {
+                Swal.fire(
+                  `¡Hecho!`,
+                  `Folios actualizados correctamente.`,
+                  "success"
+                ).then((res) => {
+                  // this.$router.replace("/asignar");
+                });
+              })
             })
             .catch((err) => {
               Swal.fire(
