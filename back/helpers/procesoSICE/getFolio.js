@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const { json } = require("body-parser");
 require("../../server/config/config");
 mongoose.connect(
-    "mongodb://localhost:27017/registro", {
+    "mongodb://billie:adminMongo$@172.26.60.61:27017/registro?authSource=admin", {
         useNewUrlParser: true,
         useUnifiedTopology: true,
         useCreateIndex: true,
