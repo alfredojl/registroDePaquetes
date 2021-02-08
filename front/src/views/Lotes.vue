@@ -1,5 +1,6 @@
 <template>
   <div class="container">
+    <code><pre>{{ paquetes }}</pre></code>
     <b-row class="justify-content-center mt-2">
       <b-col lg="auto">
         <b-form-radio-group
@@ -14,9 +15,9 @@
       <!-- <b-col lg="2"><b-button variant="info"> Recibir lote</b-button> </b-col>
       <b-col lg="2"><b-button variant="info"> Buscar lote</b-button> </b-col> -->
     </b-row>
-    <div class="row mt-5" v-show="add == 'add'">
-      <div class="col-3"></div>
-      <div class="col-6 p-0 d-flex">
+    <div class="row mt-5 justify-content-center" v-show="add == 'add'">
+      <!-- <div class="col-2"></div> -->
+      <div class="p-0 d-flex">
         <b-input-group prepend="Lote" class="">
           <b-form-input
             type="number"
@@ -28,8 +29,8 @@
       </div>
     </div>
     <div class="row mt-2" v-show="add == 'add'">
-      <div class="col-3"></div>
-      <div class="col-6 p-0 d-flex">
+      <div class="col-2"></div>
+      <div class="col-4 p-0 d-flex">
         <b-input-group prepend="Paquete" class="">
           <b-form-textarea
             type="textarea"
@@ -268,7 +269,6 @@ export default {
       });
     },
     busca(){
-      console.log('entrando');
       this.noPaquete = this.noPaquete.split(/\n/g)[0];
       axios.get(`${config.api}/lote`, {
         params: {
@@ -319,36 +319,48 @@ export default {
         // })
       })
     },
-    valida() {
-      this.noPaquete = this.noPaquete.split(/\n/g)[0];
-      let paquete = {
-        noLote: this.noLote,
-        noPaquete: this.noPaquete,
-        // fechaEntregado: fecha.toISOString().slice(0, 10),
-        fechaEntregado: null,
-        fechaDevolucion: null,
-      };
-      this.paquetes.push(paquete);
-      this.$refs.folio.focus();
-      this.noPaquete = "";
-    },
+    // valida() {
+    //   this.noPaquete = this.noPaquete.split(/\n/g)[0];
+    //   let paquete = {
+    //     noLote: this.noLote,
+    //     noPaquete: this.noPaquete,
+    //     // fechaEntregado: fecha.toISOString().slice(0, 10),
+    //     fechaEntregado: null,
+    //     fechaDevolucion: null,
+    //   };
+    //   this.paquetes.push(paquete);
+    //   this.$refs.folio.focus();
+    //   this.noPaquete = "";
+    // },
     agrega() {
+      let paquete = {};
       // if(!this.noPaquete){
       //   this.noPaquete = "";
       //   this.$refs.folio.focus();
       //   return
       // }
-      this.noPaquete = this.noPaquete.split('\n')[0];
+      // this.noPaquete = this.noPaquete.split('\n')[0];
       if(this.noPaquete.length < 1)
         return
+      if(this.noPaquete.split(' ').length > 1){
+        if(this.noPaquete.split(' ')[1] == 'BIS' || this.noPaquete.split(' ')[2] == 'BIS')
+          paquete = {
+            noLote: this.noLote,
+            noPaquete: this.noPaquete.split(' ')[0],
+            bis: true,
+            fechaEntregado: null,
+            fechaDevolucion: null,
+          };
+      }
       // let fecha = new Date();
-      let paquete = {
-        noLote: this.noLote,
-        noPaquete: this.noPaquete,
-        // fechaEntregado: fecha.toISOString().slice(0, 10),
-        fechaEntregado: null,
-        fechaDevolucion: null,
-      };
+      else
+        paquete = {
+          noLote: this.noLote,
+          noPaquete: this.noPaquete,
+          // fechaEntregado: fecha.toISOString().slice(0, 10),
+          fechaEntregado: null,
+          fechaDevolucion: null,
+        };
       this.paquetes.push(paquete);
       this.noPaquete = "";
       this.$refs.folio.focus();

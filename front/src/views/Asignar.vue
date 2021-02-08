@@ -382,13 +382,15 @@ export default {
       }).then((result) => {
         if (result.isConfirmed) {
           axios.put(`${config.api}/paquete`, {
-            verificador: this.verificador,
-            preparador: this.preparador,
-            bis: (this.bis == 'true'),
-            fechaAsignacion: this.fechaAsignacion,
-            turno: this.turno,
-            noPaquete: parseInt(this.noPaquete),
-            folioInicio: this.folioInicio
+            data: {
+              verificador: this.verificador,
+              preparador: this.preparador,
+              bis: (this.bis == 'true'),
+              fechaAsignacion: this.fechaAsignacion,
+              turno: this.turno,
+              noPaquete: parseInt(this.noPaquete),
+              folioInicio: this.folioInicio
+            }
           })
           .then(res => {
             // Swal.fire(`Asignado.`, "", "success");

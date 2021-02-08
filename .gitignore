@@ -1,3 +1,5 @@
 back/node_modules
+back/serve/config
+front/src/config
 front/node_modules
 back/helpers/sendEmail.js

@@ -1,111 +1,102 @@
 <template>
   <div class="container">
-    <div class="row mt-5">
-      <div class="col-3"></div>
-      <div class="col-6 p-0 d-flex">
-        <b-input-group prepend="Paquete" class="">
-          <b-form-input
-            type="number"
-            autofocus
-            :state="validaPaquete"
-            v-model="noPaquete"
-            v-on:keyup.enter="save()"
-          ></b-form-input>
-        </b-input-group>
+    <div class="col">
+      <div class="row justify-content-center mt-5">
+        <h3><strong>Ingrese los datos del paquete a registrar</strong></h3>
       </div>
-    </div>
-    <div class="row mt-3">
-      <div class="col-3"></div>
-      <div class="col-6 p-0 d-flex">
-        <b-input-group prepend="Folio inicio" class="">
-          <b-form-input
-            type="number"
-            v-model="folioInicio"
-            v-on:keyup.enter="save()"
-          ></b-form-input>
-        </b-input-group>
+      <div class="row justify-content-center mt-2">
+        <b-form-input
+          type="number"
+          style="width: 20rem"
+          placeholder="Paquete"
+          autofocus
+          :state="validaPaquete"
+          v-model="noPaquete"
+          v-on:keyup.enter="save()"
+        ></b-form-input>
       </div>
-    </div>
-    <div class="row mt-3">
-      <div class="col-3"></div>
-      <div class="col-6 p-0 d-flex">
-        <b-input-group prepend="Folio fin" class="">
-          <b-form-input
-            type="number"
-            v-model="folioFin"
-            :state="valida"
-            v-on:keyup.enter="save()"
-          ></b-form-input>
-        </b-input-group>
+      <div class="row justify-content-center mt-3">
+        <b-form-input
+          type="number"
+          style="width: 20rem"
+          placeholder="Folio inicio"
+          v-model="folioInicio"
+          v-on:keyup.enter="save()"
+        ></b-form-input>
       </div>
-    </div>
-    <div class="row mt-3">
-      <div class="col-3"></div>
-      <div class="col-6 p-0 d-flex">
-        <b-input-group prepend="Fecha de expediente" class="">
-          <b-form-input
-            type="date"
-            v-model="fechaExpediente"
-            v-on:keyup.enter="save()"
-          ></b-form-input>
-        </b-input-group>
+      <div class="row justify-content-center mt-3">
+        <b-form-input
+          type="number"
+          placeholder="Folio fin"
+          style="width: 20rem"
+          v-model="folioFin"
+          :state="valida"
+          v-on:keyup.enter="save()"
+        ></b-form-input>
       </div>
-    </div>
-    <div class="row mt-2">
-      <div class="col-3"></div>
-      <b-form-checkbox
-        class=""
-        id="checkbox-1"
-        v-model="bis"
-        name="checkbox-1"
-        value="true"
-        unchecked-value="false"
-        switch
-      >
-        BIS
-      </b-form-checkbox>
-      <b-form-checkbox
-        class="col-2 ml-5"
-        id="checkbox"
-        name="checkbox"
-        v-model="numeral"
-        switch
-        value="true"
-        unchecked-value="false"
-      >
-        Varios paquetes
-      </b-form-checkbox>
-      <p class="m-1" v-if="numeral == 'true'">Paquete</p>
-          <b-form-input
-          v-if="numeral == 'true'"
-            type="number"
-            class="col-1 p-2"
-            placeholder="#"
-            size="sm"
-            v-model="identificador"
-          ></b-form-input>
-      <p v-if="numeral == 'true'" class="m-1">de</p>
-      <b-form-input
-        v-if="numeral == 'true'"
-        class="col-1 p-2"
-        type="number"
-        size="sm"
-        placeholder="total"
-        v-model="cantidad"
-      ></b-form-input>
-    </div>
-    <div class="row mt-3">
-      <div class="col-3"></div>
-      <b-button-group>
-        <b-button variant="success" @click="save()">Añadir</b-button>
-        <b-button
-          @click="goValidar()"
-          class="col-auto"
-          variant="outline-success"
-          >Validar</b-button
+      <div class="row justify-content-center mt-3">
+        <b-form-input
+          style="width: 20rem"
+          type="date"
+          placeholder="Fecha expediente"
+          v-model="fechaExpediente"
+          v-on:keyup.enter="save()"
+        ></b-form-input>
+      </div>
+      <div class="row justify-content-center mt-2 ml-1">
+        <b-form-checkbox
+          class="p-0"
+          id="checkbox-1"
+          v-model="bis"
+          name="checkbox-1"
+          value="true"
+          unchecked-value="false"
+          switch
         >
-        <b-button variant="info" @click="limpiar()">Limpiar</b-button>
-      </b-button-group>
+          BIS
+        </b-form-checkbox>
+        <b-form-checkbox
+          class="col-2 ml-5"
+          id="checkbox"
+          name="checkbox"
+          v-model="numeral"
+          switch
+          value="true"
+          unchecked-value="false"
+        >
+          Varios paquetes
+        </b-form-checkbox>
+        <p class="m-1" v-if="numeral == 'true'">Paquete</p>
+        <b-form-input
+          v-if="numeral == 'true'"
+          type="number"
+          class="col-1 p-2"
+          placeholder="#"
+          size="sm"
+          v-model="identificador"
+        ></b-form-input>
+        <span v-if="numeral == 'true'" class="m-1">de</span>
+        <b-form-input
+          v-if="numeral == 'true'"
+          class="col-1 p-2"
+          type="number"
+          size="sm"
+          placeholder="total"
+          v-model="cantidad"
+        ></b-form-input>
+      </div>
+      <div class="row justify-content-center mt-3">
+        <b-button-group>
+          <b-button variant="success" @click="save()">Añadir</b-button>
+          <b-button
+            @click="goValidar()"
+            class="col-auto"
+            variant="outline-success"
+            >Validar</b-button
+          >
+          <b-button variant="info" @click="limpiar()">Limpiar</b-button>
+        </b-button-group>
+      </div>
     </div>
   </div>
 </template>
@@ -118,7 +109,7 @@ import Swal from "sweetalert2";
 export default {
   data() {
     return {
-      noPaquete: '',
+      noPaquete: "",
       digitalizador: null,
       numeral: null,
       cantidad: null,
@@ -130,23 +121,25 @@ export default {
       noFojas: null,
       fechaAlta: null,
       bis: false,
-      estado: null
+      estado: null,
     };
   },
   computed: {
     validaPaquete() {
-      if(this.noPaquete.length > 5)
-        return false;
-      return true;
+      if (this.noPaquete.length > 5) return false;
+      else if (this.noPaquete.length == 0) return false;
+      else return true;
     },
-    valida(){
-      if(this.folioFin < this.folioInicio || (this.folioFin - this.folioInicio) >= 99 || (this.folioFin - this.folioInicio) < 0)
-        return false
-      else if (!this.folioFin)
-        return null
-      else
-        return true
-    }
+    valida() {
+      if (
+        this.folioFin < this.folioInicio ||
+        this.folioFin - this.folioInicio >= 99 ||
+        this.folioFin - this.folioInicio < 0
+      )
+        return false;
+      else if (!this.folioFin) return null;
+      else return true;
+    },
   },
   methods: {
     goValidar() {
@@ -162,8 +155,12 @@ export default {
       this.digitalizador = null;
     },
     save() {
-      if(!this.valida || !this.validaPaquete)
-        return Swal.fire('Asegúrese de que los datos estén correctos.', '', 'info')
+      if (!this.valida || !this.validaPaquete)
+        return Swal.fire(
+          "Asegúrese de que los datos estén correctos.",
+          "",
+          "info"
+        );
       // if(!this.noPaquete || !this.folioInicio || !this.folioFin || !this.fechaExpediente)
       //   return Swal.fire(`Complete todos los campos.`, ``, "info");
       let fechaAlta = Date.now();
@@ -183,16 +180,15 @@ export default {
           data,
         })
         .then((res) => {
-          if(!res.data.ok)
-            return Swal.fire('Info', res.data.message, 'info');
-            return Swal.fire({
-              title: `¡Hecho!`,
-              position: "top-end",
-              text: `Paquete ${this.noPaquete} agregado con éxito.`,
-              icon: "success",
-              showConfirmButton: false,
-              timer: 1000,
-            });
+          if (!res.data.ok) return Swal.fire("Info", res.data.message, "info");
+          return Swal.fire({
+            title: `¡Hecho!`,
+            position: "top-end",
+            text: `Paquete ${this.noPaquete} agregado con éxito.`,
+            icon: "success",
+            showConfirmButton: false,
+            timer: 1000,
+          });
           Swal.fire(
             `Paquete existente`,
             `El paquete ${this.noPaquete} ya fue creado anteriormente. Intente buscarlo.`,

@@ -25,31 +25,26 @@
         </b-list-group>
       </div>
     </b-modal>
-    <div class="row p-0 mt-4">
-      <div class="col-4"></div>
-      <div class="col-6"></div>
-    </div>
-    <div class="row mt-4">
-      <div class="col-3"></div>
-      <div class="col-6 p-0 d-flex">
-          <b-form-input
-            type="number"
-            autofocus
-            placeholder="Paquete"
-            v-model="noPaquete"
-            lazy
-            v-on:keyup.enter="search"
-          ></b-form-input>
-          <b-form-checkbox
-            class="m-1"
-            v-model="bis"
-            value="true"
-            unchecked-value="false"
-          >
-            BIS
-          </b-form-checkbox>
-            <b-button variant="secondary" @click="search()">Buscar</b-button>
-      </div>
+    <div class="row justify-content-center mt-4">
+      <b-input-group style="width: 20rem">
+        <b-form-input
+          type="number"
+          autofocus
+          placeholder="Paquete"
+          v-model="noPaquete"
+          lazy
+          v-on:keyup.enter="search"
+        ></b-form-input>
+        <b-form-checkbox
+          class="m-1"
+          v-model="bis"
+          value="true"
+          unchecked-value="false"
+        >
+          BIS
+        </b-form-checkbox>
+        <b-button variant="secondary" @click="search()">Buscar</b-button>
+      </b-input-group>
     </div>
     <!-- <div v-if="spinner" class="text-center mt-3">
       <b-spinner variant="dark" class="p-lg-5" label="Spinning"></b-spinner>
@@ -60,340 +55,281 @@
       </b-card>
     </div> -->
     <b-progress
-          :precision="2"
-          height="2rem"
-          :max="maxBar ? maxBar : '0'"
-          show-progress
-          class="mt-2"
-          animated
-          v-show="!paquete.local"
-        >
-          <b-progress-bar :value="count">
-            {{ count }} de {{ maxBar ? maxBar : "0" }}
-          </b-progress-bar>
-        </b-progress>
+      :precision="2"
+      height="2rem"
+      :max="maxBar ? maxBar : '0'"
+      show-progress
+      class="mt-2"
+      animated
+      v-show="!paquete.local"
+    >
+      <b-progress-bar :value="count">
+        {{ count }} de {{ maxBar ? maxBar : "0" }}
+      </b-progress-bar>
+    </b-progress>
     <b-overlay :show="over" blur="1rem" variant="light" rounded="lg">
-      <div class="accordion mt-2" role="tablist">
-        <!-- <b-card
-        no-body
-        class="mb-1"
-        v-for="(dato, index) in infoPaquete.folios"
-        :key="dato.folio"
-      > -->
-        <b-card
-          no-body
-          class="mb-1"
-          v-for="(dato, index) in folios"
-          :key="dato.folio + '-' + index"
-        >
-          <b-card-header header-tag="header" class="p-1" role="tab">
-            <div class="row">
-            <b-button-group class="col-12">
-            <b-button
-              size="sm"
-              block
-              v-b-toggle="`folio-${dato.folio}-` + index"
-              :variant="`${dato.tomo ? 'light' : 'info'}`"
-              >Folio {{ dato.folio }} {{ dato.tomo ? 'Tomo ' : ''}}{{ dato.tomo || ''}}</b-button
+      <b-col>
+        <b-row class="justify-content-center">
+          <div class="accordion mt-2" role="tablist">
+            <b-card
+              no-body
+              class="mb-1 justify-content-center"
+              style="width: auto"
+              v-for="(dato, index) in folios"
+              :key="dato.folio + '-' + index"
             >
-            <b-button class="p-1 " size="md" variant='dark'
-            v-show="!dato.tomo"
-            @click="agregaTomo(dato.folio, index)"
-            >
-              <b-icon-plus-circle>
-              </b-icon-plus-circle>
-            <!--  <span>tomo</span> -->
-            </b-button>
-            <b-button
-              v-show="!dato.tomo"
-              class="p-1"
-              size="md"
-              @click="deleteTomo(index)"
-            >
-              <b-icon-dash-circle></b-icon-dash-circle>
-            </b-button>
-            </b-button-group>
-            </div>
-          </b-card-header>
-          <b-collapse
-            :id="`folio-${dato.folio}-` + index"
-            accordion="my-accordion"
-            role="tabpanel"
-          >
-            <b-overlay :show="over" blur="1rem" variant="light" rounded="lg">
-                  <div class="row mt-3 mb-0">
-                  <div class="col-3"></div>
-                  <div class="col-auto p-0 d-flex">
-                    <b-form-radio-group
-                      :name="'radio-options' + (index + 1)"
-                      :options="options"
-                      class="col-auto m-auto"
-                      v-model="folios[index]['estado']"
+              <b-card-header header-tag="header" class="p-1" role="tab">
+                <div class="row justify-content-center">
+                  <b-button-group class="col-auto">
+                    <b-button
+                      size="sm"
+                      v-b-toggle="`folio-${dato.folio}-` + index"
+                      :variant="`${dato.tomo ? 'outline-secondary' : 'info'}`"
+                      >Folio {{ dato.folio }} {{ dato.tomo ? "Tomo " : ""
+                      }}{{ dato.tomo || "" }}</b-button
                     >
-                    </b-form-radio-group>
-                    <!-- <b-input-group prepend="Tomos" class="">
-                    <b-form-input
-                      class="col-3"
-                      type="number"
-                      :name="'tomos' + (index + 1)"
-                      v-model="folios[index]['tomos']"
-                    ></b-form-input>
-                    </b-input-group> -->
-                    <b-input-group
-                      prepend="Oficio"
-                      class="ml-2"
-                      v-if="folios[index]['estado'] == 'Oficio'"
+                    <b-button
+                      class="p-1"
+                      size="md"
+                      variant="link"
+                      v-show="!dato.tomo"
+                      @click="agregaTomo(dato.folio, index)"
                     >
-                    <b-form-input
-                      v-if="folios[index]['estado'] == 'Oficio'"
-                      class="col-3"
-                      type="number"
-                      :name="'referencias' + (index + 1)"
-                      v-model="folios[index]['referencias']"
-                    ></b-form-input>
-                    </b-input-group>
-                  </div>
+                      <b-icon-plus-circle> </b-icon-plus-circle>
+                      <!--  <span>tomo</span> -->
+                    </b-button>
+                    <b-button
+                      v-show="!dato.tomo"
+                      variant="link"
+                      class="p-1"
+                      size="md"
+                      @click="deleteTomo(index)"
+                    >
+                      <b-icon-dash-circle></b-icon-dash-circle>
+                    </b-button>
+                  </b-button-group>
                 </div>
-              <b-card-body>
-                <div class="container">
-                  <div class="row">
-                    <div class="col-3"></div>
-                    <div class="col-6 p-0 d-flex">
-                      <b-input-group size="sm" prepend="Folio" class="mb-4">
+              </b-card-header>
+              <b-collapse
+                :id="`folio-${dato.folio}-` + index"
+                accordion="my-accordion"
+                variant="danger"
+                role="tabpanel"
+              >
+                <b-card-body>
+                  <div class="container" style="max-width: 35rem">
+                    <b-row class="justify-content-center mb-4">
+                      <b-col class="text-right">
+                        <strong>Folio: </strong>
+                      </b-col>
+                      <b-col class="text-left">
+                        {{ dato["folio"] }}
+                      </b-col>
+                    </b-row>
+                    <div class="row justify-content-center mt-3 mb-3">
+                      <b-form-radio-group
+                        :name="'radio-options' + (index + 1)"
+                        :options="options"
+                        class="col-auto m-auto"
+                        v-model="folios[index]['estado']"
+                      >
+                      </b-form-radio-group>
+                      <b-input-group
+                        prepend="Oficio"
+                        class="ml-2"
+                        v-if="folios[index]['estado'] == 'Oficio'"
+                      >
                         <b-form-input
+                          v-if="folios[index]['estado'] == 'Oficio'"
+                          class="col-3"
                           type="number"
-                          disabled
-                          class="text-center"
-                          v-model="dato['folio']"
-                          v-on:keyup.enter="search"
+                          :name="'referencias' + (index + 1)"
+                          v-model="folios[index]['referencias']"
                         ></b-form-input>
-                        <b-input-group-prepend>
-                          <!-- <b-button
-                            variant="secondary"
-                            @click="getInformacionFolio(dato['folio'], index)"
-                            v-show="!dato['folioBuscadoSICE']"
-                            >Buscar</b-button
-                          > -->
-                        </b-input-group-prepend>
                       </b-input-group>
                     </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-3"></div>
-                    <div class="col-6 p-0 d-flex">
-                      <b-input-group size="sm" prepend="Fojas" class="">
+                    <div class="row justify-content-center">
+                      <b-col class="text-right">
+                        <strong>Fojas: </strong>
+                      </b-col>
+                      <b-col>
                         <b-form-input
+                          size="sm"
                           type="number"
                           v-model="dato['fojas']"
                         ></b-form-input>
-                      </b-input-group>
+                      </b-col>
                     </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-3"></div>
-                    <div class="col-6 p-0 d-flex">
-                      <b-input-group size="sm" prepend="Expediente" class="">
+                    <div class="row justify-content-center">
+                      <b-col class="text-right">
+                        <strong>Expediente: </strong>
+                      </b-col>
+                      <b-col>
                         <b-form-input
                           v-model="dato['expediente']"
+                          size="sm"
                         ></b-form-input>
-                      </b-input-group>
+                      </b-col>
                     </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-3"></div>
-                    <div class="col-6 p-0 d-flex">
-                      <b-input-group size="sm" prepend="Paquete" class="">
-                        <b-form-input v-model="dato['noPaquete']"></b-form-input>
-                      </b-input-group>
+                    <div class="row justify-content-center">
+                      <b-col class="text-right">
+                        <strong>Paquete: </strong>
+                      </b-col>
+                      <b-col>
+                        <b-form-input
+                          v-model="dato['noPaquete']"
+                          size="sm"
+                        ></b-form-input>
+                      </b-col>
                     </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-3"></div>
-                    <div class="col-6 p-0 d-flex">
-                      <b-input-group size="sm" prepend="Tomo" class="">
-                        <b-form-input v-model="dato['tomo']"></b-form-input>
-                      </b-input-group>
+                    <div class="row justify-content-center">
+                      <b-col class="text-right">
+                        <strong>Tomo: </strong>
+                      </b-col>
+                      <b-col>
+                        <b-form-input
+                          v-model="dato['tomo']"
+                          size="sm"
+                        ></b-form-input>
+                      </b-col>
                     </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-3"></div>
-                    <div class="col-6 p-0 d-flex">
-                      <b-input-group size="sm" prepend="Juzgado" class="">
+                    <div class="row justify-content-center">
+                      <b-col class="text-right text-sm">
+                        <strong>Juzgado: </strong>
+                      </b-col>
+                      <b-col>
                         <b-form-select
                           v-model="dato['juzgado']"
                           :options="materias"
                           value-field="name"
                           text-field="name"
+                          size="sm"
                         >
-                          <template #first> </template>
                         </b-form-select>
-                        <!-- <b-input-group-prepend>
-                          <b-button
-                            variant="secondary"
-                            @click="dato['Juzgado'] = null"
-                            >X</b-button
-                          >
-                        </b-input-group-prepend> -->
-                      </b-input-group>
+                      </b-col>
                     </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-3"></div>
-                    <div class="col-6 p-0 d-flex">
-                      <b-input-group size="sm" prepend="Instancia" class="">
+                    <div class="row justify-content-center">
+                      <b-col class="text-right">
+                        <strong>Instancia: </strong>
+                      </b-col>
+                      <b-col>
                         <b-form-input
                           v-model="dato['instanciaJ']"
+                          size="sm"
                         ></b-form-input>
-                      </b-input-group>
+                      </b-col>
                     </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-3"></div>
-                    <div class="col-6 p-0 d-flex">
-                      <b-input-group size="sm" prepend="Sala" class="">
+                    <div class="row justify-content-center">
+                      <b-col class="text-right">
+                        <strong>Sala: </strong>
+                      </b-col>
+                      <b-col>
                         <b-form-select
                           v-model="dato['sala']"
                           :options="materias"
                           value-field="name"
+                          size="sm"
                           text-field="name"
                         >
                           <template #first> </template>
                         </b-form-select>
-                        <!-- <b-input-group-prepend>
-                          <b-button
-                            variant="secondary"
-                            @click="dato['Sala'] = null"
-                            >X</b-button
-                          >
-                        </b-input-group-prepend> -->
-                      </b-input-group>
+                      </b-col>
                     </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-3"></div>
-                    <div class="col-6 p-0 d-flex">
-                      <b-input-group size="sm" prepend="Instancia" class="">
+                    <div class="row justify-content-center">
+                      <b-col class="text-right">
+                        <strong>Instancia: </strong>
+                      </b-col>
+                      <b-col>
                         <b-form-input
                           v-model="dato['instanciaS']"
+                          size="sm"
                         ></b-form-input>
-                      </b-input-group>
+                      </b-col>
                     </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-3"></div>
-                    <div class="col-6 p-0 d-flex">
-                      <b-input-group size="sm" prepend="Toca" class="">
-                        <b-form-input v-model="dato['toca']"></b-form-input>
-                      </b-input-group>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-3"></div>
-                    <div class="col-6 p-0 d-flex">
-                      <b-input-group size="sm" prepend="Actor" class="">
-                        <b-form-input v-model="dato['actor']"></b-form-input>
-                      </b-input-group>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-3"></div>
-                    <div class="col-6 p-0 d-flex">
-                      <b-input-group size="sm" prepend="Demandado" class="">
+                    <div class="row justify-content-center">
+                      <b-col class="text-right">
+                        <strong>Toca: </strong>
+                      </b-col>
+                      <b-col>
                         <b-form-input
-                          v-model="dato['demandado']"
+                          v-model="dato['toca']"
+                          size="sm"
                         ></b-form-input>
-                      </b-input-group>
+                      </b-col>
+                    </div>
+                    <div class="row justify-content-center">
+                      <b-col class="text-right">
+                        <strong>Actor: </strong>
+                      </b-col>
+                      <b-col>
+                          <b-form-input
+                          v-model="dato['actor']"
+                          size="sm"
+                          ></b-form-input>
+                      </b-col>
+                    </div>
+                    <div class="row justify-content-center">
+                      <b-col class="text-right">
+                        <strong>Demandado: </strong>
+                      </b-col>
+                      <b-col>
+                          <b-form-input
+                            v-model="dato['demandado']"
+                            size="sm"
+                          ></b-form-input>
+                      </b-col>
+                    </div>
+                    <div class="row justify-content-center">
+                      <b-col class="text-right">
+                        <strong>Juicio: </strong>
+                      </b-col>
+                      <b-col>
+                          <b-form-input
+                          v-model="dato['juicio']"
+                          size="sm"
+                          ></b-form-input>
+                      </b-col>
+                    </div>
+                    <div class="row justify-content-center">
+                      <b-col class="text-right">
+                        <strong>Dependencia: </strong>
+                      </b-col>
+                      <b-col>
+                          <b-form-input
+                          size="sm"
+                          v-model="dato['dependencia']">
+                          </b-form-input>
+                      </b-col>
+                    </div>
+                    <div class="row justify-content-center">
+                      <b-col class="text-right">
+                        <strong>Observaciones: </strong>
+                      </b-col>
+                      <b-col>
+                          <b-form-textarea
+                            no-resize
+                            v-model="dato['observaciones']"
+                          ></b-form-textarea>
+                      </b-col>
                     </div>
                   </div>
-                  <div class="row">
-                    <div class="col-3"></div>
-                    <div class="col-6 p-0 d-flex">
-                      <b-input-group size="sm" prepend="Juicio" class="">
-                        <b-form-input v-model="dato['juicio']"></b-form-input>
-                      </b-input-group>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-3"></div>
-                    <div class="col-6 p-0 d-flex">
-                      <b-input-group size="sm" prepend="Dependencia" class="">
-                        <b-form-input
-                          v-model="dato['dependencia']"
-                        >
-                          <template #first> </template>
-                        </b-form-input>
-                        <!-- <b-input-group-prepend>
-                          <b-button
-                            variant="secondary"
-                            @click="dato['Dependencia'] = null"
-                            >X</b-button
-                          >
-                        </b-input-group-prepend> -->
-                      </b-input-group>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-3"></div>
-                    <div class="col-6 p-0 d-flex">
-                      <b-input-group size="sm" prepend="Observaciones" class="">
-                        <b-form-textarea
-                          no-resize
-                          v-model="dato['observaciones']"
-                        ></b-form-textarea>
-                      </b-input-group>
-                    </div>
-                  </div>
-                  <!-- <div class="row">
-                    <div class="col-3"></div>
-                    <div class="col-6 p-0 d-flex">
-                      <b-input-group
-                        size="sm"
-                        prepend="Número de imagenes"
-                        class=""
-                      >
-                        <b-form-input
-                          v-model="dato['numImagenes']"
-                          type="number"
-                        ></b-form-input>
-                      </b-input-group>
-                    </div>
-                  </div> -->
-                  <!-- </div> -->
-                </div>
-                    <!-- {{ folios[index]['fojas'] }}
-                  <div class="row mt-2" v-if="folios[index]['tomos']" 
-                    v-for="ob in range(folios[index].tomos, index)" :key="ob.tomo"
-                  >
-                  <div class="col-3">
-                    <b-input-group
-                      :prepend="'Tomo ' + `${ ob.tomo == 0 ? 'original' : ob.tomo }`"
-                      class="col-7 p-0"
-                      >
-                    <b-form-input
-                      v-if="folios[index]['tomos']"
-                      class="col-auto"
-                      v-model="folios[index]['fojas'][ob.tomo]['fojas']"
-                      type="text"
-                      :name="'fojas' + (ob.tomo + 1)"
-                    ></b-form-input>
-                    </b-input-group>
-                  </div>
-                </div> -->
-              </b-card-body>
-            </b-overlay>
-          </b-collapse>
-        </b-card>
-      </div>
+                </b-card-body>
+              </b-collapse>
+            </b-card>
+          </div>
+        </b-row>
+      </b-col>
     </b-overlay>
-    <div class="row mt-4 mb-5">
-      <div class="col-4"></div>
-      <div class="col-6 p-0 d-flex">
-        <b-button-group size="sm">
-          <b-button variant="success" @click="save()">Guardar todo validado</b-button>
-          <b-button variant="success" @click="saveWithoutValidar()">Guardar sin validar</b-button>
-          <b-button variant="info" @click="goBack()">Regresar</b-button>
-        </b-button-group>
-      </div>
+    <div class="row mt-4 mb-5 justify-content-center">
+      <b-button-group size="sm">
+        <b-button variant="success" @click="save()"
+          >Guardar todo validado</b-button
+        >
+        <b-button variant="success" @click="saveWithoutValidar()"
+          >Guardar sin validar</b-button
+        >
+        <b-button variant="info" @click="goBack()">Regresar</b-button>
+      </b-button-group>
     </div>
     <!-- <pre>{{ infoPaquete }}</pre> -->
   </div>
@@ -456,32 +392,39 @@ export default {
     //   }
     // },
     deleteTomo(index) {
-      if(!this.folios[index].tomos)
-        return;
+      if (!this.folios[index].tomos) return;
       this.folios.splice(this.folios[index].tomos + index, 1);
-      this.folios[index].tomos --;
+      this.folios[index].tomos--;
     },
     agregaTomo(folio, index) {
       // console.log(this.folios[index].tomos ? this.folios[index].tomos + 1 : index + 1);
-      this.folios.splice((this.folios[index].tomos ? this.folios[index].tomos + 1 + index: index + 1), 0, {
-        bis: this.folios[index].bis,
-        estado: 'Completo',
-        folio,
-        tomo: this.folios[index].tomos + 1 || 1,
-        expediente: this.folios[index].expediente,
-        toca: this.folios[index].toca,
-        noPaquete: this.folios[index].noPaquete,
-        juzgado: this.folios[index].juzgado,
-        instanciaJ: this.folios[index].insJuz,
-        sala: this.folios[index].Sala,
-        instanciaS: this.folios[index].insSal,
-        actor: this.folios[index].actor,
-        demandado: this.folios[index].demandado,
-        juicio: this.folios[index].juicio,
-        dependencia: this.folios[index].dependencia,
-        observaciones: this.folios[index].observaciones || null
-      })
-      this.folios[index].tomos ? this.folios[index].tomos++ : this.folios[index].tomos = 1;
+      this.folios.splice(
+        this.folios[index].tomos
+          ? this.folios[index].tomos + 1 + index
+          : index + 1,
+        0,
+        {
+          bis: this.folios[index].bis,
+          estado: "Completo",
+          folio,
+          tomo: this.folios[index].tomos + 1 || 1,
+          expediente: this.folios[index].expediente,
+          toca: this.folios[index].toca,
+          noPaquete: this.folios[index].noPaquete,
+          juzgado: this.folios[index].juzgado,
+          instanciaJ: this.folios[index].instanciaJ,
+          sala: this.folios[index].sala,
+          instanciaS: this.folios[index].instanciaS,
+          actor: this.folios[index].actor,
+          demandado: this.folios[index].demandado,
+          juicio: this.folios[index].juicio,
+          dependencia: this.folios[index].dependencia,
+          observaciones: this.folios[index].observaciones || null,
+        }
+      );
+      this.folios[index].tomos
+        ? this.folios[index].tomos++
+        : (this.folios[index].tomos = 1);
       // console.log(this.folios);
     },
     getMaterias() {
@@ -509,11 +452,11 @@ export default {
         });
     },
     async getInformacionFolio(paquete) {
-      if(paquete.local){
+      if (paquete.local) {
         this.$bvModal.hide("packages");
         this.modal = false;
         this.over = false;
-        return
+        return;
       }
       this.paquete = paquete;
       this.over = true;
@@ -579,8 +522,7 @@ export default {
               this.folios[j]["juicio"] = res.data.juicio;
               this.folios[j]["dependencia"] = res.data.dependencia;
               this.folios[j]["observaciones"] = res.data.observaciones || null;
-              this.folios[j]["validado"] = false,
-              this.count++;
+              (this.folios[j]["validado"] = false), this.count++;
             }
             // this.infoPaquete.folios[j]["spinner"] = false;
           })
@@ -659,12 +601,10 @@ export default {
       // if (!this.noPaquete)
       //   this.$router.push("/");
       // else{
-      if(!this.noPaquete)
-        return Swal.fire(
-          '',
-          'Primero ingrese un paquete.',
-          'info'
-        ).then(res => this.over = false);
+      if (!this.noPaquete)
+        return Swal.fire("", "Primero ingrese un paquete.", "info").then(
+          (res) => (this.over = false)
+        );
       await axios
         .get(`${config.api}/paquete`, {
           params: {
@@ -674,7 +614,11 @@ export default {
         })
         .then((res) => {
           if (res.data.paquete.length == 0) {
-            return Swal.fire(`No se encontró el paquete ${this.noPaquete}.`, "", "error").then((result) => {
+            return Swal.fire(
+              `No se encontró el paquete ${this.noPaquete}.`,
+              "",
+              "error"
+            ).then((result) => {
               this.spinner = false;
               this.folios = [];
             });
@@ -683,7 +627,7 @@ export default {
             this.modal = true;
             return this.$bvModal.show("packages");
           } else {
-            this.paquete = res.data.paquete[0]
+            this.paquete = res.data.paquete[0];
             axios
               .get(`${config.api}/folios`, {
                 params: {
@@ -699,8 +643,7 @@ export default {
                     `No se pudo encontrar el paquete ${this.noPaquete}.`,
                     "",
                     "error"
-                  )
-                  .then(res => this.over = false);
+                  ).then((res) => (this.over = false));
                 }
                 this.folios = res.data.folios;
                 this.folios.forEach((el, index) => {
@@ -804,7 +747,8 @@ export default {
     saveWithoutValidar() {
       Swal.fire({
         title: "¿Está seguro de guardar la información?",
-        text: "No se ha asignado como «Validado», por lo que no se subirá a SICE.",
+        text:
+          "No se ha asignado como «Validado», por lo que no se subirá a SICE.",
         showCancelButton: true,
         confirmButtonColor: "#28a745",
         cancelButtonColor: "#dc3545",
@@ -815,9 +759,9 @@ export default {
         // <--
         this.paquete.local = true;
         if (result.value) {
-          this.folios.forEach(el => {
+          this.folios.forEach((el) => {
             el.validado = false;
-          })
+          });
           // <-- if confirmed
           // this.infoPaquete.paquete["infoCapturadaSICE"] = true;
           let data = {
@@ -826,16 +770,17 @@ export default {
           axios
             .put(`${config.api}/foliosSICE`, { data })
             .then((res) => {
-              axios.put(`${config.api}/paquete`, { data: this.paquete })
-              .then(res => {
-                Swal.fire(
-                  `¡Hecho!`,
-                  `Folios actualizados correctamente.`,
-                  "success"
-                ).then((res) => {
-                  // this.$router.replace("/asignar");
+              axios
+                .put(`${config.api}/paquete`, { data: this.paquete })
+                .then((res) => {
+                  Swal.fire(
+                    `¡Hecho!`,
+                    `Folios actualizados correctamente.`,
+                    "success"
+                  ).then((res) => {
+                    // this.$router.replace("/asignar");
+                  });
                 });
-              })
             })
             .catch((err) => {
               Swal.fire(
@@ -864,25 +809,26 @@ export default {
           // <-- if confirmed
           // this.infoPaquete.paquete["infoCapturadaSICE"] = true;
           this.paquete.local = true;
-          this.folios.forEach(el => {
+          this.folios.forEach((el) => {
             el.validado = true;
-          })
+          });
           let data = {
             folios: this.folios,
           };
           axios
             .put(`${config.api}/foliosSICE`, { data })
             .then((res) => {
-              axios.put(`${config.api}/paquete`, { data: this.paquete })
-              .then(res => {
-                Swal.fire(
-                  `¡Hecho!`,
-                  `Folios actualizados correctamente.`,
-                  "success"
-                ).then((res) => {
-                  // this.$router.replace("/asignar");
+              axios
+                .put(`${config.api}/paquete`, { data: this.paquete })
+                .then((res) => {
+                  Swal.fire(
+                    `¡Hecho!`,
+                    `Folios actualizados correctamente.`,
+                    "success"
+                  ).then((res) => {
+                    // this.$router.replace("/asignar");
+                  });
                 });
-              })
             })
             .catch((err) => {
               Swal.fire(

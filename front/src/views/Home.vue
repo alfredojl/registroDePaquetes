@@ -1,51 +1,30 @@
 <template>
-  <div>
-      <div class="row">
-        <div class="col-5"></div>
-        <div class="col-auto p-0">
-          <b-form-checkbox v-model="searchAsFolio" switch size="lg"
-            ><strong>Buscar folio</strong></b-form-checkbox
-          >
-        </div>
-      </div>
-    <div class="container" v-if="!searchAsFolio">
-      <b-row>
-        <b-col lg="5"> </b-col>
-        <b-col> </b-col>
-      </b-row>
-      <b-row class="mt-3 justify-content-center" v-show="incidencia">
-        <b-col lg="2"
-          ><b-alert show variant="warning" class=""
-            >Incidencias:</b-alert
-          ></b-col
+  <div class="container">
+    <b-col>
+      <b-row class="justify-content-center">
+        <b-form-checkbox v-model="searchAsFolio" switch size="lg"
+          ><strong>Buscar folio</strong></b-form-checkbox
         >
-        <div class="w-100"></div>
-        <b-row>
-          <b-col>
-            <b-list-group
-              class=""
-              horizontal
-              v-for="faltante of faltantes"
-              :key="faltante"
-            >
-              <b-list-group-item class="p-1">{{ faltante }}</b-list-group-item>
-            </b-list-group>
-          </b-col>
+      </b-row>
+      <div class="container" v-if="!searchAsFolio">
+        <b-row class="mt-3 justify-content-center" v-show="incidencia">
+          <b-alert show variant="danger" class="p-1 text-center"
+            >Faltantes:
+            <span
+              ><strong>{{ faltantes.join(", ") }}</strong>
+            </span>
+          </b-alert>
         </b-row>
-      </b-row>
-      <b-row class="justify-content-center" v-show="incidencia == 'true'">
-      </b-row>
-      <div class="row mt-2">
-        <div class="col-3"></div>
-        <div class="col-6 p-0 d-flex">
-          <b-input-group prepend="Paquete" class="">
+        <div class="row justify-content-center mt-2 mb-2">
+          <b-input-group style="width: 20rem">
             <b-form-input
               type="number"
               autofocus
+              placeholder="Paquete"
               v-model="noPaquete"
               :state="valida"
               lazy
-              v-on:keyup.enter="search()"
+              @keyup.enter="search()"
             ></b-form-input>
             <b-form-checkbox
               class="m-1"
@@ -55,278 +34,180 @@
             >
               BIS
             </b-form-checkbox>
-            <b-input-group-prepend>
-              <b-button variant="secondary" @click="search()">Buscar</b-button>
-            </b-input-group-prepend>
+            <b-button variant="secondary" @click="search()">Buscar</b-button>
           </b-input-group>
         </div>
-      </div>
-      <b-modal
-        id="packages"
-        scrollable
-        centered
-        ref=""
-        title="Paquetes encontrados"
-      >
-        <div v-for="(paquete, index) of paquetes" :key="paquete.folioInicio">
-          <b-list-group>
-            <b-list-group-item
-              button
-              variant="light"
-              @click="fill(paquetes[index])"
-              >Paquete: {{ paquete.noPaquete }}<br />Folio inicio:
-              {{ paquete.folioInicio }}<br />Folio fin: {{ paquete.folioFin
-              }}<br />Fecha expediente:
-              {{
-                paquete.fechaExpediente
-                  ? paquete.fechaExpediente.slice(0, 10)
-                  : null
-              }}</b-list-group-item
-            >
-          </b-list-group>
+        <b-modal
+          id="packages"
+          scrollable
+          centered
+          ref=""
+          title="Paquetes encontrados"
+        >
+          <div v-for="(paquete, index) of paquetes" :key="paquete.folioInicio">
+            <b-list-group>
+              <b-list-group-item
+                button
+                variant="light"
+                @click="fill(paquetes[index])"
+                >Paquete: {{ paquete.noPaquete }}<br />Folio inicio:
+                {{ paquete.folioInicio }}<br />Folio fin: {{ paquete.folioFin
+                }}<br />Fecha expediente:
+                {{
+                  paquete.fechaExpediente
+                    ? paquete.fechaExpediente.slice(0, 10)
+                    : null
+                }}</b-list-group-item
+              >
+            </b-list-group>
+          </div>
+        </b-modal>
+        <b-row class="justify-content-center">
+          <b-col class="text-right">
+            <strong>Paquete: </strong>
+          </b-col>
+          <b-col class="text-left">
+            {{
+              [
+                noPaquete,
+                showBis ? "BIS" : null,
+                cantidad ? identificador + "/" + cantidad : "",
+              ].join(" ")
+            }}
+          </b-col>
+        </b-row>
+        <b-row class="justify-content-center">
+          <b-col class="text-right">
+            <strong>Folio inicio: </strong>
+          </b-col>
+          <b-col class="text-left">
+            {{ folioInicio }}
+          </b-col>
+        </b-row>
+        <b-row class="justify-content-center">
+          <b-col class="text-right">
+            <strong>Folio fin: </strong>
+          </b-col>
+          <b-col class="text-left">
+            {{ folioFin }}
+          </b-col>
+        </b-row>
+        <div class="row justify-content-center">
+          <b-col class="text-right">
+            <strong>Fecha de expediente: </strong>
+          </b-col>
+          <b-col class="text-left">
+            {{ fechaExpediente }}
+          </b-col>
         </div>
-      </b-modal>
-      <!-- <div v-if="showBis == true">
-      <b-row class="">
-        <div class="col-3"></div>
-        <b-col lg="2" class="p-0">
-          <b-input-group prepend="Bis" class=""> </b-input-group>
-        </b-col>
-      </b-row>
-    </div>
-    <div v-show="cantidad">
-      <div class="row mt-1">
-        <div class="col-3"></div>
-        <div class="col-3 p-0 d-flex">
-          <b-input-group prepend="Número" class="mb-1">
-            <b-form-input
-              type="number"
-              class="col-2"
-              v-model="identificador"
-              disabled
-            ></b-form-input>
-            <b-form-input
-              type="text"
-              class="col-2"
-              value="de"
-              disabled
-            ></b-form-input>
-            <b-form-input
-              type="number"
-              class="col-2"
-              v-model="cantidad"
-              disabled
-            ></b-form-input>
-          </b-input-group>
+        <div class="row justify-content-center">
+          <b-col class="text-right">
+            <strong>Fecha de registro: </strong>
+          </b-col>
+          <b-col class="text-left">
+            {{ fechaAlta }}
+          </b-col>
         </div>
-      </div>
-    </div> -->
-      <div class="row mkeyt-5">
-        <div class="col-3"></div>
-        <div class="col-6 p-0 d-flex">
-          <b-input-group prepend="Paquete" class="">
-            <b-form-input
-              type="text"
-              :value="
-                [
-                  noPaquete,
-                  showBis ? 'BIS' : null,
-                  cantidad ? identificador + '/' + cantidad : '',
-                ].join(' ')
-              "
-              disabled
-            ></b-form-input>
-          </b-input-group>
+        <div class="row justify-content-center">
+          <b-col class="text-right">
+            <strong>Estado: </strong>
+          </b-col>
+          <b-col class="text-left">
+            {{ estado }}
+          </b-col>
         </div>
-      </div>
-      <div class="row mkeyt-5">
-        <div class="col-3"></div>
-        <div class="col-6 p-0 d-flex">
-          <b-input-group prepend="Folio inicio" class="">
-            <b-form-input
-              type="number"
-              v-model="folioInicio"
-              disabled
-            ></b-form-input>
-          </b-input-group>
+        <div class="row justify-content-center">
+          <b-col class="text-right">
+            <strong>Registrado por: </strong>
+          </b-col>
+          <b-col class="text-left">
+            {{ registrador }}
+          </b-col>
         </div>
-      </div>
-      <div class="row">
-        <div class="col-3"></div>
-        <div class="col-6 p-0 d-flex">
-          <b-input-group prepend="Folio fin" class="">
-            <b-form-input
-              type="number"
-              v-model="folioFin"
-              disabled
-            ></b-form-input>
-          </b-input-group>
+        <div class="row">
+          <b-col class="text-right">
+            <strong>Validado por: </strong>
+          </b-col>
+          <b-col class="text-left">
+            {{ validador }}
+          </b-col>
         </div>
-      </div>
-      <div class="row">
-        <div class="col-3"></div>
-        <div class="col-6 p-0 d-flex">
-          <b-input-group prepend="Fecha de expediente" class="">
-            <b-form-input
-              type="date"
-              v-model="fechaExpediente"
-              disabled
-            ></b-form-input>
-          </b-input-group>
+        <div class="row">
+          <b-col class="text-right">
+            <strong>Verificador: </strong>
+          </b-col>
+          <b-col class="text-left">
+            {{ verificador }}
+          </b-col>
         </div>
-      </div>
-      <div class="row">
-        <div class="col-3"></div>
-        <div class="col-6 p-0 d-flex">
-          <b-input-group prepend="Fecha de registro" class="">
-            <b-form-input
-              type="date"
-              v-model="fechaAlta"
-              disabled
-            ></b-form-input>
-          </b-input-group>
+        <div class="row">
+          <b-col class="text-right">
+            <strong>Verificador: </strong>
+          </b-col>
+          <b-col class="text-left">
+            {{ verificador }}
+          </b-col>
         </div>
-      </div>
-      <div class="row">
-        <div class="col-3"></div>
-        <div class="col-6 p-0 d-flex">
-          <b-input-group prepend="Estado" class="">
-            <b-form-input type="text" v-model="estado" disabled></b-form-input>
-          </b-input-group>
+        <div class="row">
+          <b-col class="text-right">
+            <strong>Cosido por: </strong>
+          </b-col>
+          <b-col class="text-left">
+            {{ cosedor }}
+          </b-col>
         </div>
-      </div>
-      <div class="row">
-        <div class="col-3"></div>
-        <div class="col-6 p-0 d-flex">
-          <b-input-group prepend="Registrado por" class="">
-            <b-form-input
-              type="text"
-              v-model="registrador"
-              disabled
-            ></b-form-input>
-          </b-input-group>
+        <div class="row">
+          <b-col class="text-right">
+            <strong>Fecha de asignación: </strong>
+          </b-col>
+          <b-col class="text-left">
+            {{ fechaAsignacion }}
+          </b-col>
         </div>
-      </div>
-      <div class="row">
-        <div class="col-3"></div>
-        <div class="col-6 p-0 d-flex">
-          <b-input-group prepend="Validado por" class="">
-            <b-form-input
-              type="text"
-              v-model="validador"
-              disabled
-            ></b-form-input>
-          </b-input-group>
+        <div class="row">
+          <b-col class="text-right">
+            <strong>Fecha de preparación:</strong>
+          </b-col>
+          <b-col class="text-left">
+            {{ fechaPreparacion }}
+          </b-col>
         </div>
-      </div>
-      <div class="row">
-        <div class="col-3"></div>
-        <div class="col-6 p-0 d-flex">
-          <b-input-group prepend="Verificador" class="">
-            <b-form-input
-              type="text"
-              v-model="verificador"
-              disabled
-            ></b-form-input>
-          </b-input-group>
+        <div class="row">
+          <b-col class="text-right">
+            <strong>Fecha de cosido:</strong>
+          </b-col>
+          <b-col class="text-left">
+            {{ fechaCosido }}
+          </b-col>
         </div>
-      </div>
-      <div class="row">
-        <div class="col-3"></div>
-        <div class="col-6 p-0 d-flex">
-          <b-input-group prepend="Preparador" class="">
-            <b-form-input
-              type="text"
-              disabled
-              v-model="preparador"
-            ></b-form-input>
-          </b-input-group>
+        <div class="row">
+          <b-col class="text-right">
+            <strong>Digitalizador:</strong>
+          </b-col>
+          <b-col class="text-left">
+            {{ digitalizador }}
+          </b-col>
         </div>
-      </div>
-      <div class="row">
-        <div class="col-3"></div>
-        <div class="col-6 p-0 d-flex">
-          <b-input-group prepend="Cosido por" class="">
-            <b-form-input v-model="cosedor" disabled></b-form-input>
-          </b-input-group>
+        <div class="row">
+          <b-col class="text-right">
+            <strong>Número de fojas:</strong>
+          </b-col>
+          <b-col class="text-left">
+            {{ noFojas }}
+          </b-col>
         </div>
-      </div>
-      <div class="row">
-        <div class="col-3"></div>
-        <div class="col-6 p-0 d-flex">
-          <b-input-group prepend="Fecha de asignación" class="">
-            <b-form-input
-              type="date"
-              v-model="fechaAsignacion"
-              disabled
-            ></b-form-input>
-          </b-input-group>
+        <div class="row">
+          <b-col class="text-right">
+            <strong>Observaciones:</strong>
+          </b-col>
+          <b-col class="text-left">
+            <div style="max-width: 75%">
+              {{ observaciones }}
+            </div>
+          </b-col>
         </div>
-      </div>
-      <div class="row">
-        <div class="col-3"></div>
-        <div class="col-6 p-0 d-flex">
-          <b-input-group prepend="Fecha de preparación" class="">
-            <b-form-input
-              type="date"
-              v-model="fechaPreparacion"
-              disabled
-            ></b-form-input>
-          </b-input-group>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-3"></div>
-        <div class="col-6 p-0 d-flex">
-          <b-input-group prepend="Fecha de cosido" class="">
-            <b-form-input
-              type="date"
-              v-model="fechaCosido"
-              v-on:keyup.enter="save()"
-              disabled
-            ></b-form-input>
-          </b-input-group>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-3"></div>
-        <div class="col-6 p-0 d-flex">
-          <b-input-group prepend="Digitalizador" class="">
-            <b-form-input
-              type="text"
-              disabled
-              v-model="digitalizador"
-            ></b-form-input>
-          </b-input-group>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-3"></div>
-        <div class="col-6 p-0 d-flex">
-          <b-input-group prepend="Número de fojas" class="">
-            <b-form-input
-              type="number"
-              v-model="noFojas"
-              disabled
-            ></b-form-input>
-          </b-input-group>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-3"></div>
-        <b-form-textarea
-          id="textarea-small"
-          size=""
-          class="col-6 d-flex"
-          v-model="observaciones"
-          disabled
-          no-resize
-        ></b-form-textarea>
-      </div>
-      <div class="">
-        <div class="row align-content-between">
-          <div class="col-3"></div>
-          <div class="">
+        <div class="">
+          <div class="row justify-content-center">
             <b-button-group size="sm">
               <b-button
                 @click="goValidar()"
@@ -364,43 +245,49 @@
           </div>
         </div>
       </div>
-    </div>
-    <div class="container text-center" v-else>
-      <div class="row mt-2">
-        <div class="col-3"></div>
-        <div class="col-6 p-0 d-flex">
-          <b-input-group prepend="Folio" class="">
-            <b-form-input
-              type="number"
-              autofocus
-              v-model="folio"
-              v-on:keyup.enter="searchFolio()"
-            ></b-form-input>
-            <b-input-group-prepend>
-              <b-button variant="secondary" @click="searchFolio()">Buscar</b-button>
-            </b-input-group-prepend>
-          </b-input-group>
+      <div class="container text-center" v-else>
+        <div class="row justify-content-center mt-2">
+          <b-input-group style="width: 20rem">
+              <b-form-input
+                type="number"
+                autofocus
+                v-model="folio"
+                v-on:keyup.enter="searchFolio()"
+              ></b-form-input>
+                <b-button variant="secondary" @click="searchFolio()"
+                  >Buscar</b-button
+                >
+                </b-input-group>
+        </div>
+        <b-spinner
+          v-show="folioSpinner"
+          style="width: 3rem; height: 3rem"
+          class="m-5"
+          variant="secondary"
+        ></b-spinner>
+        <div class="row justify-content-center">
+          <p
+            v-show="folioWarning"
+            class="mt-3 p-2 text-danger font-monospace"
+            variant="danger"
+          >
+            Revisar la información del folio
+          </p>
+        </div>
+        <div class="row justify-content-center">
+          <b-table
+            class="mt-3 text-left"
+            :items="folioSearched"
+            :fields="fields"
+            style="max-width: 3rem"
+            v-show="!folioSpinner"
+            hover
+            striped
+          >
+          </b-table>
         </div>
       </div>
-      <b-spinner v-show="folioSpinner" style="width: 3rem; height: 3rem;" class="m-5" variant="secondary"></b-spinner>
-      <div class="row">
-        <div class="col-3"></div>
-        <p v-show="folioWarning" class="mt-3 p-2 text-danger font-monospace" variant="danger">Revisar la información del folio</p>
-      </div>
-      <div class="row">
-        <div class="col-4"></div>
-        <b-table
-          class="mt-3 text-left"
-          :items="folioSearched"
-          :fields="fields"
-          style="max-width: 3rem;"
-          v-show="!folioSpinner "
-          hover
-          striped
-        >
-        </b-table>
-      </div>
-    </div>
+    </b-col>
   </div>
 </template>
 
@@ -445,20 +332,26 @@ export default {
       currentPage: 1,
       paquetes: [],
       fields: [
-        { key: 'folio', label: 'Folio', tdClass: 'text-end' },
-        { key: 'noPaquete', label: 'Paquete', tdClass: 'text-center text-primary' },
-        { key: 'estado', label: 'Estado', tdClass: (value, key, item, type) => {
-          console.log(value, key, item, type);
-          if(value == 'Faltante')
-            return 'bg-warning'
-        } },
-        { key: 'tomos', label: 'Tomos', tdClass: 'text-center' },
-        { key: 'referencias', label: 'Referencia' }
-      ]
+        { key: "folio", label: "Folio", tdClass: "text-end" },
+        {
+          key: "noPaquete",
+          label: "Paquete",
+          tdClass: "text-center text-primary",
+        },
+        {
+          key: "estado",
+          label: "Estado",
+          tdClass: (value, key, item, type) => {
+            console.log(value, key, item, type);
+            if (value == "Faltante") return "bg-warning";
+          },
+        },
+        { key: "tomos", label: "Tomos", tdClass: "text-center" },
+        { key: "referencias", label: "Referencia" },
+      ],
     };
   },
-  created() {
-  },
+  created() {},
   computed: {
     valida() {
       if (this.noPaquete.length > 5) {
@@ -594,8 +487,7 @@ export default {
               `No se encontró el paquete ${this.noPaquete}.`,
               "",
               "error"
-            )
-            .then(res => {
+            ).then((res) => {
               this.limpiar();
             });
           }
@@ -652,32 +544,35 @@ export default {
     searchFolio() {
       this.folioSpinner = true;
       this.folioWarning = false;
-      if(!this.folio)
-        return Swal.fire(`Primero ingresa un folio.`, '', 'info')
-      axios.get(`${config.api}/folio`, {
-        params: {
-          folio: this.folio
-        }
-      })
-      .then((res) => {
-        if(res.data.folio.length < 1) {
-          return Swal.fire({
-            title: '¡Ups!',
-            text: `No se encontró el folio ${this.folio ? this.folio + '.': "solicitado."}`,
-            icon: 'error',
-            showConfirmButton: true
-          })
-          .then(res => {
-            this.folioSearched = null;
-          })
-        }
-        if(res.data.folio.length > 1){
-          this.folioWarning = true;
-        }
-        this.folioSearched = res.data.folio;
-      }).catch((err) => {
-        console.log(err);
-      });
+      if (!this.folio)
+        return Swal.fire(`Primero ingresa un folio.`, "", "info");
+      axios
+        .get(`${config.api}/folio`, {
+          params: {
+            folio: this.folio,
+          },
+        })
+        .then((res) => {
+          if (res.data.folio.length < 1) {
+            return Swal.fire({
+              title: "¡Ups!",
+              text: `No se encontró el folio ${
+                this.folio ? this.folio + "." : "solicitado."
+              }`,
+              icon: "error",
+              showConfirmButton: true,
+            }).then((res) => {
+              this.folioSearched = null;
+            });
+          }
+          if (res.data.folio.length > 1) {
+            this.folioWarning = true;
+          }
+          this.folioSearched = res.data.folio;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
       this.folioSpinner = false;
     },
     limpiar() {

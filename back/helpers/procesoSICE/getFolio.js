@@ -1,9 +1,8 @@
 const Folio = require("../../server/models/Folios");
 const mongoose = require("mongoose");
-const { json } = require("body-parser");
 require("../../server/config/config");
 mongoose.connect(
-    "mongodb://billie:adminMongo$@172.26.60.61:27017/registro?authSource=admin", {
+    "mongodb://localhost:27017/registro", {
         useNewUrlParser: true,
         useUnifiedTopology: true,
         useCreateIndex: true,
@@ -19,10 +18,9 @@ mongoose.connect(
 const getFolio = async(folio, tomo) => {
 
     // if (tomo)
-    tomo = JSON.parse(tomo);
-    await Folio.findOne({ folio, tomo })
+    return await Folio.findOne({ folio, tomo })
         .then(consult => {
-            console.log(consult || 'No se pudo obtener información del folio');
+            return consult || null
         })
         // await Folio.findOne({ folio })
         //     .then(consult => {
