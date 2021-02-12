@@ -75,11 +75,20 @@ let foliosSchema = new Schema({
     dependencia: {
         type: String
     },
-    numImagenes: {
+    path: {
         type: String
+    },
+    archivo: {
+        type: String
+    },
+    numeroImagenes: {
+        type: Number
     },
     validado: {
         type: Boolean
+    },
+    Id: {
+        type: Number
     },
 });
 

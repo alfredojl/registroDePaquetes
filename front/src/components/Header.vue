@@ -29,6 +29,10 @@
 
 <script>
 export default {
+  data() {
+    return {
+    }
+  },
   name: 'HelloWorld',
   props: {
     msg: String

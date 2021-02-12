@@ -1,4 +1,5 @@
 <template>
+
   <div class="container">
     <b-col>
       <b-row class="justify-content-center">
@@ -342,7 +343,6 @@ export default {
           key: "estado",
           label: "Estado",
           tdClass: (value, key, item, type) => {
-            console.log(value, key, item, type);
             if (value == "Faltante") return "bg-warning";
           },
         },
@@ -557,7 +557,7 @@ export default {
             return Swal.fire({
               title: "¡Ups!",
               text: `No se encontró el folio ${
-                this.folio ? this.folio + "." : "solicitado."
+                this.folio ? this.folio + "." : "msolicitado."
               }`,
               icon: "error",
               showConfirmButton: true,

@@ -12,6 +12,7 @@
     "core-js": "^3.6.5",
     "jspdf": "^2.1.1",
     "jspdf-autotable": "^3.5.13",
+    "mariadb": "^2.5.2",
     "qrcode": "^1.4.4",
     "register-service-worker": "^1.7.1",
     "sweetalert2": "^10.6.1",

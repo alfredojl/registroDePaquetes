@@ -118,12 +118,21 @@
               >
                 <b-card-body>
                   <div class="container" style="max-width: 35rem">
+                    <b-row
+                      class="justify-content-center mb-4"
+                      v-show="folios[index].rep"
+                    >
+                      <b-alert show variant="danger"
+                        >Este folio ya se encuentra en SICE.</b-alert
+                      >
+                    </b-row>
                     <b-row class="justify-content-center mb-4">
                       <b-col class="text-right">
                         <strong>Folio: </strong>
                       </b-col>
                       <b-col class="text-left">
                         {{ dato["folio"] }}
+                        {{ dato["tomo"] ? "Tomo " + dato["tomo"] : "" }}
                       </b-col>
                     </b-row>
                     <div class="row justify-content-center mt-3 mb-3">
@@ -262,10 +271,10 @@
                         <strong>Actor: </strong>
                       </b-col>
                       <b-col>
-                          <b-form-input
+                        <b-form-input
                           v-model="dato['actor']"
                           size="sm"
-                          ></b-form-input>
+                        ></b-form-input>
                       </b-col>
                     </div>
                     <div class="row justify-content-center">
@@ -273,10 +282,10 @@
                         <strong>Demandado: </strong>
                       </b-col>
                       <b-col>
-                          <b-form-input
-                            v-model="dato['demandado']"
-                            size="sm"
-                          ></b-form-input>
+                        <b-form-input
+                          v-model="dato['demandado']"
+                          size="sm"
+                        ></b-form-input>
                       </b-col>
                     </div>
                     <div class="row justify-content-center">
@@ -284,10 +293,10 @@
                         <strong>Juicio: </strong>
                       </b-col>
                       <b-col>
-                          <b-form-input
+                        <b-form-input
                           v-model="dato['juicio']"
                           size="sm"
-                          ></b-form-input>
+                        ></b-form-input>
                       </b-col>
                     </div>
                     <div class="row justify-content-center">
@@ -295,10 +304,8 @@
                         <strong>Dependencia: </strong>
                       </b-col>
                       <b-col>
-                          <b-form-input
-                          size="sm"
-                          v-model="dato['dependencia']">
-                          </b-form-input>
+                        <b-form-input size="sm" v-model="dato['dependencia']">
+                        </b-form-input>
                       </b-col>
                     </div>
                     <div class="row justify-content-center">
@@ -306,10 +313,10 @@
                         <strong>Observaciones: </strong>
                       </b-col>
                       <b-col>
-                          <b-form-textarea
-                            no-resize
-                            v-model="dato['observaciones']"
-                          ></b-form-textarea>
+                        <b-form-textarea
+                          no-resize
+                          v-model="dato['observaciones']"
+                        ></b-form-textarea>
                       </b-col>
                     </div>
                   </div>
@@ -462,8 +469,21 @@ export default {
       this.over = true;
       let errors = [];
       if (this.modal === true) {
+        let rep = [];
+      await axios.get(`${config.api}/busquedaSICE`, {
+        params: {
+          folioInicio: paquete.folioInicio,
+          folioFin: paquete.folioFin
+        }
+      }).then(res => {
+        if(res.data.folios.length > 0)
+        res.data.folios.forEach(el => {
+          rep.push(el.Folio);
+        })
+        console.log(rep);
+      })
         // this.infoPaquete.folios =
-        axios
+        await axios
           .get(`${config.api}/folios`, {
             params: {
               noPaquete: paquete.noPaquete,
@@ -637,7 +657,7 @@ export default {
                   folioFin: this.paquete.folioFin,
                 },
               })
-              .then((res) => {
+              .then(async(res) => {
                 if (res.data.folios.length == 0) {
                   return Swal.fire(
                     `No se pudo encontrar el paquete ${this.noPaquete}.`,
@@ -645,8 +665,23 @@ export default {
                     "error"
                   ).then((res) => (this.over = false));
                 }
+                let rep = [];
+                await axios.get(`${config.api}/busquedaSICE`, {
+                  params: {
+                    folioInicio: this.paquete.folioInicio,
+                    folioFin: this.paquete.folioFin
+                  }
+                }).then(res => {
+                  if(res.data.folios.length > 0)
+                  res.data.folios.forEach(el => {
+                    rep.push(el.Folio);
+                  })
+                  console.log(rep);
+                })
                 this.folios = res.data.folios;
                 this.folios.forEach((el, index) => {
+                  if(rep.includes(el.folio))
+                    this.folios[index].rep = true;
                   if (el.referencias) {
                     this.referencias[index] = el.referencias;
                     this.selected[index] = "Oficio";

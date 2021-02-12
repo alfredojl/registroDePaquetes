@@ -4,6 +4,32 @@ const app = express();
 const MongoClient = require("mongodb").MongoClient;
 const Folio = require('../models/Folios');
 const Paquete = require('../models/Paquetes');
+const mariadb = require('mariadb');
+
+const config = require('../../helpers/procesoSICE/config');
+
+app.get('/busquedaSICE', async(req, res) => {
+    let folioInicio = parseInt(req.query.folioInicio);
+    let folioFin = parseInt(req.query.folioFin);
+
+    const pool = mariadb.createPool({
+        host: config.host,
+        user: config.username,
+        password: config.passwd,
+        database: config.db
+    });
+
+    console.log(folioInicio, folioFin);
+    let conn = await pool.getConnection();
+    // let intervalo = 
+    const folios = await conn.query(`SELECT C22 Folio FROM T15 WHERE C22 >= ${folioInicio} AND C22 <= ${folioFin}`);
+    // console.log(intervalo);
+    conn.release();
+    return res.json({
+        ok: true,
+        folios
+    })
+})
 
 app.put('/foliosSICE', async(req, res) => {
     let folios = req.body.data.folios;
