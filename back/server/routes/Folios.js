@@ -19,12 +19,11 @@ app.get('/busquedaSICE', async(req, res) => {
         database: config.db
     });
 
-    console.log(folioInicio, folioFin);
     let conn = await pool.getConnection();
     // let intervalo = 
     const folios = await conn.query(`SELECT C22 Folio FROM T15 WHERE C22 >= ${folioInicio} AND C22 <= ${folioFin}`);
     // console.log(intervalo);
-    conn.release();
+    conn.end();
     return res.json({
         ok: true,
         folios

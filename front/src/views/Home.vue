@@ -70,7 +70,7 @@
           <b-col class="text-left">
             {{
               [
-                noPaquete,
+                nopq,
                 showBis ? "BIS" : null,
                 cantidad ? identificador + "/" + cantidad : "",
               ].join(" ")
@@ -131,14 +131,6 @@
           </b-col>
           <b-col class="text-left">
             {{ validador }}
-          </b-col>
-        </div>
-        <div class="row">
-          <b-col class="text-right">
-            <strong>Verificador: </strong>
-          </b-col>
-          <b-col class="text-left">
-            {{ verificador }}
           </b-col>
         </div>
         <div class="row">
@@ -296,12 +288,14 @@
 import axios from "axios";
 import Swal from "sweetalert2";
 import config from "../config/config";
+import moment from "moment"
 
 export default {
   data() {
     return {
       incidencia: false,
       noPaquete: "",
+      nopq: null,
       folio: null,
       folioSearched: [],
       folioSpinner: false,
@@ -411,6 +405,7 @@ export default {
       this.$router.push("/validar");
     },
     fill(paquete) {
+      console.log(paquete);
       this.folioInicio = paquete.folioInicio;
       this.registrador = paquete.registrado;
       this.cosedor = paquete.cosedor;
@@ -426,19 +421,19 @@ export default {
       this.preparador = paquete.preparador;
       this.digitalizador = paquete.digitalizador;
       this.fechaPreparacion = paquete.fechaPreparacion
-        ? new Date(paquete.fechaPreparacion).toISOString().slice(0, 10)
+        ? moment(paquete.fechaPreparacion).format('DD/MM/YYYY')
         : null;
       this.fechaExpediente = paquete.fechaExpediente
-        ? new Date(paquete.fechaExpediente).toISOString().slice(0, 10)
+        ? moment(paquete.fechaExpediente).format('DD/MM/YYYY')
         : null;
       this.fechaAsignacion = paquete.fechaAsignacion
-        ? new Date(paquete.fechaAsignacion).toISOString().slice(0, 10)
+        ? moment(paquete.fechaAsignacion).format('DD/MM/YYYY')
         : null;
       this.fechaAlta = paquete.fechaAlta
-        ? new Date(paquete.fechaAlta).toISOString().slice(0, 10)
+        ? moment(paquete.fechaAlta).format('DD/MM/YYYY')
         : null;
       this.fechaCosido = paquete.fechaCosido
-        ? new Date(paquete.fechaCosido).toISOString().slice(0, 10)
+        ? moment(paquete.fechaCosido).format('DD/MM/YYYY')
         : null;
       this.$bvModal.hide("packages");
     },
@@ -495,6 +490,7 @@ export default {
             this.paquetes = res.data.paquete;
             this.$bvModal.show("packages");
           }
+          this.nopq = res.data.paquete[0].noPaquete;
           this.folioInicio = res.data.paquete[0].folioInicio;
           this.registrador = res.data.paquete[0].registrado;
           this.cosedor = res.data.paquete[0].cosedor;
@@ -511,27 +507,17 @@ export default {
           this.preparador = res.data.paquete[0].preparador;
           this.digitalizador = res.data.paquete[0].digitalizador;
           this.fechaPreparacion = res.data.paquete[0].fechaPreparacion
-            ? new Date(res.data.paquete[0].fechaPreparacion)
-                .toISOString()
-                .slice(0, 10)
+            ? moment(res.data.paquete[0].fechaPreparacion).format('DD/MM/YYYY')
             : null;
           this.fechaExpediente = res.data.paquete[0].fechaExpediente
-            ? new Date(res.data.paquete[0].fechaExpediente)
-                .toISOString()
-                .slice(0, 10)
+            ? moment(res.data.paquete[0].fechaExpediente).format('DD/MM/YYYY')
             : null;
           this.fechaAsignacion = res.data.paquete[0].fechaAsignacion
-            ? new Date(res.data.paquete[0].fechaAsignacion)
-                .toISOString()
-                .slice(0, 10)
+            ? moment(res.data.paquete[0].fechaAsignacion).format('DD/MM/YYYY')
             : null;
-          this.fechaAlta = new Date(res.data.paquete[0].fechaAlta)
-            .toISOString()
-            .slice(0, 10);
+          this.fechaAlta = moment(res.data.paquete[0].fechaAlta).format('DD/MM/YYYY')
           this.fechaCosido = res.data.paquete[0].fechaCosido
-            ? new Date(res.data.paquete[0].fechaCosido)
-                .toISOString()
-                .slice(0, 10)
+            ? moment(res.data.paquete[0].fechaCosido).format('DD/MM/YYYY')
             : null;
           this.getFolios();
         })
@@ -576,6 +562,7 @@ export default {
       this.folioSpinner = false;
     },
     limpiar() {
+      this.nopq = null;
       this.folioInicio = null;
       this.registrador = null;
       this.cosedor = null;

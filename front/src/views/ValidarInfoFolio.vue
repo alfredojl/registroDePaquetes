@@ -46,35 +46,26 @@
         <b-button variant="secondary" @click="search()">Buscar</b-button>
       </b-input-group>
     </div>
-    <!-- <div v-if="spinner" class="text-center mt-3">
-      <b-spinner variant="dark" class="p-lg-5" label="Spinning"></b-spinner>
-      <b-card>
-        <b-skeleton animation="fade" width="85%"></b-skeleton>
-        <b-skeleton animation="fade" width="55%"></b-skeleton>
-        <b-skeleton animation="fade" width="70%"></b-skeleton>
-      </b-card>
-    </div> -->
+    <b-overlay :show="over" blur="1rem" variant="transparent" rounded="lg">
+      <template #overlay style="border: 3px solid black">
     <b-progress
       :precision="2"
-      height="2rem"
       :max="maxBar ? maxBar : '0'"
-      show-progress
+      style="width: 25rem; heigh: 50rem !important"
       class="mt-2"
-      animated
-      v-show="!paquete.local"
     >
       <b-progress-bar :value="count">
         {{ count }} de {{ maxBar ? maxBar : "0" }}
       </b-progress-bar>
     </b-progress>
-    <b-overlay :show="over" blur="1rem" variant="light" rounded="lg">
+      </template>
       <b-col>
         <b-row class="justify-content-center">
-          <div class="accordion mt-2" role="tablist">
+          <div class="accordion mt-4" role="tablist">
             <b-card
+              style="width: 35rem"
               no-body
-              class="mb-1 justify-content-center"
-              style="width: auto"
+              class="justify-content-center"
               v-for="(dato, index) in folios"
               :key="dato.folio + '-' + index"
             >
@@ -328,7 +319,7 @@
       </b-col>
     </b-overlay>
     <div class="row mt-4 mb-5 justify-content-center">
-      <b-button-group size="sm">
+      <b-button-group size="sm" v-show="!over">
         <b-button variant="success" @click="save()"
           >Guardar todo validado</b-button
         >
@@ -351,10 +342,10 @@ import { BIconPatchQuestion } from "bootstrap-vue";
 export default {
   data() {
     return {
+      rep: [],
       paquetePreparado: null,
       paquete: {},
       over: null,
-      spinner: false,
       noPaquete: null,
       folios: null,
       materias: null,
@@ -383,21 +374,6 @@ export default {
     await this.search();
   },
   methods: {
-    // range(num, index) {
-    //   if(this.folios[index].fojas)
-    //     return this.folios[index].fojas;
-    //   else {
-    //     this.folios[index].fojas = [parseInt(num)];
-    //     console.log(this.folios[index].fojas);
-    //     for(let i = 0; i <= parseInt(num); i++) {
-    //       this.folios[index].fojas[i] = {
-    //         tomo: i,
-    //         fojas: null
-    //       };
-    //     }
-    //     return this.folios[index].fojas
-    //   }
-    // },
     deleteTomo(index) {
       if (!this.folios[index].tomos) return;
       this.folios.splice(this.folios[index].tomos + index, 1);
@@ -434,7 +410,7 @@ export default {
         : (this.folios[index].tomos = 1);
       // console.log(this.folios);
     },
-    getMaterias() {
+    async getMaterias() {
       axios
         .get(`${config.api}/materias`)
         .then((res) => {
@@ -446,7 +422,7 @@ export default {
           }
         });
     },
-    getDependencias() {
+    async getDependencias() {
       axios
         .get(`${config.api}/dependencias`)
         .then((res) => {
@@ -469,7 +445,6 @@ export default {
       this.over = true;
       let errors = [];
       if (this.modal === true) {
-        let rep = [];
       await axios.get(`${config.api}/busquedaSICE`, {
         params: {
           folioInicio: paquete.folioInicio,
@@ -478,9 +453,8 @@ export default {
       }).then(res => {
         if(res.data.folios.length > 0)
         res.data.folios.forEach(el => {
-          rep.push(el.Folio);
+          this.rep.push(el.Folio);
         })
-        console.log(rep);
       })
         // this.infoPaquete.folios =
         await axios
@@ -494,7 +468,6 @@ export default {
           })
           .then((res) => {
             if (res.data.folios.length == 0) {
-              this.spinner = false;
               return Swal.fire(
                 `No se pudo encontrar el paquete ${this.noPaquete}.`,
                 "",
@@ -507,17 +480,11 @@ export default {
                 this.referencias[index] = el.referencias;
                 this.selected[index] = "Oficio";
               } else this.selected[index] = "Completo";
-              // this.spinner = false;
             });
           });
         this.$bvModal.hide("packages");
         this.modal = false;
       }
-      // this.infoPaquete.folios[index]["spinner"] = true;
-      // var newval = this.infoPaquete.folios[index];
-      // this.infoPaquete.folios[index] = newval;
-      // this.infoPaquete.folios.push();
-      // console.log(this.infoPaquete.paquete.folioInicio);
       this.maxBar = paquete.folioFin - paquete.folioInicio + 1;
       for (
         let i = paquete.folioInicio, j = 0;
@@ -531,20 +498,21 @@ export default {
           .then((res) => {
             if (res.data) {
               if (res.data.encontrado == "false") errors.push(i);
-              this.folios[j]["expediente"] = res.data.expediente;
-              this.folios[j]["toca"] = res.data.toca;
-              this.folios[j]["juzgado"] = res.data.juzgado;
-              this.folios[j]["instanciaJ"] = res.data.insJuz;
-              this.folios[j]["sala"] = res.data.Sala;
-              this.folios[j]["instanciaS"] = res.data.insSal;
-              this.folios[j]["actor"] = res.data.actor;
-              this.folios[j]["demandado"] = res.data.demandado;
-              this.folios[j]["juicio"] = res.data.juicio;
-              this.folios[j]["dependencia"] = res.data.dependencia;
-              this.folios[j]["observaciones"] = res.data.observaciones || null;
-              (this.folios[j]["validado"] = false), this.count++;
+              else{
+                this.folios[j]["expediente"] = res.data.expediente;
+                this.folios[j]["toca"] = res.data.toca;
+                this.folios[j]["juzgado"] = res.data.juzgado;
+                this.folios[j]["instanciaJ"] = res.data.insJuz;
+                this.folios[j]["sala"] = res.data.Sala;
+                this.folios[j]["instanciaS"] = res.data.insSal;
+                this.folios[j]["actor"] = res.data.actor;
+                this.folios[j]["demandado"] = res.data.demandado;
+                this.folios[j]["juicio"] = res.data.juicio;
+                this.folios[j]["dependencia"] = res.data.dependencia;
+                this.folios[j]["observaciones"] = res.data.observaciones || null;
+                (this.folios[j]["validado"] = false), this.count++;
+              }
             }
-            // this.infoPaquete.folios[j]["spinner"] = false;
           })
           .catch((error) => {
             if (error) {
@@ -553,7 +521,6 @@ export default {
           });
       }
       if (errors.length > 0) {
-        this.spinner = false;
         return Swal.fire({
           title: ``,
           position: "top-end",
@@ -572,38 +539,6 @@ export default {
           timer: 1000,
         });
       this.over = false;
-      // axios
-      //   .get(`http://digitalizacion.pjcdmx.gob.mx/consulta_folio.php`, {
-      //     params: { f: folio },
-      //   })
-      //   // .get(`https://jsonplaceholder.typicode.com/todos/1`)
-      //   .then((res) => {
-      //     console.log(res.data);
-      //     if (res.data) {
-      //       this.infoPaquete.folios[index]["expediente"] = res.data.expediente;
-      //       this.infoPaquete.folios[index]["juzgado"] = res.data.juzgado;
-      //       this.infoPaquete.folios[index]["instanciaJ"] = res.data.insJuz;
-      //       this.infoPaquete.folios[index]["sala"] = res.data.Sala;
-      //       this.infoPaquete.folios[index]["instanciaS"] = res.data.insSal;
-      //       this.infoPaquete.folios[index]["actor"] = res.data.actor;
-      //       this.infoPaquete.folios[index]["demandado"] = res.data.demandado;
-      //       this.infoPaquete.folios[index]["juicio"] = res.data.juicio;
-      //       this.infoPaquete.folios[index]["dependencia"] =
-      //         res.data.dependencia;
-      //     }
-      //     this.infoPaquete.folios[index]["spinner"] = false;
-      //     this.infoPaquete.folios[index]["folioBuscadoSICE"] = true;
-      //     var newval = this.infoPaquete.folios[index];
-      //     this.infoPaquete.folios[index] = newval;
-      //     this.infoPaquete.folios.push();
-      //     this.over = false;
-      //   })
-      //   .catch((error) => {
-      //     if (error) {
-      //       console.log(error);
-      //     }
-      //     this.over = false;
-      //   });
     },
     async search() {
       this.over = true;
@@ -616,15 +551,8 @@ export default {
           icon: "info",
           showConfirmButton: false,
           timer: 1000,
-        });
-      this.spinner = true;
-      // if (!this.noPaquete)
-      //   this.$router.push("/");
-      // else{
-      if (!this.noPaquete)
-        return Swal.fire("", "Primero ingrese un paquete.", "info").then(
-          (res) => (this.over = false)
-        );
+        })
+        .then(this.over = false);
       await axios
         .get(`${config.api}/paquete`, {
           params: {
@@ -632,14 +560,13 @@ export default {
             bis: this.bis,
           },
         })
-        .then((res) => {
+        .then(async(res) => {
           if (res.data.paquete.length == 0) {
             return Swal.fire(
               `No se encontró el paquete ${this.noPaquete}.`,
               "",
               "error"
             ).then((result) => {
-              this.spinner = false;
               this.folios = [];
             });
           } else if (res.data.paquete.length > 1) {
@@ -648,7 +575,7 @@ export default {
             return this.$bvModal.show("packages");
           } else {
             this.paquete = res.data.paquete[0];
-            axios
+            await axios
               .get(`${config.api}/folios`, {
                 params: {
                   noPaquete: this.paquete.noPaquete,
@@ -665,7 +592,6 @@ export default {
                     "error"
                   ).then((res) => (this.over = false));
                 }
-                let rep = [];
                 await axios.get(`${config.api}/busquedaSICE`, {
                   params: {
                     folioInicio: this.paquete.folioInicio,
@@ -674,110 +600,26 @@ export default {
                 }).then(res => {
                   if(res.data.folios.length > 0)
                   res.data.folios.forEach(el => {
-                    rep.push(el.Folio);
+                    this.rep.push(el.Folio);
                   })
-                  console.log(rep);
                 })
                 this.folios = res.data.folios;
                 this.folios.forEach((el, index) => {
-                  if(rep.includes(el.folio))
+                  if(this.rep.includes(el.folio))
                     this.folios[index].rep = true;
                   if (el.referencias) {
                     this.referencias[index] = el.referencias;
                     this.selected[index] = "Oficio";
                   } else this.selected[index] = "Completo";
-                  // this.spinner = false;
                 });
               });
             this.infoPaquete.paquete = res.data.paquete;
           }
-          this.getInformacionFolio(this.paquete);
-          this.over = false;
+          await this.getInformacionFolio(this.paquete);
         })
         .catch((error) => {
           if (error) console.log(error);
-
-          this.spinner = false;
         });
-
-      // }
-
-      // AQUÍ //
-
-      // this.spinner = true;
-      // if (!this.noPaquete)
-      //   return Swal.fire("Ingresa un número de paquete", "", "info");
-      // let params = {
-      //   noPaquete: this.noPaquete,
-      //   bis: this.bis,
-      // };
-      // return axios
-      //   .get(`${config.api}/paquete`, {
-      //     params,
-      //   })
-      //   .then((res) => {
-      //     if (res.data.paquete.length === 0) {
-
-      //       return Swal.fire(
-      //         `No se encontró el paquete ${this.noPaquete}.`,
-      //         "",
-      //         "error"
-      //       );
-      //     } else if (res.data.paquete.length > 1) {
-      //       this.cantidad = res.data.paquete[0].cantidad;
-      //       this.identificador = res.data.paquete[0].identificador;
-      //       this.paquetes = res.data.paquete;
-      //       return this.$bvModal.show("packages");
-      //     } else {
-      //       this.cantidad = res.data.paquete[0].cantidad;
-      //       this.identificador = res.data.paquete[0].identificador;
-      //       localStorage.noPaquete = this.noPaquete;
-      //       axios
-      //         .get(`${config.api}/foliosPaquete`, {
-      //           params: {
-      //             noPaquete: this.noPaquete,
-      //             bis: this.bis,
-      //             folioInicio: res.data.paquete[0].folioInicio,
-      //             folioFin: res.data.paquete[0].folioFin,
-      //           },
-      //         })
-      //         .then((res) => {
-      //           // if (res.data.folios.length == 0) {
-      //           //   this.paquetePreparado = false;
-      //           //   this.spinner = false;
-      //           //   return Swal.fire(
-      //           //     `No se pudo encontrar el paquete ${this.noPaquete}.`,
-      //           //     "",
-      //           //     "error"
-      //           //   );
-      //           // }
-      //           this.paquetePreparado = true;
-      //           this.infoPaquete = res.data.infoPaquete;
-      //           this.spinner = false;
-      //           // this.folios = res.data.folios;
-      //           // this.folios.forEach((el, index) => {
-      //           //   if (el.referencias) {
-      //           //     this.referencias[index] = el.referencias;
-      //           //     this.selected[index] = "Oficio";
-      //           //   } else this.selected[index] = "Completo";
-      //           //   this.spinner = false;
-      //           // });
-      //         })
-      //         .catch((error) => {
-      //           if (error) console.log(error.response);
-      //         });
-      //       this.spinner = false;
-      //     }
-      //   })
-      //   .catch((err) => {
-      //     console.log(err);
-      //     Swal.fire(
-      //       "¡Error!",
-      //       "Ocurrió un error al intentar realizar la transacción.",
-      //       "error"
-      //     );
-      //     this.spinner = false;
-      //   });
     },
     saveWithoutValidar() {
       Swal.fire({
@@ -845,6 +687,8 @@ export default {
           // this.infoPaquete.paquete["infoCapturadaSICE"] = true;
           this.paquete.local = true;
           this.folios.forEach((el) => {
+            if(this.rep.includes(el.folio))
+              el.validado = false;
             el.validado = true;
           });
           let data = {

@@ -31,16 +31,23 @@ const getList = async() => {
             nh = sep[1]
         }
         imp = await getFolio(folio, tomo);
-        direc = path.parse(path.join(ruta, file)).dir;
-        base = path.parse(path.join(ruta, file)).base;
-        imp = imp.toJSON();
-        imp.path = path.join(direc, base);
-        imp.archivo = base;
-        imp.numeroImagenes = nh;
-        imp = JSON.stringify(imp);
-        imp = JSON.parse(imp);
-        // console.log(imp);
-        data.push(imp);
+        if (imp.notProcess) {
+            console.log(`Folio ${folio} ${tomo ? 'Tomo ' + tomo : ''} sin validar, no se va a procesar.`.bgRed);
+            fs.renameSync(path.join(ruta, file), path.join(ruta, `NoProcesar/${file}`));
+        } else if (imp.encontrado === false) {
+            console.log(`Folio ${folio} ${tomo ? 'Tomo ' + tomo : ''} no encontrado en la base de datos. No se procesará.`.bgYellow);
+            fs.renameSync(path.join(ruta, file), path.join(ruta, `NoEncontrados/${file}`));
+        } else {
+            direc = path.parse(path.join(ruta, file)).dir;
+            base = path.parse(path.join(ruta, file)).base;
+            imp.path = path.join(direc, base);
+            imp.archivo = base;
+            imp.numeroImagenes = nh;
+            imp = JSON.stringify(imp);
+            imp = JSON.parse(imp);
+            // console.log(imp);
+            data.push(imp);
+        }
     }
 
     // process.exit();

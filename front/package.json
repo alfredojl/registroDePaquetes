@@ -13,11 +13,13 @@
     "jspdf": "^2.1.1",
     "jspdf-autotable": "^3.5.13",
     "mariadb": "^2.5.2",
+    "moment": "^2.29.1",
     "qrcode": "^1.4.4",
     "register-service-worker": "^1.7.1",
     "sweetalert2": "^10.6.1",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0",
+    "vuetify": "^2.4.4",
     "xlsx": "^0.16.8"
   },
   "devDependencies": {

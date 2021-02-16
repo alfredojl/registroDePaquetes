@@ -13,7 +13,7 @@ const symbols = require('log-symbols');
 
 const maria = async(f, folio) => {
     console.log(symbols.info, 'Creando registro en SICE...'.cyan);
-    let conn = await pool.getConnection();
+    let conn = await pool.getConnection((err, connection) => { if (err) console.log(err) });
     let values = [];
     Object.keys(f).forEach(el => {
         values.push(f[el]);
@@ -21,7 +21,7 @@ const maria = async(f, folio) => {
     let a = await conn.query(`SELECT C22 FROM T15 WHERE C22 = ${f.C22} AND C25 ${f.C25 ? '= ' + f.C25 : 'IS NULL'}`)
     if (a.length > 0) {
         console.log(symbols.warning, 'Registro duplicado. Realizando acciones necesarias...'.bgYellow);
-        fs.renameSync(folio.path, '/home/alima/Desktop/SFTPSimulado/Duplicados/' + folio.archivo);
+        fs.renameSync(folio.path, '/home/alima/Documents/Prueba/Duplicados/' + folio.archivo);
     } else
         await conn.query(`INSERT INTO T15 
             (Id,
