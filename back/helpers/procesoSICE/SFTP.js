@@ -1,13 +1,16 @@
 const client = require("ssh2-sftp-client");
 const config = require('./config');
 const fs = require('fs');
+const path = require('path');
+const os = require('os');
+const moment = require('moment');
 const colors = require('colors');
 const symbols = require('log-symbols');
 
 let dest = '/home/alima/Desktop/SFTPSimulado/'
 let pathHecho = '/home/alima/Documents/Prueba/Hecho/'
-
-const path = config.pathUpload;
+moment.locale('es-mx');
+// const path = config.pathUpload;
 const configSFTP = {
     host: config.hostSFTP,
     user: config.usernameSFTP,
@@ -18,8 +21,9 @@ const subirSFTP = async(folio) => {
     console.log(symbols.info, `Subiendo a SFTP folio ${folio.folio}...`.cyan);
     // let sftp = new client();
 
-    fs.copyFileSync(folio.path, dest + folio.Id + '.pdf');
-    fs.renameSync(folio.path, pathHecho + folio.archivo);
+    fs.copyFileSync(folio.path, path.resolve(os.homedir(), '/SICE/SFTP') + folio.Id + '.pdf');
+    fs.renameSync(folio.path, path.resolve(os.homedir(), '/SICE/Hecho' + folio.archivo));
+    fs.appendFileSync(path.resolve(os.homedir(), 'LOG.txt'), ` Subido correctamente a servidor SFTP.\t [${moment().format('ddd, D MMM Y, HH:mm:ss')}]\n`, 'utf8')
     return console.log(symbols.success, '¡Subido!'.green);
     // return await sftp
     //     .connect(configSFTP)

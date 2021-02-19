@@ -90,6 +90,9 @@ let foliosSchema = new Schema({
     Id: {
         type: Number
     },
+    procesado: {
+        type: Date
+    }
 });
 
 // usuarioSchema.plugin(uniqueValidator, { message: '{PATH} ya existe, debe de ser único.' });

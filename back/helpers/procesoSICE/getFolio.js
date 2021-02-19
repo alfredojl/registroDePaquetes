@@ -1,4 +1,7 @@
 const Folio = require("../../server/models/Folios");
+const moment = require('moment');
+const path = require('path');
+const os = require('os');
 const fs = require('fs');
 const mongoose = require("mongoose");
 require("../../server/config/config");
@@ -15,15 +18,17 @@ mongoose.connect(
     }
 );
 
+moment.locale('es-mx');
 
 const getFolio = async(folio, tomo) => {
 
     // if (tomo)
     return await Folio.findOne({ folio, tomo })
         .then(consult => {
-            if (consult && !consult.rep && consult.validado === true && !consult.procesado)
+            if (consult && !consult.rep && consult.validado === true && consult.procesado !== false)
                 return consult
             else if (!consult) {
+                fs.appendFileSync(path.resolve(os.homedir(), 'LOG.txt'), `${folio} ${tomo ? 'Tomo ' + tomo : ''} no se encontró en la BD de registro.\t [${moment().format('ddd, D MMM Y, HH:mm:ss')}]\n`, 'utf8')
                 consult = {}
                 consult.encontrado = false;
                 return consult;

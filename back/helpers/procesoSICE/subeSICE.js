@@ -1,5 +1,6 @@
 const mariadb = require('mariadb');
 const config = require('./config');
+const fs = require('fs');
 const pool = mariadb.createPool({
     host: config.host,
     user: config.username,
@@ -7,8 +8,24 @@ const pool = mariadb.createPool({
     database: config.db
 });
 const md5 = require('md5');
+const path = require('path');
 const moment = require('moment');
+const Folio = require('../../server/models/Folios')
+const mongoose = require('mongoose');
 const maria = require('./mysqlSICE');
+const os = require('os');
+
+// mongoose.connect('mongodb://billie:adminMongo$@172.26.60.61:27017/registro?authSource=admin', {
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true,
+//     useCreateIndex: true,
+//     useFindAndModify: false
+// }, (err, res) => {
+//     if (err) throw err;
+//     console.log("BD registro ONLINE");
+// });
+
+moment.locale('es-mx');
 
 const renombra = async(folio) => {
     let conn = await pool.getConnection();
@@ -49,8 +66,27 @@ const renombra = async(folio) => {
     return sube(f, folio)
 }
 
+const updateLocal = async(folio) => {
+    folio.procesado = new Date();
+    // await Folio.updateOne({
+    //     folio: folio.folio,
+    //     bis: folio.bis,
+    //     tomo: folio.tomo
+    // }, {
+    //     $set: folio
+    // }, { new: true }, (err, resultadoDB) => {
+    //     if (err)
+    //         console.log(err);
+    // })
+}
+
 const sube = async(f, folio) => {
-    await maria(f, folio);
+    let t = await maria(f, folio);
+    if (t) {
+        console.log(true);
+    } else
+        console.log(false);
+    // await updateLocal(folio);
     return;
 }
 
