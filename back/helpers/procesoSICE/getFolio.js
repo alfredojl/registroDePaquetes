@@ -6,7 +6,7 @@ const fs = require('fs');
 const mongoose = require("mongoose");
 require("../../server/config/config");
 mongoose.connect(
-    "mongodb://localhost:27017/registro", {
+    'mongodb://production:production$@172.26.60.61:27017/registro?authSource=admin', {
         useNewUrlParser: true,
         useUnifiedTopology: true,
         useCreateIndex: true,

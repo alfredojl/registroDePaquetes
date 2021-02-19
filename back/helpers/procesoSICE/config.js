@@ -1,7 +1,7 @@
 let config = {
     host: '127.0.0.1',
     username: 'root',
-    passwd: 'passwd31.',
+    passwd: '',
     // host: '10.17.5.40',
     // username: 'proveedor',
     // passwd: '$354m0.1',

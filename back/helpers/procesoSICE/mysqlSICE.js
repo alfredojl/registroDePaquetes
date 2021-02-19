@@ -26,8 +26,8 @@ const maria = async(f, folio) => {
     let a = await conn.query(`SELECT C22 FROM T15 WHERE C22 = ${f.C22} AND C25 ${f.C25 ? '= ' + f.C25 : 'IS NULL'}`)
     if (a.length > 0) {
         console.log(symbols.warning, 'Registro duplicado. Realizando acciones necesarias...'.bgYellow);
-        fs.renameSync(folio.path, path.resolve(os.homedir(), '/SICE/Duplicados') + folio.archivo);
-        fs.appendFileSync(path.resolve(os.homedir(), 'LOG.txt'), `${folio.folio} ${folio.tomo ? 'Tomo ' + folio.tomo : ''} duplicado y movido a la carpeta de 'Duplicados'.\t [${moment().format('ddd, D MMM Y, HH:mm:ss')}]\n`, 'utf8')
+        fs.renameSync(folio.path, path.resolve(os.homedir(), 'SICE/Duplicados', folio.archivo));
+        fs.appendFileSync(path.resolve(os.homedir(), 'LOG.txt'), `${folio.folio} ${folio.tomo ? 'Tomo ' + folio.tomo : ''} duplicado y movido a la carpeta de 'Duplicados'.\t\t [${moment().format('ddd, D MMM Y, HH:mm:ss')}]\n`, 'utf8')
     } else
         await conn.query(`INSERT INTO T15 
             (Id,

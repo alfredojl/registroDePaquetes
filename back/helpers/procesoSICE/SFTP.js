@@ -6,9 +6,10 @@ const os = require('os');
 const moment = require('moment');
 const colors = require('colors');
 const symbols = require('log-symbols');
+const { CLIENT_RENEG_LIMIT } = require("tls");
 
-let dest = '/home/alima/Desktop/SFTPSimulado/'
-let pathHecho = '/home/alima/Documents/Prueba/Hecho/'
+let dest = path.resolve(os.homedir(), 'Desktop/SFTPSimulado');
+let pathHecho = path.resolve(os.homedir(), 'SICE/Hecho/');
 moment.locale('es-mx');
 // const path = config.pathUpload;
 const configSFTP = {
@@ -18,47 +19,30 @@ const configSFTP = {
 };
 
 const subirSFTP = async(folio) => {
+    let sftp = new client;
     console.log(symbols.info, `Subiendo a SFTP folio ${folio.folio}...`.cyan);
     // let sftp = new client();
 
-    fs.copyFileSync(folio.path, path.resolve(os.homedir(), '/SICE/SFTP') + folio.Id + '.pdf');
-    fs.renameSync(folio.path, path.resolve(os.homedir(), '/SICE/Hecho' + folio.archivo));
-    fs.appendFileSync(path.resolve(os.homedir(), 'LOG.txt'), ` Subido correctamente a servidor SFTP.\t [${moment().format('ddd, D MMM Y, HH:mm:ss')}]\n`, 'utf8')
-    return console.log(symbols.success, '¡Subido!'.green);
-    // return await sftp
-    //     .connect(configSFTP)
-    //     .then(() => {
-    //         return sftp.list(path, /.pdf|.safe/);
-    //     })
-    //     .then(async(data) => {
-    //         console.log('¡Subido a SFTP!');
-    //         // data = data.map((el) => {
-    //         //     // return {
-    //         //     //     name: el.name.split('.')[0],
-    //         //     //     size: el.size / (1024 * 1024),
-    //         //     //     // type: el.type
-    //         //     // }
-    //         //     resSFTP.push(el.name.split(".")[0]);
-    //         // });
-    //         // let x = [];
-    //         // let y = [];
-    //         // data.forEach(el => {
-    //         //     if (el.size > 100) {
-    //         //         x.push(el.name)
-    //         //         y.push({
-    //         //             Id: el.name,
-    //         //             Tamaño: el.size.toFixed(2)
-    //         //         })
-    //         //     }
-    //         // });
-    //         // await creaListas(x, y);
-    //     })
-    //     .then(() => {
-    //         sftp.end();
-    //     })
-    //     .catch((err) => {
-    //         console.error(err.message);
-    //     });
+    // fs.copyFileSync(folio.path, dest + '/' + folio.Id + '.pdf');
+    return await sftp
+    .connect(configSFTP)
+    .then(async() => {
+        // console.log(folio.path, config.pathUpload + folio.Id + '.pdf')
+        await sftp.put(folio.path, config.pathUpload + folio.Id + '.pdf');
+    })
+    .then(async(data) => {
+        console.log('¡Subido a SFTP!');
+        fs.renameSync(folio.path, pathHecho + '/' + folio.archivo);
+        fs.appendFileSync(path.resolve(os.homedir(), 'LOG.txt'), ` Subido correctamente a servidor SFTP.\t\t [${moment().format('ddd, D MMM Y, HH:mm:ss')}]\n`, 'utf8')
+        return console.log(symbols.success, '¡Subido!'.green);
+    })
+    .then(() => {
+        sftp.end();
+    })
+    .catch((err) => {
+        fs.appendFileSync(path.resolve(os.homedir(), 'LOG.txt'), ` No logró subir a servidor SFTP. Error: ${err.message}\t [${moment().format('ddd, D MMM Y, HH:mm:ss')}]\n`, 'utf8')
+            console.error(err.message);
+        });
 };
 
 module.exports = subirSFTP;

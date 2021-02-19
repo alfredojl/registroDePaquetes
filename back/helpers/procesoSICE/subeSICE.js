@@ -68,25 +68,21 @@ const renombra = async(folio) => {
 
 const updateLocal = async(folio) => {
     folio.procesado = new Date();
-    // await Folio.updateOne({
-    //     folio: folio.folio,
-    //     bis: folio.bis,
-    //     tomo: folio.tomo
-    // }, {
-    //     $set: folio
-    // }, { new: true }, (err, resultadoDB) => {
-    //     if (err)
-    //         console.log(err);
-    // })
+    await Folio.updateOne({
+        folio: folio.folio,
+        bis: folio.bis,
+        tomo: folio.tomo
+    }, {
+        $set: folio
+    }, { new: true }, (err, resultadoDB) => {
+        if (err)
+            console.log(err);
+    })
 }
 
 const sube = async(f, folio) => {
-    let t = await maria(f, folio);
-    if (t) {
-        console.log(true);
-    } else
-        console.log(false);
-    // await updateLocal(folio);
+    await maria(f, folio);
+    await updateLocal(folio);
     return;
 }
 

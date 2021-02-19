@@ -1,12 +1,13 @@
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
-const ruta = "/home/alima/Documents/Prueba"
 const getFolio = require('./getFolio');
 const sube = require('./subeSICE');
 const cron = require('node-cron');
 const moment = require('moment');
 const symbols = require('log-symbols');
+
+const ruta = path.resolve(os.homedir(), "SICE");
 
 let data = [];
 const getList = async() => {
@@ -35,11 +36,11 @@ const getList = async() => {
         if (imp.notProcess) {
             console.log(`Folio ${folio} ${tomo ? 'Tomo ' + tomo : ''} sin validar, no se va a procesar.`.bgRed);
             fs.renameSync(path.join(ruta, file), path.join(ruta, `NoProcesar/${file}`));
-            fs.appendFileSync(path.resolve(os.homedir(), 'LOG.txt'), `${folio} ${tomo ? 'Tomo ' + tomo : ''} no validado, se moverá a la carpeta de 'NoProcesar.\t [${moment().format('ddd, D MMM Y, HH:mm:ss')}]\n`, 'utf8')
+            fs.appendFileSync(path.resolve(os.homedir(), 'LOG.txt'), `${folio} ${tomo ? 'Tomo ' + tomo : ''} no validado, se moverá a la carpeta de 'NoProcesar.\t\t [${moment().format('ddd, D MMM Y, HH:mm:ss')}]\n`, 'utf8')
         } else if (imp.encontrado === false) {
             console.log(`Folio ${folio} ${tomo ? 'Tomo ' + tomo : ''} no encontrado en la base de datos. No se procesará.`.bgYellow);
             fs.renameSync(path.join(ruta, file), path.join(ruta, `NoEncontrados/${file}`));
-            fs.appendFileSync(path.resolve(os.homedir(), 'LOG.txt'), `${folio} ${tomo ? 'Tomo ' + tomo : ''} no validado, se moverá a la carpeta de 'NoProcesar'.\t [${moment().format('ddd, D MMM Y, HH:mm:ss')}]\n`, 'utf8')
+            fs.appendFileSync(path.resolve(os.homedir(), 'LOG.txt'), `${folio} ${tomo ? 'Tomo ' + tomo : ''} no validado, se moverá a la carpeta de 'NoProcesar'.\t\t [${moment().format('ddd, D MMM Y, HH:mm:ss')}]\n`, 'utf8')
         } else {
             direc = path.parse(path.join(ruta, file)).dir;
             base = path.parse(path.join(ruta, file)).base;
@@ -69,3 +70,4 @@ const task = cron.schedule('*/1 * * * *', async() => {
 })
 
 task.start()
+// getList();
