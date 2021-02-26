@@ -19,7 +19,7 @@ const getList = async() => {
     if (archs.length == 0)
         return console.log(symbols.info, 'Nada por procesar'.bold.cyan);
     else {
-        console.log(symbols.info, `Procesando ${archs.length}`.bold.bgCyan);
+        console.log(symbols.info, `Procesando ${archs.length} folios...`.bold.bgCyan);
     }
 
     for (file of archs) {
@@ -32,38 +32,48 @@ const getList = async() => {
         } else {
             nh = sep[1]
         }
-        imp = await getFolio(folio, tomo);
-        if (imp.notProcess) {
-            console.log(`Folio ${folio} ${tomo ? 'Tomo ' + tomo : ''} sin validar, no se va a procesar.`.bgRed);
-            fs.renameSync(path.join(ruta, file), path.join(ruta, `NoProcesar/${file}`));
-            fs.appendFileSync(path.resolve(os.homedir(), 'LOG.txt'), `${folio} ${tomo ? 'Tomo ' + tomo : ''} no validado, se moverá a la carpeta de 'NoProcesar.\t\t [${moment().format('ddd, D MMM Y, HH:mm:ss')}]\n`, 'utf8')
-        } else if (imp.encontrado === false) {
-            console.log(`Folio ${folio} ${tomo ? 'Tomo ' + tomo : ''} no encontrado en la base de datos. No se procesará.`.bgYellow);
-            fs.renameSync(path.join(ruta, file), path.join(ruta, `NoEncontrados/${file}`));
-            fs.appendFileSync(path.resolve(os.homedir(), 'LOG.txt'), `${folio} ${tomo ? 'Tomo ' + tomo : ''} no validado, se moverá a la carpeta de 'NoProcesar'.\t\t [${moment().format('ddd, D MMM Y, HH:mm:ss')}]\n`, 'utf8')
-        } else {
-            direc = path.parse(path.join(ruta, file)).dir;
-            base = path.parse(path.join(ruta, file)).base;
-            imp.path = path.join(direc, base);
-            imp.archivo = base;
-            imp.numeroImagenes = nh;
-            imp = JSON.stringify(imp);
-            imp = JSON.parse(imp);
-            // console.log(imp);
-            data.push(imp);
+        if(folio.length != 7){
+            console.log(`Folio ${folio} ${tomo ? 'Tomo ' + tomo : ''} erróneo, no se va a procesar.`.bgRed);
+            fs.appendFileSync(path.resolve(os.homedir(), 'LOG.txt'), `${folio} ${tomo ? 'Tomo ' + tomo : ''} folio erróneo, se moverá a la carpeta de 'Error'.\t\t [${moment().format('ddd, D MMM Y, HH:mm:ss')}]\n`, 'utf8')
+            fs.renameSync(path.join(ruta, file), path.join(ruta, `Error/${file}`));
+            fs.appendFileSync(path.resolve(os.homedir(), 'reporte.csv'), `${folio.folio},${folio.tomo ? folio.tomo : ''},${folio.numeroImagenes},false\n`);
+        }
+        else{
+            imp = await getFolio(folio, tomo);
+            if (imp.notProcess) {
+                console.log(symbols.error, `Folio ${folio} ${tomo ? 'Tomo ' + tomo : ''} sin validar, no se va a procesar.`.bgRed);
+                fs.renameSync(path.join(ruta, file), path.join(ruta, `NoProcesar/${file}`));
+                fs.appendFileSync(path.resolve(os.homedir(), 'reporte.csv'), `${folio},${tomo ? tomo : ''},${nh},false\n`);
+                fs.appendFileSync(path.resolve(os.homedir(), 'LOG.txt'), `${folio} ${tomo ? 'Tomo ' + tomo : ''} no validado, se moverá a la carpeta de 'NoProcesar.\t\t [${moment().format('ddd, D MMM Y, HH:mm:ss')}]\n`, 'utf8')
+            } else if (imp.encontrado === false) {
+                console.log(symbols.error, `Folio ${folio} ${tomo ? 'Tomo ' + tomo : ''} no encontrado en la base de datos. No se procesará.`.bgRed);
+                fs.renameSync(path.join(ruta, file), path.join(ruta, `NoEncontrados/${file}`));
+                fs.appendFileSync(path.resolve(os.homedir(), 'reporte.csv'), `${folio},${tomo ? tomo : ''},${nh},false\n`);
+                fs.appendFileSync(path.resolve(os.homedir(), 'LOG.txt'), `${folio} ${tomo ? 'Tomo ' + tomo : ''} no validado, se moverá a la carpeta de 'NoProcesar'.\t\t [${moment().format('ddd, D MMM Y, HH:mm:ss')}]\n`, 'utf8')
+            } else {
+                direc = path.parse(path.join(ruta, file)).dir;
+                base = path.parse(path.join(ruta, file)).base;
+                imp.path = path.join(direc, base);
+                imp.archivo = base;
+                imp.numeroImagenes = nh;
+                imp = JSON.stringify(imp);
+                imp = JSON.parse(imp);
+                // console.log(imp);
+                data.push(imp);
+        }
         }
     }
 
     // process.exit();
 
     // })
-    sube(data);
+    await sube(data);
     // console.log(data);
     console.log(symbols.success, `Se procesaron ${data.length} archivos.`.bgGreen);
     data = [];
 };
 
-const task = cron.schedule('*/1 * * * *', async() => {
+const task = cron.schedule('*/5 * * * *', async() => {
     console.log(symbols.info, `Procesando... [${moment().format('hh:mm:ss')}]`.underline.cyan);
     await getList();
     console.log(symbols.info, `Terminado. Esperando siguiente ciclo... [${moment().format('hh:mm:ss')}]`.underline.cyan);
