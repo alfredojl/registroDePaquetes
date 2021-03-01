@@ -12,7 +12,7 @@
     </table> -->
 
     <!-- <br /> -->
-    <b-row class="justify-content-center">
+    <b-row class="mt-4 justify-content-center">
     <b-col cols="auto">
       <table style="width: 30rem">
         <tr>
@@ -123,7 +123,7 @@
       <div class="mt-2 p-0">
         <b-table
           id="folios"
-          class="mt-3"
+          class="mt-3 text-center"
           :items="folios"
           :fields="headers"
         >
@@ -148,13 +148,13 @@ export default {
       folioInicio: null,
       bis: null,
       folioFin: null,
-      bis: null,
       headers: [
         { key: "folio", label: "Folio" },
+        { key: "tomo", label: "Tomo" },
         { key: "estado", label: "Estado" },
+        { key: "fojas", label: "No. de Fojas" },
         // { key: "tomos", label: "Tomos" },
         // { key: "referencias", label: "Referencia" },
-        "No. de fojas",
       ],
       cantidad: null,
       identificador: null,
@@ -209,6 +209,10 @@ Lider de equipo: ${this.verificador ? this.verificador : "Sin asignar"}`
               this.folios[index].tomos = "********";
               this.folios[index].referencias = "********";
             }
+            if (el.estado == "Urgente") {
+              this.folios[index].tomos = "=========";
+              this.folios[index].referencias = "==========";
+            }
           });
           this.qr();
           // this.folios.forEach((el, index) => {
@@ -245,8 +249,8 @@ Lider de equipo: ${this.verificador ? this.verificador : "Sin asignar"}`
               "",
               "error"
             );
-          this.verificador = res.data.paquete[0].verificador;
-          this.preparador = res.data.paquete[0].preparador;
+          // this.verificador = res.data.paquete[0].verificador;
+          // this.preparador = res.data.paquete[0].preparador;
           this.cantidad = res.data.paquete[0].cantidad;
           this.bis = res.data.paquete[0].bis;
           this.identificador = res.data.paquete[0].identificador;

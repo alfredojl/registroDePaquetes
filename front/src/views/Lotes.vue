@@ -347,7 +347,8 @@ export default {
       this.spinner = false;
     },
     endQR() {
-      if (this.noPaquete.includes("equipo")) {
+      console.log(this.noPaquete);
+      if (this.noPaquete.includes("equipo") || this.noPaquete.includes('Preparador')) {
         return true;
       }
       return false;
@@ -419,6 +420,10 @@ export default {
         }
         this.currentPaqs.push(this.noPaquete);
         this.noPaquete = this.noPaquete.split(" ");
+        console.log(this.noPaquete);
+        if(this.noPaquete.length < 3){
+          this.noPaquete.push(' ')
+        }
         if (this.noPaquete[1].toUpperCase() == "BIS") {
           paquete.bis = true;
         }

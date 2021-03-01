@@ -7,12 +7,12 @@ const Paquete = require('../models/Paquetes');
 const mariadb = require('mariadb');
 
 const config = require('../../helpers/procesoSICE/config');
-// const pool = mariadb.createPool({
-//     host: config.host,
-//     user: config.username,
-//     password: config.passwd,
-//     database: config.db
-// });
+const pool = mariadb.createPool({
+    host: config.host,
+    user: config.username,
+    password: config.passwd,
+    database: config.db
+});
 
 app.get('/busquedaSICE', async(req, res) => {
     let folioInicio = parseInt(req.query.folioInicio);
