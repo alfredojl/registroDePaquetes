@@ -1,12 +1,15 @@
 const express = require('express');
 const app = express();
+const moment = require('moment');
 
 const Lote = require('../models/Lote');
 
-app.get('/lote', (req, res) => {
+moment.locale('es-mx');
+
+app.get('/lote', async(req, res) => {
     let query = req.query;
 
-    Lote.find(query, (err, loteDB) => {
+    await Lote.find(query, (err, loteDB) => {
         if (err)
             return res.status(500).json({
                 ok: false,
@@ -16,8 +19,8 @@ app.get('/lote', (req, res) => {
             return {
                 noLote: el.noLote,
                 noPaquete: el.noPaquete,
-                fechaEntregado: el.fechaEntregado ? new Date(el.fechaEntregado).toISOString().slice(0, 10) : null,
-                fechaDevolucion: el.fechaDevolucion ? new Date(el.fechaDevolucion).toISOString().slice(0, 10) : null
+                fechaEntregado: el.fechaEntregado ? moment(el.fechaEntregado).format('DD/MM/YYYY') : null,
+                fechaDevolucion: el.fechaDevolucion ? moment(el.fechaDevolucion).format('DD/MM/YYYY') : null
             }
         })
         return res.json({
@@ -27,30 +30,73 @@ app.get('/lote', (req, res) => {
     })
 });
 
-app.post('/lote', (req, res) => {
+app.post('/lote', async(req, res) => {
     let lote = req.body.lote;
-
-    Lote.insertMany(lote, (err, loteDB) => {
-        if (err) {
-            return res.status(500).json({
-                ok: false,
-                err
-            })
-        }
-        console.log('error no');
-        res.json({
-            ok: true,
-            lote: loteDB
+    let list = [];
+    let listErrors = [];
+    let fechaE, fechaD;
+    if (lote[0].fechaEntregado) {
+        fechaE = lote[0].fechaEntregado.split('/').reverse();
+        fechaE[1]--;
+        lote.forEach(el => {
+            el.fechaEntregado = moment(fechaE)
         })
-    })
+    }
+    if (lote[0].fechaDevolucion) {
+        fechaD = lote[0].fechaDevolucion.split('/').reverse();
+        fechaD[1]--;
+        lote.forEach(el => {
+            el.fechaDevolucion = moment(fechaD)
+        })
+    }
+    // console.log(lote);
+    // res.json({ ok: true })
+
+    for (item of lote) {
+        await Lote.updateOne({ noPaquete: item.noPaquete, bis: item.bis, identificador: item.identificador }, item, { new: true, upsert: true }, (err, loteDB) => {
+            if (err) {
+                listErrors.push(err)
+            }
+            list.push(loteDB);
+        })
+    }
+    if (listErrors.length > 0)
+        return res.status(500).json({
+            ok: false,
+            messages: listErrors
+        })
+    else
+        return res.json({
+                ok: true,
+                lote: list
+            })
+            // await Lote.insertMany(lote, (err, loteDB) => {
+            //     if (err) {
+            //         return res.status(500).json({
+            //             ok: false,
+            //             err
+            //         })
+            //     }
+            //     return res.json({
+            //         ok: true,
+            //         lote: loteDB
+            //     })
+            // })
 });
 
 app.put('/lote', (req, res) => {
     let noLote = req.body.noLote;
     let fechaEntregado = req.body.fechaEntregado;
     let fechaDevolucion = req.body.fechaDevolucion;
+    let body = {
+        noLote
+    };
+    if (fechaEntregado)
+        body.fechaEntregado = fechaEntregado;
+    if (fechaDevolucion)
+        body.fechaDevolucion = fechaDevolucion;
 
-    Lote.updateMany({ noLote }, { fechaDevolucion, fechaEntregado }, { new: true }, (err, equis) => {
+    Lote.updateMany({ noLote }, body, { new: true }, (err, equis) => {
         if (err)
             return res.status(500).json({
                 ok: false,

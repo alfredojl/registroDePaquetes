@@ -19,6 +19,16 @@ let loteSchema = new Schema({
     noLote: {
         type: Number,
         required: true
+    },
+    bis: {
+        type: Boolean,
+        default: false
+    },
+    identificador: {
+        type: Number
+    },
+    cantidad: {
+        type: Number
     }
 });
 

@@ -10,162 +10,127 @@
         <th><pre></pre></th>
       </tr>
     </table> -->
-    <div class="row mt-5">
-      <div class="col-9">
-        <h6 class="mt-3">Fecha: {{ fechaToday }}</h6>
-        <h6>Lider de equipo: {{ verificador }}</h6>
-        <h6>Turno: {{ turno }}</h6>
-      </div>
-      <div class="col-auto">
-        <!-- <div class="mydiv ml-auto"> -->
-        <!-- <canvas id="canvas"></canvas> -->
-        <img :src="qrvue" alt="" class="mydiv" />
-        <!-- </div> -->
-      </div>
-    </div>
 
-    <br />
-    <table class="l" style="width: 90%">
-      <tr>
-        <th class="renglon">Nombre del preparador:</th>
-        <th class="renglon">{{ preparador }}</th>
+    <!-- <br /> -->
+    <b-row class="justify-content-center">
+    <b-col cols="auto">
+      <table style="width: 30rem">
+        <tr>
+          <th class="">Nombre del preparador:</th>
+          <!-- <th class="renglon">{{ preparador }}</th>
         <th class="l">Verificador</th>
         <th class="checkes"></th>
-        <th>Digitalizador</th>
-      </tr>
-      <tr>
-        <td class="l">Paquete</td>
-        <td class="l">{{ noPaquete }} {{ bis ? 'BIS' : '' }} {{ identificador ? identificador + '/' : '' }}{{ cantidad }}</td>
-        <!-- <td class="l" v-else>{{ noPaquete }}</td> -->
-        <td class="l">Registro de datos</td>
+        <th>Digitalizador</th> -->
+        </tr>
+        <tr>
+          <td class="l renglon">Paquete</td>
+          <td class="l">
+            {{ noPaquete }} {{ bis ? "BIS" : "" }}
+            {{ identificador ? identificador + "/" : "" }}{{ cantidad }}
+          </td>
+          <!-- <td class="l">Registro de datos</td>
         <td class="l"></td>
+        <td class="l"></td> -->
+        </tr>
+        <tr>
+          <td class="l">Folio inicio</td>
+          <td class="l">{{ folioInicio }}</td>
+          <!-- <td class="l">Numero de hojas continuas</td>
         <td class="l"></td>
-      </tr>
-      <tr>
-        <td class="l">Folio inicio</td>
-        <td class="l">{{ folioInicio }}</td>
-        <td class="l">Numero de hojas continuas</td>
+        <td class="l"></td> -->
+        </tr>
+        <tr>
+          <td class="l">Folio fin</td>
+          <td class="l">{{ folioFin }}</td>
+          <!-- <td class="l">Sin grapas</td> -->
+          <!-- <td class="l"></td>
+        <td class="l"></td> -->
+        </tr>
+        <tr>
+          <td class="l">Fecha expediente</td>
+          <td class="l">{{ fechaExpediente }}</td>
+          <!-- <td class="l">Sin clips</td>
         <td class="l"></td>
+        <td class="l"></td> -->
+        </tr>
+        <tr>
+          <td class="l">Con periódico</td>
+          <td class="l"></td>
+          <!-- <td class="l">Sin fojas dobladas</td>
         <td class="l"></td>
-      </tr>
-      <tr>
-        <td class="l">Folio fin</td>
-        <td class="l">{{ folioFin }}</td>
-        <td class="l">Sin grapas</td>
+        <td class="l"></td> -->
+        </tr>
+        <tr>
+          <td class="l">Papel cebolla</td>
+          <td class="l"></td>
+          <!-- <td class="l">Fojas con cinta</td>
         <td class="l"></td>
+        <td class="l"></td> -->
+        </tr>
+        <tr>
+          <td class="l">Tickets</td>
+          <td class="l"></td>
+          <!-- <td class="l">Con separador</td>
         <td class="l"></td>
-      </tr>
-      <tr>
-        <td class="l">Fecha expediente</td>
-        <td class="l">{{ fechaExpediente }}</td>
-        <td class="l">Sin clips</td>
+        <td class="l"></td> -->
+        </tr>
+        <tr>
+          <td class="l">Observaciones</td>
+          <td class="l"></td>
+          <!-- <td class="l">Con acetato</td>
         <td class="l"></td>
+        <td class="l"></td> -->
+        </tr>
+        <tr>
+          <td class="l">Dañados</td>
+          <td class="l"></td>
+          <!-- <td class="l">Registro doctos engrapados</td>
         <td class="l"></td>
-      </tr>
-      <tr>
-        <td class="l">Con periódico</td>
+        <td class="l"></td> -->
+        </tr>
+        <tr>
+          <td class="l">Mutilados</td>
+          <td class="l"></td>
+          <!-- <td class="l">Registro de observaciones</td>
         <td class="l"></td>
-        <td class="l">Sin fojas dobladas</td>
+        <td class="l"></td> -->
+        </tr>
+        <tr>
+          <td class="l">Texto borroso</td>
+          <td class="l"></td>
+          <!-- <td class="l"></td>
         <td class="l"></td>
+        <td class="l"></td> -->
+        </tr>
+        <tr>
+          <td class="l">Texto ilegible</td>
+          <td class="l"></td>
+          <!-- <td class="l"></td>
         <td class="l"></td>
-      </tr>
-      <tr>
-        <td class="l">Papel cebolla</td>
+        <td class="l"></td> -->
+        </tr>
+        <tr>
+          <td class="l">Manchados</td>
+          <td class="l"></td>
+          <!-- <td class="l"></td>
         <td class="l"></td>
-        <td class="l">Fojas con cinta</td>
-        <td class="l"></td>
-        <td class="l"></td>
-      </tr>
-      <tr>
-        <td class="l">Tickets</td>
-        <td class="l"></td>
-        <td class="l">Con separador</td>
-        <td class="l"></td>
-        <td class="l"></td>
-      </tr>
-      <tr>
-        <td class="l">Observaciones</td>
-        <td class="l"></td>
-        <td class="l">Con acetato</td>
-        <td class="l"></td>
-        <td class="l"></td>
-      </tr>
-      <tr>
-        <td class="l">Dañados</td>
-        <td class="l"></td>
-        <td class="l">Registro doctos engrapados</td>
-        <td class="l"></td>
-        <td class="l"></td>
-      </tr>
-      <tr>
-        <td class="l">Mutilados</td>
-        <td class="l"></td>
-        <td class="l">Registro de observaciones</td>
-        <td class="l"></td>
-        <td class="l"></td>
-      </tr>
-      <tr>
-        <td class="l">Texto borroso</td>
-        <td class="l"></td>
-        <td class="l"></td>
-        <td class="l"></td>
-        <td class="l"></td>
-      </tr>
-      <tr>
-        <td class="l">Texto ilegible</td>
-        <td class="l"></td>
-        <td class="l"></td>
-        <td class="l"></td>
-        <td class="l"></td>
-      </tr>
-      <tr>
-        <td class="l">Manchados</td>
-        <td class="l"></td>
-        <td class="l"></td>
-        <td class="l"></td>
-        <td class="l"></td>
-      </tr>
-      <tr>
-        <td class="l">Número estimado de fojas</td>
-        <td class="l"></td>
-        <td class="l"></td>
-        <td class="l"></td>
-        <td class="l"></td>
-      </tr>
-    </table>
-
-    <br />
-    <table>
-      <td>Recibido</td>
-      <td>
-        <div class="cuadrado1"></div>
-      </td>
-      <td>Preparado</td>
-      <td class="cuadros"></td>
-      <td>Digitalizado</td>
-      <td class="cuadros"></td>
-      <td>Sellado</td>
-      <td class="cuadros"></td>
-      <td>Cosido</td>
-      <td class="cuadros"></td>
-    </table>
-    <div class="mt-5 p-0">
-      <b-row>
-        <b-col>
+        <td class="l"></td> -->
+        </tr>
+      </table>
+    </b-col>
+    <!-- <br /> -->
+    <b-col cols="auto">
+      <div class="mt-2 p-0">
         <b-table
-    style="max-width: 30rem;"
-    id="folios"
-    class="mt-3"
-    :items="folios"
-    :fields="headers"
-    >
-    </b-table>
-</b-col>
-      <div>
-        <img :src="qrvue" alt="" class="" />
+          id="folios"
+          class="mt-3"
+          :items="folios"
+          :fields="headers"
+        >
+        </b-table>
       </div>
-      </b-row>
-    </div>
+    </b-col>
+    </b-row>
   </div>
 </template>
 
@@ -185,11 +150,11 @@ export default {
       folioFin: null,
       bis: null,
       headers: [
-        {key: "folio", label: "Folio"},
-        {key: "estado", label: "Estado"},
-        {key: "tomos", label: "Tomos"},
-        {key: "referencias", label: "Referencia"},
-        "No. de fojas"
+        { key: "folio", label: "Folio" },
+        { key: "estado", label: "Estado" },
+        // { key: "tomos", label: "Tomos" },
+        // { key: "referencias", label: "Referencia" },
+        "No. de fojas",
       ],
       cantidad: null,
       identificador: null,
@@ -209,12 +174,14 @@ export default {
   methods: {
     qr() {
       QR.toDataURL(
-        `${this.noPaquete} ${ this.bis ? 'BIS' : '' } ${ this.identificador ? this.identificador + '/' + this.cantidad: '' }
+        `${this.noPaquete} ${this.bis ? "BIS" : ""} ${
+          this.identificador ? this.identificador + "/" + this.cantidad : ""
+        }
 Folio inicio: ${this.folioInicio}
 Folio fin: ${this.folioFin}
 Fecha expediente: ${this.fechaExpediente}
-Lider de equipo: ${this.verificador ? this.verificador : 'Sin asignar'}`
-// Preparador: ${this.preparador ? this.preparador : 'Sin asignar'}`
+Lider de equipo: ${this.verificador ? this.verificador : "Sin asignar"}`
+        // Preparador: ${this.preparador ? this.preparador : 'Sin asignar'}`
       )
         .then((url) => {
           this.qrvue = url;
@@ -229,7 +196,7 @@ Lider de equipo: ${this.verificador ? this.verificador : 'Sin asignar'}`
         folioInicio: this.folioInicio,
         folioFin: this.folioFin,
         noPaquete: this.noPaquete,
-        bis: this.bis
+        bis: this.bis,
       };
       axios
         .get(`${config.api}/folios`, {
@@ -238,11 +205,11 @@ Lider de equipo: ${this.verificador ? this.verificador : 'Sin asignar'}`
         .then((res) => {
           this.folios = res.data.folios;
           this.folios.forEach((el, index) => {
-            if(el.estado == "Faltante") {
-              this.folios[index].tomos = "********"; 
+            if (el.estado == "Faltante") {
+              this.folios[index].tomos = "********";
               this.folios[index].referencias = "********";
             }
-          })
+          });
           this.qr();
           // this.folios.forEach((el, index) => {
           //   if (el.referencias) {
@@ -257,7 +224,7 @@ Lider de equipo: ${this.verificador ? this.verificador : 'Sin asignar'}`
         });
     },
     search() {
-      let aux = JSON.parse(localStorage.getItem('paquete'));
+      let aux = JSON.parse(localStorage.getItem("paquete"));
       // console.log(aux);
       this.noPaquete = aux.noPaquete;
       this.bis = aux.bis;
@@ -268,7 +235,7 @@ Lider de equipo: ${this.verificador ? this.verificador : 'Sin asignar'}`
           params: {
             noPaquete: this.noPaquete,
             bis: this.bis,
-            folioInicio: this.folioInicio
+            folioInicio: this.folioInicio,
           },
         })
         .then((res) => {
@@ -290,9 +257,14 @@ Lider de equipo: ${this.verificador ? this.verificador : 'Sin asignar'}`
           //         .slice(0, 10)
           //     : null;
           // this.fechaExpediente = new Date(res.data.paquete[0].fechaExpediente);
-          let dia = res.data.paquete[0].fechaExpediente.slice(8,10);
-          let mes = res.data.paquete[0].fechaExpediente.slice(5,7);
-          this.fechaExpediente = dia + '/' + mes + '/' + res.data.paquete[0].fechaExpediente.slice(0, 4)
+          let dia = res.data.paquete[0].fechaExpediente.slice(8, 10);
+          let mes = res.data.paquete[0].fechaExpediente.slice(5, 7);
+          this.fechaExpediente =
+            dia +
+            "/" +
+            mes +
+            "/" +
+            res.data.paquete[0].fechaExpediente.slice(0, 4);
           // this.fechaExpediente =
           //   dia + "/" + mes + "/" + this.fechaExpediente.getFullYear();
           this.getFolios();
@@ -308,7 +280,7 @@ Lider de equipo: ${this.verificador ? this.verificador : 'Sin asignar'}`
 </script>
 
 <style>
-.bottom-qr{
+.bottom-qr {
   width: 200px;
   height: 200px;
   border: 1px solid black;
@@ -320,7 +292,7 @@ Lider de equipo: ${this.verificador ? this.verificador : 'Sin asignar'}`
   border: 2px solid black;
 }
 .renglon {
-  width: 15rem;
+  width: 13rem;
 }
 .cuadros {
   width: 2rem;
