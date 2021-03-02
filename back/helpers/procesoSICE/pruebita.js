@@ -73,7 +73,7 @@ const getList = async() => {
     data = [];
 };
 
-const task = cron.schedule('*/5 * * * *', async() => {
+const task = cron.schedule('*/30 * * * *', async() => {
     console.log(symbols.info, `Procesando... [${moment().format('hh:mm:ss')}]`.underline.cyan);
     await getList();
     console.log(symbols.info, `Terminado. Esperando siguiente ciclo... [${moment().format('hh:mm:ss')}]`.underline.cyan);

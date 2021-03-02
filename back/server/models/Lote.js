@@ -25,7 +25,7 @@ let loteSchema = new Schema({
         default: false
     },
     identificador: {
-        type: Number
+        type: String
     },
     cantidad: {
         type: Number
