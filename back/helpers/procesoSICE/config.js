@@ -8,7 +8,7 @@ let config = {
     db: 'documentos',
     pathUpload: '/HD4/repository7/documentos/digitalizacion/',
     root: '/HD4/repository7/',
-    user: 'Development S&H',
+    user: 'DEVELOPMENT S&H',
     hostSFTP: "10.17.5.40",
     usernameSFTP: "proveedor",
     pwdSFTP: "Pr0v33d0r.$!C3"
