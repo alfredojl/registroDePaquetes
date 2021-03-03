@@ -116,7 +116,7 @@
           <b-form-textarea
             type="textarea"
             ref="folio"
-            @keypress="busca"
+            @keypress.enter="busca"
             size="sm"
             v-model="noPaquete"
             no-resize
