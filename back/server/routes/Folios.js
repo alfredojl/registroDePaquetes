@@ -80,6 +80,7 @@ app.put('/foliosSICE', async(req, res) => {
     //         })
     // Folio.findOneAndUpdate()
     for (bodi of folios) {
+        delete bodi._id;
         await Folio.updateOne({ folio: bodi.folio, bis: bodi.bis, tomo: bodi.tomo }, { $set: bodi }, { new: true, upsert: true }, (err, folioDB) => {
             if (err) {
                 errors.push(err)
