@@ -290,6 +290,8 @@ import Swal from "sweetalert2";
 import config from "../config/config";
 import moment from "moment"
 
+moment.locale('es-mx')
+
 export default {
   data() {
     return {
