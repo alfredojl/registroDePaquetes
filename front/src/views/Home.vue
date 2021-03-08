@@ -290,7 +290,7 @@ import Swal from "sweetalert2";
 import config from "../config/config";
 import moment from "moment"
 
-moment.locale('es-mx')
+// moment.locale('es-mx')
 
 export default {
   data() {
@@ -426,8 +426,9 @@ export default {
         ? moment(paquete.fechaPreparacion).format('DD/MM/YYYY')
         : null;
       this.fechaExpediente = paquete.fechaExpediente
-        ? moment(paquete.fechaExpediente).format('DD/MM/YYYY')
+        ? moment().utc(paquete.fechaExpediente).toISOString()
         : null;
+        console.log(this.fechaExpediente);
       this.fechaAsignacion = paquete.fechaAsignacion
         ? moment(paquete.fechaAsignacion).format('DD/MM/YYYY')
         : null;

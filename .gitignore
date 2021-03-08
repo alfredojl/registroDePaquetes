@@ -3,3 +3,5 @@ back/serve/config
 front/src/config
 front/node_modules
 back/helpers/sendEmail.js
+back/helpers/reporte800.csv
+back/helpers/reporte800.json
