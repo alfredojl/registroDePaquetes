@@ -3,26 +3,25 @@ const MongoClient = require("mongodb").MongoClient,
 const xlsx = require("xlsx");
 
 const moment = require('moment');
-const { arch } = require("os");
-const yesterday = moment().subtract(1, 'days').format('DD/MM/YYYY');
+moment.locale('es-mx')
+
+const lunes = new Date(moment().subtract(7, 'days').hours(0).minutes(0).seconds(0).format());
+const domingo = new Date(moment().subtract(1, 'days').hours(23).minutes(59).seconds(59).format());
+
+console.log(lunes, domingo);
 
 const getPaquetes = async() => {
-    MongoClient.connect('mongodb://pjcdmx:pjcdmx@172.26.60.60:27017/archivosSICE?authSource=admin', { useUnifiedTopology: true },
+    MongoClient.connect('mongodb://production:production$@172.26.60.61:27017/registro?authSource=admin', { useUnifiedTopology: true },
         // MongoClient.connect('mongodb://pjcdmx:pjcdmx@172.26.60.60:27017/archivosSICE?authSource=admin', { useUnifiedTopology: true },
         async(err, res) => {
-
-
-            moment.locale('es-mx')
-
-
             if (err) throw err;
             console.log("BD ONLINE");
 
-            const archivo = res.db("archivosSICE").collection("InfoFolio");
+            const archivo = res.db("registro").collection("folios");
 
             // archivo.find({FechaProcesado: {$gte: fecha}}).toArray((err, cols) => {
             // await archivo.find({ FechaProcesado: { $regex: yesterday } }).toArray((err, cols) => {
-            await archivo.find({ Procesado: false, Error: true }).toArray((err, cols) => {
+            await archivo.find({ procesado: {$lte: domingo, $gte: lunes}}).toArray((err, cols) => {
                 // var folios = cols.map( el => {
                 //     return { Folio: el.Folio, Tomo: el.Tomo, Toca: el.Toca,
                 //         Concatenado: el.Tomo ? el.Folio + '-' + el.Tomo : el.Folio
@@ -31,20 +30,23 @@ const getPaquetes = async() => {
 
                 var paquetes = cols.map((el) => {
                     return {
-                        Paquete: el.Paquete,
-                        Folio: el.Tomo ? el.Folio + "_Tomo-" + el.Tomo : el.Folio,
-                        Expediente: el.Expediente,
-                        Toca: el.Toca
+                        Paquete: el.noPaquete,
+                        Folio: el.folio,
+                        Tomo: el.tomo,
+                        Expediente: el.expediente,
+                        Toca: el.toca,
+                        Imgs: el.numeroImagenes
                     };
                 });
+                // console.log(paquetes);
                 let doc, libro;
                 doc = xlsx.utils.json_to_sheet(paquetes);
                 libro = xlsx.utils.book_new();
-                xlsx.utils.book_append_sheet(libro, doc, "doc.xlsx");
+                xlsx.utils.book_append_sheet(libro, doc, "");
                 xlsx.writeFile(libro, `PTEF.xlsx`);
                 console.log('Hecho.');
-                // xlsx.writeFile(libro, `./paquetes${moment().subtract(1, 'days').format('DD-MM-YYYY')}.xlsx`);
-                // console.log(`[paquetes${moment().subtract(1, 'days').format('DD-MM-YYYY')}.xlsx] created.`)
+                xlsx.writeFile(libro, `./paquetes${moment(lunes).format('DD-MM') + '_' + moment(domingo).format('DD-MM')}.xlsx`);
+                console.log(`[paquetes${moment(lunes).format('DD-MM-YYYY') + '_' + moment(domingo).format('DD-MM')}.xlsx] created.`)
             });
 
         }
@@ -55,18 +57,19 @@ const sendEmail = () => {
     const users = [
         // 'alfredo.jl323@gmail.com',
         // 'lupita.cruz@tsjcdmx.gob.mx',
-        'nahin.delfin@gonet.us'
+        'nahin.delfin@gonet.us',
+        'karen.pineda@developmentsh.com'
     ];
 
     const send = require("gmail-send")({
         user: "alfredo.jl323@gmail.com",
         pass: "Everybody56.",
         // to: "lupita.cruz@tsjcdmx.gob.mx",
-        subject: `Reporte de folios subidos el día ${yesterday}.`,
+        subject: `Reporte de folios subidos a SICE.`,
         text: `Buenos días.
-Adjunto archivo excel de folios subidos el día ${yesterday}.
+Adjunto archivo excel de folios subidos en el periodo comprendido por los días ${moment(lunes).format('LL')} y ${moment(domingo).format('LL')}.
 Saludos.`,
-        files: [`./paquetes${moment().subtract(1, 'days').format('DD-MM-YYYY')}.xlsx`],
+        files: [`./paquetes${moment(lunes).format('DD-MM') + '_' + moment(domingo).format('DD-MM')}.xlsx`],
     });
 
     users.forEach(el => {
@@ -83,7 +86,7 @@ Saludos.`,
 
 getPaquetes();
 
-// sendEmail();
+sendEmail();
 
 // const exec = async() => {
 //     getPaquetes();

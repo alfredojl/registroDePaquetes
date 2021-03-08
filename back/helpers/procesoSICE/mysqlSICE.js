@@ -17,7 +17,7 @@ const symbols = require('log-symbols');
 moment.locale('es-mx');
 
 const maria = async(f, folio) => {
-    console.log(symbols.info, 'Creando registro en SICE...'.cyan);
+    console.log(symbols.info, `Creando registro en SICE de folio ${f.C22}${f.C25 ? ' Tomo ' + f.C25 : ''}...`.cyan);
     let conn = await pool.getConnection((err, connection) => { if (err) console.log(err) });
     let values = [];
     Object.keys(f).forEach(el => {
