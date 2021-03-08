@@ -635,6 +635,7 @@ export default {
       }).then((result) => {
         // <--
         this.paquete.local = true;
+        this.paquete.validado = localStorage.loggedIn;
         if (result.value) {
           this.folios.forEach((el) => {
             el.validado = false;
@@ -685,6 +686,7 @@ export default {
         if (result.value) {
           // <-- if confirmed
           // this.infoPaquete.paquete["infoCapturadaSICE"] = true;
+          this.paquete.validado = localStorage.loggedIn;
           this.paquete.local = true;
           this.folios.forEach((el) => {
             if(this.rep.includes(el.folio))
