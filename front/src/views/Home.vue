@@ -423,20 +423,20 @@ export default {
       this.preparador = paquete.preparador;
       this.digitalizador = paquete.digitalizador;
       this.fechaPreparacion = paquete.fechaPreparacion
-        ? moment(paquete.fechaPreparacion).format('DD/MM/YYYY')
+        ? moment(paquete.fechaPreparacion.slice(0, 19)).format('DD/MM/YYYY')
         : null;
       this.fechaExpediente = paquete.fechaExpediente
-        ? moment().utc(paquete.fechaExpediente).toISOString()
+        ? moment(paquete.fechaExpediente.slice(0, 19)).toISOString()
         : null;
         console.log(this.fechaExpediente);
       this.fechaAsignacion = paquete.fechaAsignacion
-        ? moment(paquete.fechaAsignacion).format('DD/MM/YYYY')
+        ? moment(paquete.fechaAsignacion.slice(0, 19)).format('DD/MM/YYYY')
         : null;
       this.fechaAlta = paquete.fechaAlta
-        ? moment(paquete.fechaAlta).format('DD/MM/YYYY')
+        ? moment(paquete.fechaAlta.slice(0, 19)).format('DD/MM/YYYY')
         : null;
       this.fechaCosido = paquete.fechaCosido
-        ? moment(paquete.fechaCosido).format('DD/MM/YYYY')
+        ? moment(paquete.fechaCosido.slice(0, 19)).format('DD/MM/YYYY')
         : null;
       this.$bvModal.hide("packages");
     },
@@ -510,17 +510,17 @@ export default {
           this.preparador = res.data.paquete[0].preparador;
           this.digitalizador = res.data.paquete[0].digitalizador;
           this.fechaPreparacion = res.data.paquete[0].fechaPreparacion
-            ? moment(res.data.paquete[0].fechaPreparacion).format('DD/MM/YYYY')
+            ? moment(res.data.paquete[0].fechaPreparacion.slice(0, 19)).format('DD/MM/YYYY')
             : null;
           this.fechaExpediente = res.data.paquete[0].fechaExpediente
-            ? moment(res.data.paquete[0].fechaExpediente).format('DD/MM/YYYY')
+            ? moment(res.data.paquete[0].fechaExpediente.slice(0, 19)).format('DD/MM/YYYY')
             : null;
           this.fechaAsignacion = res.data.paquete[0].fechaAsignacion
-            ? moment(res.data.paquete[0].fechaAsignacion).format('DD/MM/YYYY')
+            ? moment(res.data.paquete[0].fechaAsignacion.slice(0, 19)).format('DD/MM/YYYY')
             : null;
-          this.fechaAlta = moment(res.data.paquete[0].fechaAlta).format('DD/MM/YYYY')
+          this.fechaAlta = moment(res.data.paquete[0].fechaAlta.slice(0, 19)).format('DD/MM/YYYY')
           this.fechaCosido = res.data.paquete[0].fechaCosido
-            ? moment(res.data.paquete[0].fechaCosido).format('DD/MM/YYYY')
+            ? moment(res.data.paquete[0].fechaCosido.slice(0, 19)).format('DD/MM/YYYY')
             : null;
           this.getFolios();
         })
