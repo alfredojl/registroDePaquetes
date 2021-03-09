@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 
 require('../server/config/config');
 
-mongoose.connect('mongodb://localhost:27017/registro', {
+mongoose.connect('mongodb://production:production$@172.26.60.61:27017/registro?authSource=admin', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,
@@ -21,8 +21,8 @@ const crearUsuario = async() => {
     // const passwdprov = "admin";
 
     const usuarios = [{
-            name: "Gibran",
-            passwd: bcrypt.hashSync('gibran_', 10),
+            name: "Dulce",
+            passwd: bcrypt.hashSync('dulce_', 10),
         },
         // {
         //     name: "Alan",

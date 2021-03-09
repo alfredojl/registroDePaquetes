@@ -46,16 +46,45 @@
         <b-button variant="secondary" @click="search()">Buscar</b-button>
       </b-input-group>
     </div>
-    <div class="row">
-      <!-- <img v-for="(images, index) in qrvue" :key="images" :src="images" alt="" class="bottom-qr m-2" /> -->
-      <b-card
+    <div class="m-0">
+      <b-row class="justify-content-center m-2">
+        <b-button v-show="qrvue.length > 0" variant="success" @click="download">Descargar</b-button>
+      </b-row>
+      <b-row class="justify-content-center">
+        <b-card
         class="p-2 bottom-qr m-4 text-center"
         v-for="(images, index) in qrvue"
         :key="images"
         :img-src="images"
       >
-        {{ paquetes[index] }}
+        <span>{{ paquetes[index] }}</span>
       </b-card>
+      </b-row>
+      <!-- <b-row class="justify-content-center">
+      <table id="tabla">
+        <tbody>
+          <tr v-for="(images, index) of qrvue" :key="images">
+          <td class="text-wrap">
+            <b-img
+              :src="images"
+              width="50mm"
+              fluid
+              class="m-0"
+              small
+            ></b-img>
+        {{ paquetes[index] }}
+          </td>
+          </tr>
+        </tbody>
+      </table>
+      </b-row> -->
+      <!-- <img
+        class="p-2 bottom-qr m-4 text-center"
+        v-for="(images) in qrvue"
+        style="width: 38mm; height: 25mm"
+        :key="images"
+        :img-src="images"
+      > -->
     </div>
   </div>
 </template>
@@ -65,6 +94,9 @@ import QR from "qrcode";
 import axios from "axios";
 import config from "../config/config";
 import moment from "moment";
+import jspdf from "jspdf";
+import autotable from "jspdf-autotable";
+import Swal from 'sweetalert2';
 
 export default {
   data() {
@@ -84,9 +116,50 @@ export default {
     },
   },
   methods: {
+    download() {
+      let doc = new jspdf({
+        orientation: 'landscape',
+        unit: 'mm',
+        format: [38, 25]
+      });
+      doc.setFontSize(6)
+      this.qrvue.forEach((el, index) => {
+        let img = new Image();
+        img.src = el;
+        doc.addImage(img, 0, 0, 25, 25)
+        doc.text(this.paquetes[index], 25, 6)
+        doc.addPage({
+          orientation: 'landscape',
+          unit: 'mm',
+          format: [38, 25]
+        });
+      })
+      // for (let index = 0; index < 5; index++) {
+      // }
+      // autotable(doc, {
+      //   // head: [["#", "Lote", "Paquete", "Fecha entregado"]],
+      //   html: '#tabla',
+      //   columns: [
+      //       {title: '', key: 'imges'}
+      //     ],
+      //     // margin: {top: 10, bottom: 10, right: 10, left: 10},
+      //     styles: {fontSize: 8, valing: 'center', halign: 'center', cellPadding: 0.5},
+      //     margin: {left: 50},
+      //     // tableWidth: 95,
+      //     columnWidth: 'wrap',
+      //     // showHead: 'everyPage',
+      //     theme: 'plain',
+      //   // headStyles:
+      // });
+      doc.deletePage(doc.internal.getNumberOfPages());
+      doc.save(`lote${this.noLote}.pdf`);
+    },
     qr(noPaquete) {
       QR.toDataURL(
-        noPaquete
+        noPaquete,
+        {
+          errorCorrectionLevel: 'M'
+        }
         // this.datos
       )
         .then((url) => {
@@ -97,7 +170,7 @@ export default {
         .catch((err) => {
           console.log(err);
         });
-      this.paquetes.push(noPaquete.split(/\n/g)[0]);
+      this.paquetes.push(noPaquete.split('\n').slice(0,4).join('\n'));
       // this.paquetes.push(this.datos.slice(0, 5));
       // this.$refs.folios.$el.focus();
     },
@@ -167,11 +240,11 @@ export default {
               "/" +
               res.data.paquete[0].cantidad
             : "";
-          paquete += "\nFolio inicio: " + res.data.paquete[0].folioInicio;
-          paquete += "\nFolio fin: " + res.data.paquete[0].folioFin;
+          paquete += "\nFI: " + res.data.paquete[0].folioInicio;
+          paquete += "\nFF: " + res.data.paquete[0].folioFin;
           paquete +=
-            "\nFecha de expediente: " +
-            moment(res.data.paquete[0].fechaExpediente).format("L");
+            "\n" +
+            moment(res.data.paquete[0].fechaExpediente.slice(0, 19)).format("L");
           paquete += '\n::END::'
             this.qr(paquete);
         })
