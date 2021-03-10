@@ -696,6 +696,7 @@ export default {
           let data = {
             folios: this.folios,
           };
+          console.log(data);
           axios
             .put(`${config.api}/foliosSICE`, { data })
             .then((res) => {
