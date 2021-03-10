@@ -348,7 +348,7 @@ export default {
     },
     endQR() {
       console.log(this.noPaquete);
-      if (this.noPaquete.includes("equipo") || this.noPaquete.includes('Preparador')) {
+      if (this.noPaquete.includes("equipo") || this.noPaquete.includes('Preparador') || this.noPaquete.includes('::END::')) {
         return true;
       }
       return false;
@@ -414,6 +414,7 @@ export default {
         if (this.noPaquete[0] == "\n")
           this.noPaquete = this.noPaquete.slice(1, this.noPaquete.length);
         this.noPaquete = this.noPaquete.split("\n").shift();
+        console.log(this.noPaquete);
         if (this.currentPaqs.includes(this.noPaquete)) {
           this.noPaquete = "";
           return;
@@ -422,12 +423,12 @@ export default {
         this.noPaquete = this.noPaquete.split(" ");
         console.log(this.noPaquete);
         if(this.noPaquete.length < 3){
-          this.noPaquete.push(' ')
+          this.noPaquete.push('')
         }
         if (this.noPaquete[1].toUpperCase() == "BIS") {
           paquete.bis = true;
         }
-        if (this.noPaquete[2].length != 0) {
+        if (this.noPaquete[2] && this.noPaquete[2].length != 0) {
           paquete.identificador = this.noPaquete[2].split("/")[0];
           paquete.cantidad = this.noPaquete[2].split("/")[1];
         }
