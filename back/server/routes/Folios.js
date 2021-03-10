@@ -34,6 +34,7 @@ app.put('/foliosSICE', async(req, res) => {
     let folios = req.body.data.folios;
     let foliosResultado = [];
     let errors = [];
+    console.log(folios);
 
     // let foliosSICE = folios.map(el => {
     //     return {
