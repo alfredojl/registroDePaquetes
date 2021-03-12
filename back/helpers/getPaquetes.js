@@ -41,10 +41,10 @@ const getPaquetes = async() => {
                 var paquetes = cols.map((el) => {
                     return {
                         Paquete: el.noPaquete,
-                        Folio: el.folio,
-                        // "Folio inicio": el.folioInicio,
-                        // "Folio fin": el.folioFin,
-                        // "Fecha expediente": moment(el.fechaExpediente).format('L')
+                        // Folio: el.folio,
+                        "Folio inicio": el.folioInicio,
+                        "Folio fin": el.folioFin,
+                        "Fecha expediente": moment(el.fechaExpediente.slice(0, 19)).format('L')
                         // Expediente: el.Expediente,
                         // Toca: el.Toca,
                         // "Fecha de procesado": el.FechaProcesado ? el.FechaProcesado.slice(0,10) : 'Sin fecha'

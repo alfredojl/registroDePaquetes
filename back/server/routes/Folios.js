@@ -34,8 +34,7 @@ app.put('/foliosSICE', async(req, res) => {
     let folios = req.body.data.folios;
     let foliosResultado = [];
     let errors = [];
-    console.log(folios);
-
+    let count = 0;
     // let foliosSICE = folios.map(el => {
     //     return {
     //         Folio: el.folio,
@@ -87,9 +86,11 @@ app.put('/foliosSICE', async(req, res) => {
                 errors.push(err)
             }
             foliosResultado.push(folioDB);
+            count++;
         })
     }
-    res.json({
+    console.log('Paquete: ', folios[0].noPaquete, 'length: ', folios.length, 'count: ', count);
+    return res.json({
             ok: true,
             result: {
                 errors,

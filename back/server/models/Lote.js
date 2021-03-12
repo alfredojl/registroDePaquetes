@@ -7,7 +7,6 @@ let Schema = mongoose.Schema;
 let loteSchema = new Schema({
     noPaquete: {
         type: Number,
-        unique: true,
         required: true
     },
     fechaEntregado: {

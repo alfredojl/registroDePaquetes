@@ -621,7 +621,7 @@ export default {
           if (error) console.log(error);
         });
     },
-    saveWithoutValidar() {
+    async saveWithoutValidar() {
       Swal.fire({
         title: "¿Está seguro de guardar la información?",
         text:
@@ -671,7 +671,7 @@ export default {
         }
       });
     },
-    save() {
+    async save() {
       Swal.fire({
         title: "¿Está seguro de guardar la información?",
         text: "La información se subirá a SICE como la guarde.",
@@ -681,7 +681,7 @@ export default {
         confirmButtonText: "Continuar",
         cancelButtonText: "Cancelar",
         buttonsStyling: true,
-      }).then((result) => {
+      }).then(async(result) => {
         // <--
         if (result.value) {
           // <-- if confirmed
@@ -697,10 +697,10 @@ export default {
             folios: this.folios,
           };
           console.log(data);
-          axios
+          await axios
             .put(`${config.api}/foliosSICE`, { data })
-            .then((res) => {
-              axios
+            .then(async(res) => {
+              await axios
                 .put(`${config.api}/paquete`, { data: this.paquete })
                 .then((res) => {
                   Swal.fire(

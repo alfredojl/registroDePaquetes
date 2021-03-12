@@ -35,6 +35,7 @@ app.post('/lote', async(req, res) => {
     let list = [];
     let listErrors = [];
     let fechaE, fechaD;
+    console.log(lote)
     if (lote[0].fechaEntregado) {
         fechaE = lote[0].fechaEntregado.split('/').reverse();
         fechaE[1]--;

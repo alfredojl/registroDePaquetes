@@ -37,7 +37,7 @@
         "md5": "^2.3.0",
         "moment": "^2.29.1",
         "mongodb": "^3.6.3",
-        "mongoose": "^5.10.9",
+        "mongoose": "^5.11.20",
         "node-cron": "^2.0.3",
         "ssh2-sftp-client": "^6.0.1",
         "xlsx": "^0.16.8"
