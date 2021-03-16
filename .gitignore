@@ -5,3 +5,6 @@ front/node_modules
 back/helpers/sendEmail.js
 back/helpers/reporte800.csv
 back/helpers/reporte800.json
+back/helpers/LOG.txt
+back/helpers/report.csv
+back/helpers/reportBD.csv

@@ -30,8 +30,8 @@ process.env.TOKEN_SEED = process.env.TOKEN_SEED || 'development_seed';
 let urlDB;
 
 // if (process.env.NODE_ENV === 'dev')
-urlDB = 'mongodb://production:production$@172.26.60.61:27017/registro?authSource=admin';
-// urlDB = 'mongodb://localhost:27017/registro';
+// urlDB = 'mongodb://production:production$@172.26.60.61:27017/registro?authSource=admin';
+urlDB = 'mongodb://localhost:27017/registro';
 // else
 // urlDB = process.env.MONGO_URI;
 

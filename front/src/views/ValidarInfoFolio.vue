@@ -318,7 +318,7 @@
         </b-row>
       </b-col>
     </b-overlay>
-    <div class="row mt-4 mb-5 justify-content-center">
+    <div class="row mt-4 mb-5 justify-content-center" v-show="folios.length > 0">
       <b-button-group size="sm" v-show="!over">
         <b-button variant="success" @click="save()"
           >Guardar todo validado</b-button
@@ -347,7 +347,7 @@ export default {
       paquete: {},
       over: null,
       noPaquete: null,
-      folios: null,
+      folios: [],
       materias: null,
       dependencias: null,
       infoPaquete: [],
