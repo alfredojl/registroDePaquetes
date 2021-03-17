@@ -79,5 +79,5 @@ const task = cron.schedule('*/30 * * * *', async() => {
     console.log(symbols.info, `Terminado. Esperando siguiente ciclo... [${moment().format('hh:mm:ss')}]`.underline.cyan);
 })
 
-task.start()
-// getList();
+// task.start()
+getList();
