@@ -87,8 +87,10 @@ const sube = async(f, folio) => {
 }
 
 const exec = async(folios) => {
+    let restante = folios.length - 1;
     for (folio of folios) {
         await renombra(folio);
+        console.log(`Restan ${restante--}`)
     }
     return;
 }

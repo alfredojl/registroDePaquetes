@@ -19,7 +19,7 @@ const configSFTP = {
 
 const subirSFTP = async(folio) => {
     let sftp = new client;
-    console.log(symbols.info, `Subiendo a SFTP folio ${folio.folio}...`.cyan);
+    console.log(symbols.info, `Subiendo a SFTP folio ${folio.folio}...\t[${moment().format('HH:mm:ss')}]`.cyan);
     // let sftp = new client();
 
     // fs.copyFileSync(folio.path, dest + '/' + folio.Id + '.pdf');
