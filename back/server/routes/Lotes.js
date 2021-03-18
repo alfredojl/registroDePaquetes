@@ -35,7 +35,6 @@ app.post('/lote', async(req, res) => {
     let list = [];
     let listErrors = [];
     let fechaE, fechaD;
-    console.log(lote)
     if (lote[0].fechaEntregado) {
         fechaE = lote[0].fechaEntregado.split('/').reverse();
         fechaE[1]--;
@@ -53,12 +52,17 @@ app.post('/lote', async(req, res) => {
     // console.log(lote);
     // res.json({ ok: true })
 
-    for (item of lote) {
-        await Lote.updateOne({ noPaquete: item.noPaquete, bis: item.bis, identificador: item.identificador }, item, { new: true, upsert: true }, (err, loteDB) => {
+    for (const [index, item] of lote.entries()) {
+        await Lote.findOneAndUpdate({ noPaquete: item.noPaquete, bis: item.bis, identificador: item.identificador }, item, async(err, loteDB) => {
             if (err) {
                 listErrors.push(err)
             }
-            list.push(loteDB);
+            if (!loteDB)
+                await Lote.create(lote[index], (err, loteCreated) => {
+                    if (err) listErrors.push(err)
+                    list.push(loteCreated);
+                })
+            else list.push(loteDB);
         })
     }
     if (listErrors.length > 0)
