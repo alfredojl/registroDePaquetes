@@ -31,114 +31,42 @@ app.get('/busquedaSICE', async(req, res) => {
 })
 
 app.put('/foliosSICE', async(req, res) => {
-    let folios = req.body.data.folios;
+    var folios = req.body.data.folios;
     let foliosResultado = [];
     let errors = [];
     let count = 0;
-    // let foliosSICE = folios.map(el => {
-    //     return {
-    //         Folio: el.folio,
-    //         Expediente: el.expediente,
-    //         Paquete: el.noPaquete,
-    //         Tomo: el.tomos,
-    //         Juzgado: el.juzgado,
-    //         JuzgadoInstancia: el.instanciaJ,
-    //         Sala: el.sala,
-    //         SalaInstancia: el.instanciaS,
-    //         Toca: el.toca,
-    //         Actor: el.actor,
-    //         Demandado: el.demandado,
-    //         Juicio: el.juicio,
-    //         Observaciones: el.observaciones,
-    //         Dependencia: el.dependencia,
-    //         NumeroImagenes: el.numImagenes
-    //     };
-    // })
-
-    // console.log(foliosSICE);
-
-    // MongoClient.connect(
-    //         "mongodb://pjcdmx:pjcdmx@172.26.60.60:27017/archivosSICE?authSource=admin", { useUnifiedTopology: true },
-    //         (err, result) => {
-    //             if (err) throw new Error(err);
-
-    //             const archivo = result.db("registro").collection("folios");
-    //             archivo.insertMany(foliosSICE)
-    //                 .then(foliosDB => {
-    //                     console.log(foliosDB);
-    //                     return res.json({
-    //                         ok: true,
-    //                         folios: foliosDB
-    //                     })
-    //                 })
-    //                 .catch(err => {
-    //                     return res.status(500).json({
-    //                         ok: false,
-    //                         err
-    //                     })
-    //                 });
-    //         })
-    // Folio.findOneAndUpdate()
-    for (bodi of folios) {
-        delete bodi._id;
-        await Folio.updateOne({ folio: bodi.folio, bis: bodi.bis, tomo: bodi.tomo }, { $set: bodi }, { new: true, upsert: true }, (err, folioDB) => {
+    // console.log(folios[0]['_id']);
+    for (const [index, bodi] of folios.entries()) {
+        // Folio.findById(bodi._id, (err, folioDB) => {
+        //         if (err) console.log(err);
+        //         console.log(folioDB);
+        //     })
+        // delete bodi._id;
+        await Folio.findOneAndUpdate({ folio: bodi.folio, bis: bodi.bis, tomo: bodi.tomo }, { $set: bodi }, async(err, folioDB) => {
             if (err) {
                 errors.push(err)
             }
-            foliosResultado.push(folioDB);
+            // console.log(index, bodi);
+            if (!folioDB)
+                await Folio.create(folios[index], (err, folioCreated) => {
+                    if (err) errors.push(err)
+                    foliosResultado.push(folioCreated);
+                })
+            else
+                foliosResultado.push(folioDB);
             count++;
         })
     }
-    console.log('Paquete: ', folios[0].noPaquete, 'length: ', folios.length, 'count: ', count);
     return res.json({
-            ok: true,
-            result: {
-                errors,
-                foliosResultado
-            }
-        })
-        // Paquete.findOneAndUpdate({ noPaquete, bis }, { validado }, { new: true }, (err, paqueteDB) => {
-        //     if (err) {
-        //         console.log(err);
-        //         return res.status(500).json({
-        //             ok: false,
-        //             err
-        //         })
-        //     }
-        //     console.log(paqueteDB);
-        // });
-        // // return res.json({
-        // //         ok: true,
-        // //         message: 'Actualizados'
-        // //     })
-        // Folio.updateMany(folios)
-        //     .exec((err, foliosDB) => {
-        //         if (err) {
-        //             console.log(err);
-        //             return res.status(500).json({
-        //                 ok: false,
-        //                 err
-        //             })
-        //         }
-        //         Paquete.findOneAndUpdate({ noPaquete }, { validado: folios[0]['validado'] }, (err, paqueteDB) => {
-        //             if (err) {
-        //                 console.log(err);
-        //                 return res.status(500).json({
-        //                     ok: false,
-        //                     err
-        //                 })
-        //             }
-
-    //             return res.json({
-    //                 ok: true,
-    //                 message: 'hola final',
-    //                 folios: foliosDB
-    //             })
-    //         })
-
-    //     })
-
-
+        ok: true,
+        result: {
+            errors,
+            foliosResultado
+        }
+        // res.json({
+        //         ok: true
+        //     })
+    })
 })
 
 app.get('/foliosPaquete', async(req, res) => {

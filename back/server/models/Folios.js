@@ -15,7 +15,8 @@ let foliosSchema = new Schema({
         type: Number
     },
     tomos: {
-        type: Number
+        type: Number,
+        default: null
     },
     referencias: {
         type: String

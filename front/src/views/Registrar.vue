@@ -15,6 +15,7 @@
               :state="validaPaquetes"
               lazy
               class="mb-2"
+              ref="noPaquete"
               :disabled="!!beforenoPaquete"
               style="width: 90%"
               v-model="beforenoPaquete"
@@ -238,10 +239,12 @@ export default {
       this.folioInicio = "";
       this.beforefolioInicio = "";
       this.folioFin = "";
+      this.beforefolioFin = "";
       this.numeral = false;
       this.fechaExpediente = null;
       this.identificador = null;
       this.cantidad = null;
+      this.$refs.noPaquete.focus();
     },
     async save() {
       if (!this.valida || !this.validaPaquete)

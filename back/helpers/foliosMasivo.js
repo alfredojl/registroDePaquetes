@@ -8,16 +8,16 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 
-// const pool = mariadb.createPool({
-//     host: config.host,
-//     user: config.username,
-//     password: config.passwd,
-//     database: config.db
-// });
+const pool = mariadb.createPool({
+    host: config.host,
+    user: config.username,
+    password: config.passwd,
+    database: config.db
+});
 
 mongoose.connect(
-    // 'mongodb://production:production$@172.26.60.61:27017/registro?authSource=admin', {
-    'mongodb://localhost:27017/registro', {
+    'mongodb://production:production$@172.26.60.61:27017/registro?authSource=admin', {
+        // 'mongodb://localhost:27017/registro', {
         useNewUrlParser: true,
         useUnifiedTopology: true,
         // useCreateIndex: true,
@@ -40,7 +40,7 @@ mongoose.connect(
 const subida = async() => {
     let workbook = xlsx.readFile('./lote1-7.xlsx');
     let heads = workbook.SheetNames;
-    // console.log(xlsx.utils.sheet_to_json(workbook.Sheets[heads[0]], { skipHeader: false }).slice(0, 5));
+    console.log(xlsx.utils.sheet_to_json(workbook.Sheets[heads[0]], { skipHeader: false }).slice(0, 5));
     let index = 0;
     fs.appendFileSync(path.resolve('./report.csv'), `Paquete,Folio,Tomo,Imgs.,Acción,BD\n`, 'utf8')
     for (el of xlsx.utils.sheet_to_json(workbook.Sheets[heads[0]])) {
@@ -128,7 +128,7 @@ const subida = async() => {
             } else
                 Folio.create(f, (err, doc) => {
                     fs.appendFileSync(path.resolve('./LOG.txt'), `created\n`, 'utf8')
-                    if (maria.encontrado)
+                    if (m.encontrado)
                         fs.appendFileSync(path.resolve('./report.csv'), `${el.Paquete},${folio},${tomo},${el.Imgs},created,BDA\n`, 'utf8')
                     else
                         fs.appendFileSync(path.resolve('./report.csv'), `${el.Paquete},${folio},${tomo},${el.Imgs},created,SICE\n`, 'utf8')
@@ -137,7 +137,7 @@ const subida = async() => {
         })
         fs.appendFileSync(path.resolve('./LOG.txt'), `${JSON.stringify(f)}\n\n`, 'utf8')
     }
-    // process.exit();
+    process.exit();
 }
 
 const maria = async(f, t) => {
@@ -167,4 +167,4 @@ const maria = async(f, t) => {
     return b;
 }
 
-// subida()
+subida()
