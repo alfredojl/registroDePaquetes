@@ -204,8 +204,14 @@
                           value-field="name"
                           text-field="name"
                           size="sm"
+                          style="max-width: 89%"
                         >
                         </b-form-select>
+                        <b-icon
+                          icon="x"
+                          class="m-0 h4"
+                          @click="dato['juzgado'] = ''"
+                        ></b-icon>
                       </b-col>
                     </div>
                     <div class="row justify-content-center">
@@ -229,10 +235,15 @@
                           :options="materias"
                           value-field="name"
                           size="sm"
+                          style="max-width: 89%"
                           text-field="name"
                         >
-                          <template #first> </template>
                         </b-form-select>
+                        <b-icon
+                          icon="x"
+                          class="m-0 h4"
+                          @click="dato['sala'] = ''"
+                        ></b-icon>
                       </b-col>
                     </div>
                     <div class="row justify-content-center">

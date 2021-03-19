@@ -3,7 +3,7 @@ const MongoClient = require("mongodb").MongoClient,
 const xlsx = require("xlsx");
 
 const reporte800 = require('./reporte800.json');
-const name = 'reporte800';
+const name = 'registro18.03';
 
 const moment = require('moment');
 moment.locale('es-mx')
@@ -16,19 +16,19 @@ const getPaquetes = async() => {
         async(err, res) => {
 
 
-            let regex = '03-02-2021';
+            let regex = '03/18/2021';
 
             if (err) throw err;
             console.log("BD ONLINE");
 
-            const archivo = res.db("registro").collection("folios");
+            const archivo = res.db("registro").collection("paquetes");
 
             // archivo.find({FechaProcesado: {$gte: fecha}}).toArray((err, cols) => {
             // await archivo.find({ FechaProcesado: { $regex: yesterday  } }).toArray((err, cols) => {
             // await archivo.find({ FechaProcesado: {$regex: regex}, Error: false}).sort({ Folio: 1, Tomo: 1 }).toArray(async(err, cols) => {
             // await archivo.find({ Procesado: true, Error: false, FechaProcesado: {$regex: '29/12/2020'} }).sort({Folio: 1, Tomo: 1}).toArray(async(err, cols) => {
-            // await archivo.find({ fechaAlta: {$gte: new Date(regex), $lte: new Date(regex + ' 23:59:59')} }).sort({noPaquete: 1}).toArray(async(err, cols) => {
-            await archivo.find({ folio: { $in: reporte800 } }).sort({ folio: 1 }).toArray(async(err, cols) => {
+            await archivo.find({ fechaAlta: { $gte: new Date(regex) } }).sort({ noPaquete: 1 }).toArray(async(err, cols) => {
+                // await archivo.find({ folio: { $in: reporte800 } }).sort({ folio: 1 }).toArray(async(err, cols) => {
                 // await archivo.find({ $or: [ 
                 //     { FechaProcesado: { $regex: '26/12/2020' }},
                 //     { FechaProcesado: { $regex: '29/12/2020' }}
@@ -39,17 +39,19 @@ const getPaquetes = async() => {
                 //     }
                 // })
                 var paquetes = cols.map((el) => {
+                    console.log(moment(el.fechaExpediente).format('L'), el.noPaquete);
                     return {
                         Paquete: el.noPaquete,
                         // Folio: el.folio,
                         "Folio inicio": el.folioInicio,
                         "Folio fin": el.folioFin,
-                        "Fecha expediente": moment(el.fechaExpediente.slice(0, 19)).format('L')
-                        // Expediente: el.Expediente,
-                        // Toca: el.Toca,
-                        // "Fecha de procesado": el.FechaProcesado ? el.FechaProcesado.slice(0,10) : 'Sin fecha'
+                        "Fecha expediente": el.fechaExpediente ? moment(el.fechaExpediente).format('L') : null
+                            // Expediente: el.Expediente,
+                            // Toca: el.Toca,
+                            // "Fecha de procesado": el.FechaProcesado ? el.FechaProcesado.slice(0,10) : 'Sin fecha'
                     };
                 });
+                console.log(paquetes.length);
 
                 // total = await archivo.aggregate([
                 //         // { $match: { FechaProcesado: {$regex: '06/01/2021'}, Error: false } },
@@ -64,7 +66,7 @@ const getPaquetes = async() => {
                 doc = xlsx.utils.json_to_sheet(paquetes);
                 libro = xlsx.utils.book_new();
                 xlsx.utils.book_append_sheet(libro, doc, "Hoja 1");
-                xlsx.writeFile(libro, `./${name}.csv`);
+                xlsx.writeFile(libro, `./${name}.xlsx`);
                 // xlsx.writeFile(libro, `./paquetes${moment().subtract(1, 'days').format('DD-MM-YYYY')}.xlsx`);
                 // xlsx.writeFile(libro, `./z${regex.slice(0, 2)}.csv`);
                 // console.log(`[paquetes${moment().subtract(1, 'days').format('DD-MM-YYYY')}.xlsx] created.`)
@@ -72,8 +74,7 @@ const getPaquetes = async() => {
                 console.log(`[${name}.csv] created.`)
             });
 
-        }
-    );
+        });
 };
 
 getPaquetes();

@@ -1,6 +1,6 @@
 back/node_modules
-back/serve/config
-front/src/config
+front/src/config/config.js
+back/server/config/config.js
 front/node_modules
 back/helpers/sendEmail.js
 back/helpers/reporte800.csv
