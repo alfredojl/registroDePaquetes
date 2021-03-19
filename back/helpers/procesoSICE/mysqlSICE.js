@@ -28,6 +28,7 @@ const maria = async(f, folio) => {
         console.log(symbols.warning, 'Registro duplicado. Realizando acciones necesarias...'.bgYellow);
         fs.renameSync(folio.path, path.resolve(os.homedir(), 'SICE/Duplicados', folio.archivo));
         fs.appendFileSync(path.resolve(os.homedir(), 'LOG.txt'), `${folio.folio} ${folio.tomo ? 'Tomo ' + folio.tomo : ''} duplicado y movido a la carpeta de 'Duplicados'.\t\t [${moment().format('ddd, D MMM Y, HH:mm:ss')}]\n`, 'utf8')
+        conn.release();
     } else
         await conn.query(`INSERT INTO T15 
             (Id,

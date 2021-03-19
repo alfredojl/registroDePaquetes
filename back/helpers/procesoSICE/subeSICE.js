@@ -14,6 +14,7 @@ const Folio = require('../../server/models/Folios')
 const mongoose = require('mongoose');
 const maria = require('./mysqlSICE');
 const os = require('os');
+const colors = require('colors');
 
 // mongoose.connect('mongodb://billie:adminMongo$@172.26.60.61:27017/registro?authSource=admin', {
 //     useNewUrlParser: true,
@@ -87,10 +88,10 @@ const sube = async(f, folio) => {
 }
 
 const exec = async(folios) => {
-    let restante = folios.length - 1;
+    let restante = 0;
     for (folio of folios) {
+        console.log(`Subiendo ${++restante} de ${folios.length}...`.magenta);
         await renombra(folio);
-        console.log(`Restan ${restante--}`)
     }
     return;
 }

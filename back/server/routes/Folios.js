@@ -41,8 +41,9 @@ app.put('/foliosSICE', async(req, res) => {
         //         if (err) console.log(err);
         //         console.log(folioDB);
         //     })
-        // delete bodi._id;
-        await Folio.findOneAndUpdate({ folio: bodi.folio, bis: bodi.bis, tomo: bodi.tomo }, { $set: bodi }, async(err, folioDB) => {
+        delete bodi._id;
+        // console.log(bodi._id)
+        await Folio.findOneAndUpdate({ folio: bodi.folio, bis: bodi.bis, tomo: bodi.tomo, noPaquete: bodi.noPaquete }, { $set: bodi }, async(err, folioDB) => {
             if (err) {
                 errors.push(err)
             }
