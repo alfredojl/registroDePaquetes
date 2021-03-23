@@ -3,7 +3,7 @@ const MongoClient = require("mongodb").MongoClient,
 const xlsx = require("xlsx");
 
 const reporte800 = require('./reporte800.json');
-const name = 'registro18.03';
+const name = 'registro23.03';
 
 const moment = require('moment');
 moment.locale('es-mx')
@@ -17,6 +17,7 @@ const getPaquetes = async() => {
 
 
             let regex = '03/18/2021';
+            let day = moment(regex).hours(0).minutes(0).seconds(0).format();
 
             if (err) throw err;
             console.log("BD ONLINE");
@@ -27,7 +28,7 @@ const getPaquetes = async() => {
             // await archivo.find({ FechaProcesado: { $regex: yesterday  } }).toArray((err, cols) => {
             // await archivo.find({ FechaProcesado: {$regex: regex}, Error: false}).sort({ Folio: 1, Tomo: 1 }).toArray(async(err, cols) => {
             // await archivo.find({ Procesado: true, Error: false, FechaProcesado: {$regex: '29/12/2020'} }).sort({Folio: 1, Tomo: 1}).toArray(async(err, cols) => {
-            await archivo.find({ fechaAlta: { $gte: new Date(regex) } }).sort({ noPaquete: 1 }).toArray(async(err, cols) => {
+            await archivo.find({ fechaAlta: { $gte: new Date(day) } }).sort({ noPaquete: 1 }).toArray(async(err, cols) => {
                 // await archivo.find({ folio: { $in: reporte800 } }).sort({ folio: 1 }).toArray(async(err, cols) => {
                 // await archivo.find({ $or: [ 
                 //     { FechaProcesado: { $regex: '26/12/2020' }},
@@ -38,6 +39,7 @@ const getPaquetes = async() => {
                 //         Concatenado: el.Tomo ? el.Folio + '-' + el.Tomo : el.Folio
                 //     }
                 // })
+                console.log(typeof cols[0].fechaExpediente.toString());
                 var paquetes = cols.map((el) => {
                     console.log(moment(el.fechaExpediente).format('L'), el.noPaquete);
                     return {
@@ -45,13 +47,12 @@ const getPaquetes = async() => {
                         // Folio: el.folio,
                         "Folio inicio": el.folioInicio,
                         "Folio fin": el.folioFin,
-                        "Fecha expediente": el.fechaExpediente ? moment(el.fechaExpediente).format('L') : null
+                        "Fecha expediente": el.fechaExpediente ? moment(el.fechaExpediente.toString().slice(0, 10)).format('L') : null
                             // Expediente: el.Expediente,
                             // Toca: el.Toca,
                             // "Fecha de procesado": el.FechaProcesado ? el.FechaProcesado.slice(0,10) : 'Sin fecha'
                     };
                 });
-                console.log(paquetes.length);
 
                 // total = await archivo.aggregate([
                 //         // { $match: { FechaProcesado: {$regex: '06/01/2021'}, Error: false } },

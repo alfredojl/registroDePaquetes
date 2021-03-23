@@ -118,7 +118,7 @@
                       >
                     </b-row>
                     <b-row class="justify-content-center mb-4">
-                      <b-col class="text-right">
+                      <b-col class="text-right" cols="4">
                         <strong>Folio: </strong>
                       </b-col>
                       <b-col class="text-left">
@@ -149,7 +149,7 @@
                       </b-input-group>
                     </div>
                     <div class="row justify-content-center">
-                      <b-col class="text-right">
+                      <b-col class="text-right" cols="4">
                         <strong>Fojas: </strong>
                       </b-col>
                       <b-col>
@@ -161,7 +161,7 @@
                       </b-col>
                     </div>
                     <div class="row justify-content-center">
-                      <b-col class="text-right">
+                      <b-col class="text-right" cols="4">
                         <strong>Expediente: </strong>
                       </b-col>
                       <b-col>
@@ -172,7 +172,7 @@
                       </b-col>
                     </div>
                     <div class="row justify-content-center">
-                      <b-col class="text-right">
+                      <b-col class="text-right" cols="4">
                         <strong>Paquete: </strong>
                       </b-col>
                       <b-col>
@@ -183,7 +183,7 @@
                       </b-col>
                     </div>
                     <div class="row justify-content-center">
-                      <b-col class="text-right">
+                      <b-col class="text-right" cols="4">
                         <strong>Tomo: </strong>
                       </b-col>
                       <b-col>
@@ -194,7 +194,7 @@
                       </b-col>
                     </div>
                     <div class="row justify-content-center">
-                      <b-col class="text-right text-sm">
+                      <b-col class="text-right" cols="4">
                         <strong>Juzgado: </strong>
                       </b-col>
                       <b-col>
@@ -203,19 +203,22 @@
                           :options="materias"
                           value-field="name"
                           text-field="name"
+                          @change="imprime(dato['juzgado'])"
                           size="sm"
-                          style="max-width: 89%"
                         >
+                          <template #first>
+                            <b-form-select-option :value="''">-- Seleccione una opción --</b-form-select-option>
+                          </template>
                         </b-form-select>
-                        <b-icon
+                        <!-- <b-icon
                           icon="x"
                           class="m-0 h4"
                           @click="dato['juzgado'] = ''"
-                        ></b-icon>
+                        ></b-icon> -->
                       </b-col>
                     </div>
                     <div class="row justify-content-center">
-                      <b-col class="text-right">
+                      <b-col class="text-right" cols="4">
                         <strong>Instancia: </strong>
                       </b-col>
                       <b-col>
@@ -226,7 +229,7 @@
                       </b-col>
                     </div>
                     <div class="row justify-content-center">
-                      <b-col class="text-right">
+                      <b-col class="text-right" cols="4">
                         <strong>Sala: </strong>
                       </b-col>
                       <b-col>
@@ -235,19 +238,21 @@
                           :options="materias"
                           value-field="name"
                           size="sm"
-                          style="max-width: 89%"
                           text-field="name"
                         >
+                        <template #first>
+                            <b-form-select-option :value="null">-- Seleccione una opción --</b-form-select-option>
+                          </template>
                         </b-form-select>
-                        <b-icon
+                        <!-- <b-icon
                           icon="x"
                           class="m-0 h4"
                           @click="dato['sala'] = ''"
-                        ></b-icon>
+                        ></b-icon> -->
                       </b-col>
                     </div>
                     <div class="row justify-content-center">
-                      <b-col class="text-right">
+                      <b-col class="text-right" cols="4">
                         <strong>Instancia: </strong>
                       </b-col>
                       <b-col>
@@ -258,7 +263,7 @@
                       </b-col>
                     </div>
                     <div class="row justify-content-center">
-                      <b-col class="text-right">
+                      <b-col class="text-right" cols="4">
                         <strong>Toca: </strong>
                       </b-col>
                       <b-col>
@@ -269,7 +274,7 @@
                       </b-col>
                     </div>
                     <div class="row justify-content-center">
-                      <b-col class="text-right">
+                      <b-col class="text-right" cols="4">
                         <strong>Actor: </strong>
                       </b-col>
                       <b-col>
@@ -280,7 +285,7 @@
                       </b-col>
                     </div>
                     <div class="row justify-content-center">
-                      <b-col class="text-right">
+                      <b-col class="text-right" cols="4">
                         <strong>Demandado: </strong>
                       </b-col>
                       <b-col>
@@ -291,7 +296,7 @@
                       </b-col>
                     </div>
                     <div class="row justify-content-center">
-                      <b-col class="text-right">
+                      <b-col class="text-right" cols="4">
                         <strong>Juicio: </strong>
                       </b-col>
                       <b-col>
@@ -302,7 +307,7 @@
                       </b-col>
                     </div>
                     <div class="row justify-content-center">
-                      <b-col class="text-right">
+                      <b-col class="text-right" cols="4">
                         <strong>Dependencia: </strong>
                       </b-col>
                       <b-col>
@@ -311,7 +316,7 @@
                       </b-col>
                     </div>
                     <div class="row justify-content-center">
-                      <b-col class="text-right">
+                      <b-col class="text-right" cols="4">
                         <strong>Observaciones: </strong>
                       </b-col>
                       <b-col>
@@ -385,6 +390,9 @@ export default {
     await this.search();
   },
   methods: {
+    imprime(bla){
+      console.log(bla);
+    },
     deleteTomo(index) {
       if (!this.folios[index].tomos) return;
       this.folios.splice(this.folios[index].tomos + index, 1);
