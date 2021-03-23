@@ -295,6 +295,39 @@ export default {
             }
           })
         }
+        let fechaAlta = Date.now();
+              let data = {
+                noPaquete: this.noPaquete,
+                folioInicio: this.folioInicio,
+                folioFin: this.folioFin,
+                fechaExpediente: this.fechaExpediente,
+                fechaAlta,
+                cantidad: this.cantidad,
+                identificador: this.identificador,
+                bis: this.bis,
+                registrado: localStorage.loggedIn,
+              };
+              await axios
+                .post(`${config.api}/paquete`, {
+                  data,
+                })
+                .then((res) => {
+                  if (!res.data.ok) return Swal.fire("Info", res.data.message, "info");
+                  return Swal.fire({
+                    title: `¡Hecho!`,
+                    position: "top-end",
+                    text: `Paquete ${this.noPaquete} agregado con éxito.`,
+                    icon: "success",
+                    showConfirmButton: false,
+                    timer: 3000,
+                  }).then((res) => {
+                    this.limpiar();
+                  });
+                })
+                .catch((err) => {
+                  Swal.fire(`Error!`, `No se pudo agregar el paquete.`, "error");
+                  console.log(err.response);
+                });
       // if(!this.noPaquete || !this.folioInicio || !this.folioFin || !this.fechaExpediente)
       //   return Swal.fire(`Complete todos los campos.`, ``, "info");
     },
