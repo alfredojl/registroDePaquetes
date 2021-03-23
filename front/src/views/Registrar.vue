@@ -15,6 +15,7 @@
               :state="validaPaquetes"
               lazy
               class="mb-2"
+              @copy.prevent
               ref="noPaquete"
               :disabled="!!beforenoPaquete"
               style="width: 90%"
@@ -36,6 +37,7 @@
               ref="before"
               placeholder="Repita el número de paquete..."
               :state="validaPaquetes"
+              @paste.prevent
               v-model="noPaquete"
               v-on:keyup.enter="$refs.beforefolioInicio.focus()"
             ></b-form-input>
@@ -47,6 +49,7 @@
               placeholder="Folio inicio"
               style="width: 90%"
               ref="beforefolioInicio"
+              @copy.prevent
               v-model="beforefolioInicio"
               lazy
               :disabled="!!beforefolioInicio"
@@ -64,6 +67,7 @@
               type="number"
               style="width: 90%"
               class="mb-2"
+              @paste.prevent
               placeholder="Repita el folio inicio..."
               v-model="folioInicio"
               :state="validaFolio"
@@ -76,6 +80,7 @@
               ref="beforefolioFin"
               placeholder="Folio fin"
               style="width: 90%"
+              @copy.prevent
               class="mb-2"
               v-model="beforefolioFin"
               lazy
@@ -89,6 +94,7 @@
               type="number"
               placeholder="Repita folio fin"
               style="width: 90%"
+              @paste.prevent
               class=""
               v-model="folioFin"
               :state="valida"
@@ -108,7 +114,7 @@
           ></b-form-input>
           </b-row>
         </b-form>
-        <b-row class="justify-content-between">
+        <b-row class="justify-content-between mt-2 align-content-center">
           <b-form-checkbox
             class=""
             id="checkbox-1"
@@ -120,32 +126,20 @@
           >
             BIS
           </b-form-checkbox>
-            <b-form-checkbox
-              class=""
-              id="checkbox"
-              name="checkbox"
-              v-model="numeral"
-              switch
-              value="true"
-              unchecked-value="false"
-              >Paquetes</b-form-checkbox
-            >
+          <p>Paquetes</p>
             <b-form-input
-              v-if="numeral == 'true'"
               type="number"
               placeholder="#"
+              style="max-width: 3rem"
               class="ml-1"
-              style="width: 2rem"
               size="sm"
               v-model="identificador"
-            ></b-form-input>
-            <span v-if="numeral == 'true'" class="m-1">de</span>
+            ></b-form-input>de
             <b-form-input
-              v-if="numeral == 'true'"
-              style="width: 2rem"
+              style="max-width: 3rem"
               type="number"
               size="sm"
-              placeholder="total"
+              placeholder="cantidad"
               v-model="cantidad"
             ></b-form-input>
           </b-row>
@@ -253,41 +247,56 @@ export default {
           "",
           "info"
         );
+        if(!this.fechaExpediente){
+          Swal.fire({
+            title: 'Paquete sin fecha',
+            text: '¿Está seguro de guardar el paquete sin fecha? Normalmente es la misma que un paquete anterior o consecuente.',
+            icon: 'warning',
+            confirmButtonText: 'Guardar',
+            showCancelButton: true,
+            cancelButtonText: 'Ingresar fecha',
+            cancelButtonColor: '#FF9100'
+          })
+          .then(async(res) => {
+            if(res.value) {
+              let fechaAlta = Date.now();
+              let data = {
+                noPaquete: this.noPaquete,
+                folioInicio: this.folioInicio,
+                folioFin: this.folioFin,
+                fechaExpediente: this.fechaExpediente,
+                fechaAlta,
+                cantidad: this.cantidad,
+                identificador: this.identificador,
+                bis: this.bis,
+                registrado: localStorage.loggedIn,
+              };
+              await axios
+                .post(`${config.api}/paquete`, {
+                  data,
+                })
+                .then((res) => {
+                  if (!res.data.ok) return Swal.fire("Info", res.data.message, "info");
+                  return Swal.fire({
+                    title: `¡Hecho!`,
+                    position: "top-end",
+                    text: `Paquete ${this.noPaquete} agregado con éxito.`,
+                    icon: "success",
+                    showConfirmButton: false,
+                    timer: 3000,
+                  }).then((res) => {
+                    this.limpiar();
+                  });
+                })
+                .catch((err) => {
+                  Swal.fire(`Error!`, `No se pudo agregar el paquete.`, "error");
+                  console.log(err.response);
+                });
+            }
+          })
+        }
       // if(!this.noPaquete || !this.folioInicio || !this.folioFin || !this.fechaExpediente)
       //   return Swal.fire(`Complete todos los campos.`, ``, "info");
-      let fechaAlta = Date.now();
-      let data = {
-        noPaquete: this.noPaquete,
-        folioInicio: this.folioInicio,
-        folioFin: this.folioFin,
-        fechaExpediente: this.fechaExpediente,
-        fechaAlta,
-        cantidad: this.cantidad,
-        identificador: this.identificador,
-        bis: this.bis,
-        registrado: localStorage.loggedIn,
-      };
-      await axios
-        .post(`${config.api}/paquete`, {
-          data,
-        })
-        .then((res) => {
-          if (!res.data.ok) return Swal.fire("Info", res.data.message, "info");
-          return Swal.fire({
-            title: `¡Hecho!`,
-            position: "top-end",
-            text: `Paquete ${this.noPaquete} agregado con éxito.`,
-            icon: "success",
-            showConfirmButton: false,
-            timer: 1000,
-          }).then((res) => {
-            this.limpiar();
-          });
-        })
-        .catch((err) => {
-          Swal.fire(`Error!`, `No se pudo agregar el paquete.`, "error");
-          console.log(err.response);
-        });
     },
   },
 };
