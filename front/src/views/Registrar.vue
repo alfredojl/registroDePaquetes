@@ -213,7 +213,8 @@ export default {
       if (
         this.folioFin < this.folioInicio ||
         this.folioFin - this.folioInicio >= 99 ||
-        this.folioFin - this.folioInicio < 0
+        this.folioFin - this.folioInicio < 0 ||
+        this.beforefolioFin != this.folioFin
       )
         return false;
       else if (!this.folioFin) return null;

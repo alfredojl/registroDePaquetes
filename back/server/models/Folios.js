@@ -34,7 +34,7 @@ let foliosSchema = new Schema({
     },
     noPaquete: {
         type: Number,
-        required: true
+        // required: true
     },
     expediente: {
         type: String
