@@ -24,7 +24,6 @@
               placeholder="Paquete"
               v-model="noPaquete"
               :state="valida"
-              lazy
               @keyup.enter="search()"
             ></b-form-input>
             <b-form-checkbox
@@ -407,7 +406,6 @@ export default {
       this.$router.push("/validar");
     },
     fill(paquete) {
-      console.log(paquete);
       this.folioInicio = paquete.folioInicio;
       this.registrador = paquete.registrado;
       this.cosedor = paquete.cosedor;

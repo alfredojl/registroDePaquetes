@@ -158,7 +158,7 @@ app.get('/folios', async(req, res) => {
             bis: { $eq: bis },
             folio: { $gte: folioInicio, $lte: folioFin }
         }]
-    }, {}, { sort: { folio: 1 } }, (err, foliosDB) => {
+    }, {}, { sort: { folio: 1, tomo: 1 } }, (err, foliosDB) => {
         if (err)
             return res.status(500).json({
                 ok: false,

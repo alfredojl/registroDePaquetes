@@ -144,6 +144,47 @@ app.put('/paquete', async(req, res) => {
     })
 });
 
+app.put('/edit', async(req, res) => {
+    let body = req.body.data;
+    let id = body._id;
+    delete body._id;
+    console.log(body);
+    await Paquete.findByIdAndUpdate(id, body, { new: true }, (err, paqueteUpdated) => {
+        if (err) {
+            console.log(err);
+            return res.status(500).json({
+                ok: false,
+                message: err
+            })
+        }
+        console.log(paqueteUpdated);
+        return res.json({
+            ok: true,
+            paquete: paqueteUpdated
+        });
+    })
+})
+
+app.delete('/edit', async(req, res) => {
+    let body = req.body;
+    await Paquete.findByIdAndDelete(id, async(err, paqueteDeleted) => {
+        if (err) return res.status(500).json({
+            ok: false,
+            message: err
+        });
+        await Folio.deleteMany({ noPaquete: body.noPaquete }, (err, foliosDeleted) => {
+            if (err) return res.status(500).json({
+                ok: false,
+                message: err
+            });
+            return res.json({
+                ok: true,
+                paquete: paqueteDeleted
+            });
+        })
+    })
+});
+
 app.put('/captura', (req, res) => {
     let noPaquete = req.body.noPaquete;
     let bis = req.body.bis;

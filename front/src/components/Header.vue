@@ -12,8 +12,8 @@
         <b-nav-item to="capturar" :disabled="($route.path == '/capturar')">Capturar</b-nav-item>
         <b-nav-item to="asignar" :disabled="($route.path == '/asignar')">Asignar</b-nav-item>
         <b-nav-item to="lotes" :disabled="($route.path == '/lotes')">Lotes</b-nav-item>
-        <b-nav-item v-if="roleExist" to="reporte" :disabled="($route.path == '/reporte')">Reporte</b-nav-item>
-        <!-- <b-nav-item to="lotes" :disabled="($route.path == '/lotes')">Lotes</b-nav-item> -->
+        <b-nav-item to="editar" :disabled="($route.path == '/editar')">Editar</b-nav-item>
+        <b-nav-item to="reporte" :disabled="($route.path == '/reporte')">Reporte</b-nav-item>
       </b-navbar-nav>
 
       <b-navbar-nav class="ml-auto">
@@ -31,11 +31,18 @@
 export default {
   data() {
     return {
+      show: false
     }
   },
   name: 'HelloWorld',
   props: {
     msg: String
+  },
+  created() {
+    if(localStorage.loggedIn == 'Antonio' || localStorage.loggedIn == 'Alfredo')
+      this.show = true;
+    else
+      this.show = false;
   },
   methods: {
     setCurrentUser(){

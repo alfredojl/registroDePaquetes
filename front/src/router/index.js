@@ -134,7 +134,7 @@ const routes = [{
         name: 'Editar',
         component: Editar,
         beforeEnter: (to, from, next) => {
-            if (isAuthenticated()) next();
+            if (isAuthenticated() && isAuth()) next();
             else next(false);
         },
     },
@@ -152,9 +152,10 @@ const routes = [{
 const isAuthenticated = () => {
     return !!localStorage.loggedIn;
 };
-const isReporter = () => {
-    return localStorage.role == "reporter" || localStorage.role == "admin" ? true : false;
-};
+const isAuth = () => localStorage.loggedIn == 'Antonio' || localStorage.loggedIn == 'Alfredo';
+// const isReporter = () => {
+//     return localStorage.role == "reporter" || localStorage.role == "admin" ? true : false;
+// };
 // const isValidador = () => {
 //     return localStorage.role == "validador" || localStorage.role == "admin" ? true : false;
 // };

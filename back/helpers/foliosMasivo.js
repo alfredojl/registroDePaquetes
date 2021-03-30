@@ -6,6 +6,7 @@ const config = require('./procesoSICE/config');
 const axios = require('axios');
 const fs = require('fs');
 const os = require('os');
+const colors = require('colors');
 const path = require('path');
 
 const pool = mariadb.createPool({
@@ -16,8 +17,8 @@ const pool = mariadb.createPool({
 });
 
 mongoose.connect(
-    // 'mongodb://production:production$@172.26.60.61:27017/registro?authSource=admin', {
-    'mongodb://localhost:27017/registro', {
+    'mongodb://production:production$@172.26.60.61:27017/registro?authSource=admin', {
+        // 'mongodb://localhost:27017/registro', {
         useNewUrlParser: true,
         useUnifiedTopology: true,
         // useCreateIndex: true,
@@ -38,13 +39,13 @@ mongoose.connect(
 // })
 
 const subida = async() => {
-    let workbook = xlsx.readFile('./lote1-7.xlsx');
+    let workbook = xlsx.readFile('./lista.xlsx');
     let heads = workbook.SheetNames;
-    console.log(xlsx.utils.sheet_to_json(workbook.Sheets[heads[0]], { skipHeader: false }).slice(0, 5));
+    // console.log(xlsx.utils.sheet_to_json(workbook.Sheets[heads[0]], { skipHeader: false }).slice(0, 5));
     let index = 0;
     let errores = [];
     fs.appendFileSync(path.resolve('./report.csv'), `Paquete,Folio,Tomo,Imgs.,Acción,BD\n`, 'utf8')
-    for (el of xlsx.utils.sheet_to_json(workbook.Sheets[heads[0]])) {
+    for await (el of xlsx.utils.sheet_to_json(workbook.Sheets[heads[0]])) {
         let f = {};
         let folio = el.PDF.split('.')[0];
         let tomo = null;
@@ -56,66 +57,86 @@ const subida = async() => {
             folio = parseInt(folio[0])
         }
         console.log({
-            noPaquete: el.Paquete,
+            noPaquete: el.Paquete || null,
             folio,
             tomo,
             numeroImagenes: el.Imgs
-        }, index);
-        await Folio.find({ folio, tomo, noPaquete: el.Paquete }, async(err, folioFind) => {
-                if (err) errores.push(err);
-                if (folioFind.length < 1 || !folioFind.validado) {
-                    let m = await maria(folio, tomo);
-                    f.bis = false;
-                    f.estado = "Completo";
-                    f.validado = true;
-                    if (m.encontrado) {
-                        console.log('*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=');
-                        f.folio = folio;
-                        f.expediente = m.expediente;
-                        f.noPaquete = el.Paquete;
-                        f.tomo = tomo;
-                        f.juzgado = m.juzgado;
-                        f.instanciaJ = m.insJuz;
-                        f.instanciaS = m.insSal;
-                        f.dependencia = m.dependencia;
-                        f.toca = m.toca;
-                        f.actor = m.actor;
-                        f.demandado = m.demandado;
-                        f.juicio = m.juicio;
-                        f.sala = m.Sala;
-                        f.observaciones = null;
-                    } else {
-                        f.Id = m.Id;
-                        f.procesado = m.Fecha;
-                        f.folio = folio;
-                        f.expediente = m.C23;
-                        f.noPaquete = m.C24;
-                        f.tomo = tomo;
-                        f.juzgado = m.C26;
-                        f.instanciaJ = m.C27;
-                        f.instanciaS = m.C28;
-                        f.toca = m.C29;
-                        f.actor = m.C30;
-                        f.demandado = m.C31;
-                        f.juicio = m.C32;
-                        f.sala = m.C110;
-                        f.observaciones = m.C241;
-                        f.numeroImagenes = m.C11242;
-                    }
-                    await Folio.create(f, (err, doc) => {
-                        fs.appendFileSync(path.resolve('./LOG.txt'), `created\n`, 'utf8')
-                        if (m.encontrado)
-                            fs.appendFileSync(path.resolve('./report.csv'), `${el.Paquete},${folio},${tomo},${el.Imgs},created,BDA\n`, 'utf8')
-                        else
-                            fs.appendFileSync(path.resolve('./report.csv'), `${el.Paquete},${folio},${tomo},${el.Imgs},created,SICE\n`, 'utf8')
-                    })
-                } else {
-                    fs.appendFileSync(path.resolve('./LOG.txt'), `finded\n`, 'utf8')
-                    fs.appendFileSync(path.resolve('./report.csv'), `${el.Paquete},${folio},${tomo},${el.Imgs},exists\n`, 'utf8')
+        }, index + ' de ' + xlsx.utils.sheet_to_json(workbook.Sheets[heads[0]]).length);
+
+        //=====================================================================================================================
+        let m = await maria(folio, tomo);
+        f.bis = false;
+        f.estado = "Completo";
+        f.validado = true;
+        if (m.encontrado) {
+            console.log('*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=');
+            f.folio = folio;
+            f.expediente = m.expediente;
+            f.noPaquete = el.Paquete || null;
+            f.tomo = tomo;
+            f.juzgado = m.juzgado;
+            f.instanciaJ = m.insJuz;
+            f.instanciaS = m.insSal;
+            f.dependencia = m.dependencia;
+            f.toca = m.toca;
+            f.actor = m.actor;
+            f.demandado = m.demandado;
+            f.juicio = m.juicio;
+            f.sala = m.Sala;
+            f.observaciones = null;
+        } else {
+            f.Id = m.Id;
+            f.procesado = m.Fecha;
+            f.folio = folio;
+            f.expediente = m.C23;
+            f.noPaquete = m.C24;
+            f.tomo = tomo;
+            f.juzgado = m.C26;
+            f.instanciaJ = m.C27;
+            f.instanciaS = m.C28;
+            f.toca = m.C29;
+            f.actor = m.C30;
+            f.demandado = m.C31;
+            f.juicio = m.C32;
+            f.sala = m.C110;
+            f.observaciones = m.C241;
+            f.numeroImagenes = m.C11242;
+        }
+        await Folio.create(f, (err, doc) => {
+                if (err) {
+                    console.log(err);
+                    fs.appendFileSync(path.resolve('./LOG.txt'), `error\n`, 'utf8')
                 }
+                fs.appendFileSync(path.resolve('./LOG.txt'), `created\n`, 'utf8')
+                if (m.encontrado)
+                    fs.appendFileSync(path.resolve('./report.csv'), `${el.Paquete || f.noPaquete || null},${folio},${tomo},${el.Imgs},updated,BDA\n`, 'utf8')
+                else
+                    fs.appendFileSync(path.resolve('./report.csv'), `${el.Paquete || f.noPaquete || null},${folio},${tomo},${el.Imgs},updated,SICE\n`, 'utf8')
+                return doc;
             })
-            // console.log(f);
-            // console.log(path.resolve('./LOG.txt'));
+            //=====================================================================================================================
+
+        // let temp = await Folio.find({ folio, tomo, noPaquete: el.Paquete || null }, async(err, folioFind) => {
+        //         if (err) errores.push(err);
+        //         // console.log(`${folioFind}`.magenta);
+        //         if (folioFind.length < 1) {
+        //             console.log(folioFind.length);
+        //             f = await crea(folio, tomo, el)
+        //         } else if ((folioFind.length == 1)) {
+        //             if (!folioFind[0].validado) {
+        //                 f = await crea(folio, tomo, el)
+        //             } else {
+        //                 fs.appendFileSync(path.resolve('./LOG.txt'), `finded\n`, 'utf8')
+        //                 fs.appendFileSync(path.resolve('./report.csv'), `${el.Paquete || null},${folio},${tomo},${el.Imgs},exists\n`, 'utf8')
+        //             }
+        //         } else {
+        //             fs.appendFileSync(path.resolve('./LOG.txt'), `finded\n`, 'utf8')
+        //             fs.appendFileSync(path.resolve('./report.csv'), `${el.Paquete || null},${folio},${tomo},${el.Imgs},dup\n`, 'utf8')
+        //         }
+        //         fs.appendFileSync(path.resolve('./LOG.txt'), `${JSON.stringify(f)}\n\n`, 'utf8')
+        //     })
+        // console.log(f);
+        // console.log(path.resolve('./LOG.txt'));
         index++;
         // await Folio.find({ folio, tomo, noPaquete: el.Paquete }, (err, folioDB) => {
         //     if (err) {
@@ -125,9 +146,8 @@ const subida = async() => {
         //     if (folioDB.length > 0) {} else
 
         // })
-        fs.appendFileSync(path.resolve('./LOG.txt'), `${JSON.stringify(f)}\n\n`, 'utf8')
     }
-    process.exit();
+    // process.exit();
 }
 
 const maria = async(f, t) => {
@@ -135,8 +155,8 @@ const maria = async(f, t) => {
     let a = await conn.query(`SELECT * FROM T15 WHERE C22 = ${f} AND C25 ${t ? '= ' + t : 'IS NULL'}`)
     let b = {};
     if (a.length > 0) {
-        // console.log(a[0]);
         conn.release();
+        // console.log(a[0]);
         return a[0];
         // let folio = {};
         // folio.folio = a.C22;
@@ -146,15 +166,69 @@ const maria = async(f, t) => {
                 params: { f }
             })
             .then(res => {
-                // console.log(res.data);
+                console.log(res.data, f);
                 b = res.data;
-                return
+                // return
             })
             .catch(e => {
                 console.log('Error in axios.');
             })
     }
     return b;
+}
+
+const crea = async(folio, tomo, el) => {
+    let f = {};
+    let m = await maria(folio, tomo);
+    f.bis = false;
+    f.estado = "Completo";
+    f.validado = true;
+    if (m.encontrado) {
+        console.log('*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=');
+        f.folio = folio;
+        f.expediente = m.expediente;
+        f.noPaquete = el.Paquete || null;
+        f.tomo = tomo;
+        f.juzgado = m.juzgado;
+        f.instanciaJ = m.insJuz;
+        f.instanciaS = m.insSal;
+        f.dependencia = m.dependencia;
+        f.toca = m.toca;
+        f.actor = m.actor;
+        f.demandado = m.demandado;
+        f.juicio = m.juicio;
+        f.sala = m.Sala;
+        f.observaciones = null;
+    } else {
+        f.Id = m.Id;
+        f.procesado = m.Fecha;
+        f.folio = folio;
+        f.expediente = m.C23;
+        f.noPaquete = m.C24;
+        f.tomo = tomo;
+        f.juzgado = m.C26;
+        f.instanciaJ = m.C27;
+        f.instanciaS = m.C28;
+        f.toca = m.C29;
+        f.actor = m.C30;
+        f.demandado = m.C31;
+        f.juicio = m.C32;
+        f.sala = m.C110;
+        f.observaciones = m.C241;
+        f.numeroImagenes = m.C11242;
+    }
+    let temp = await Folio.create({ folio, tomo, noPaquete: el.Paquete || null }, f, (err, doc) => {
+        if (err)
+            fs.appendFileSync(path.resolve('./LOG.txt'), `error\n`, 'utf8')
+        console.log(doc);
+        fs.appendFileSync(path.resolve('./LOG.txt'), `created\n`, 'utf8')
+        if (m.encontrado)
+            fs.appendFileSync(path.resolve('./report.csv'), `${el.Paquete || null},${folio},${tomo},${el.Imgs},updated,BDA\n`, 'utf8')
+        else
+            fs.appendFileSync(path.resolve('./report.csv'), `${el.Paquete || null},${folio},${tomo},${el.Imgs},updated,SICE\n`, 'utf8')
+        return doc;
+    })
+    return f;
 }
 
 subida()

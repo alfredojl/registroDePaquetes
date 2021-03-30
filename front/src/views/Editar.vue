@@ -1,68 +1,121 @@
 <template>
   <div class="container">
-    <div class="row mt-5">
-      <div class="col-3"></div>
-      <div class="col-6 p-0 d-flex">
-        <b-input-group prepend="Paquete" class="">
-          <b-form-input
-            type="number"
-            autofocus
-            v-model="noPaquete"
-            v-on:keyup.enter="save()"
-          ></b-form-input>
-        </b-input-group>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-3"></div>
-      <div class="col-6 p-0 d-flex">
-        <b-input-group prepend="Folio inicio" class="">
-          <b-form-input
-            type="number"
-            v-model="folioInicio"
-            v-on:keyup.enter="save()"
-          ></b-form-input>
-        </b-input-group>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-3"></div>
-      <div class="col-6 p-0 d-flex">
-        <b-input-group prepend="Folio fin" class="">
-          <b-form-input
-            type="number"
-            v-model="folioFin"
-            v-on:keyup.enter="save()"
-          ></b-form-input>
-        </b-input-group>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-3"></div>
-      <div class="col-6 p-0 d-flex">
-        <b-input-group prepend="Fecha de expediente" class="">
-          <b-form-input
-            type="date"
-            v-model="fechaExpediente"
-            v-on:keyup.enter="save()"
-          ></b-form-input>
-        </b-input-group>
-      </div>
-    </div>
-    <div class="row mt-3">
-      <div class="col-3"></div>
-      <b-button-group>
-        <b-button variant="success" @click="save()">Guardar cambios</b-button>
-        <b-button
-          @click="goValidar()"
-          class="col-auto"
-          variant="outline-success"
-          >Validar</b-button
+    <div class="row justify-content-center mt-2 mb-2">
+      <b-input-group style="width: 15rem" class="mt-2">
+        <b-form-input
+          type="number"
+          autofocus
+          placeholder="Paquete"
+          v-model="noPaquete"
+          :state="valida"
+          @keyup.enter="search()"
+        ></b-form-input>
+        <b-form-checkbox
+          class="m-1"
+          v-model="bis"
+          value="true"
+          unchecked-value="false"
         >
-        <b-button variant="info" @click="limpiar()">Limpiar</b-button>
-        <b-button variant="danger" @click="eliminar()">Eliminar</b-button>
-      </b-button-group>
+          BIS
+        </b-form-checkbox>
+        <b-button variant="secondary" @click="search()">Buscar</b-button>
+      </b-input-group>
     </div>
+    <b-modal
+      id="packages"
+      scrollable
+      centered
+      ref=""
+      title="Paquetes encontrados"
+    >
+      <div v-for="(paquete, index) of paquetes" :key="paquete.folioInicio">
+        <b-list-group>
+          <b-list-group-item
+            button
+            variant="light"
+            @click="fill(paquetes[index])"
+            >Paquete: {{ paquete.noPaquete }}<br />Folio inicio:
+            {{ paquete.folioInicio }}<br />Folio fin: {{ paquete.folioFin
+            }}<br />Fecha expediente:
+            {{
+              paquete.fechaExpediente
+                ? paquete.fechaExpediente.slice(0, 10)
+                : null
+            }}</b-list-group-item
+          >
+        </b-list-group>
+      </div>
+    </b-modal>
+    <b-row class="justify-content-center mt-5">
+      <span style="max-width: 15rem">
+        <!-- <label for="">No. paquete:</label> -->
+        <b-form-input
+          placeholder="Número de paquete"
+          type="number"
+          class="mb-2"
+          v-model="paquete.noPaquete"
+        >
+        </b-form-input>
+        <!-- <label for="">Folio inicio:</label> -->
+        <b-form-input
+          placeholder="Folio inicio"
+          type="number"
+          class="mb-2"
+          v-model="paquete.folioInicio"
+        >
+        </b-form-input>
+        <!-- <label for="">Folio fin:</label> -->
+        <b-form-input
+          placeholder="Folio fin"
+          type="number"
+          class="mb-2"
+          v-model="paquete.folioFin">
+        </b-form-input>
+        <!-- <label for="">Parte</label> -->
+          <b-row class="m-0 mb-2" align-v="center">
+          <b-form-input
+            type="number"
+            placeholder="#"
+            style="max-width: 44%"
+            class=""
+            v-model="paquete.identificador">
+          </b-form-input><span class="m-1">de</span>
+          <b-form-input
+          type="number"
+          placeholder="total"
+          style="max-width: 44%"
+          class=""
+          v-model="paquete.cantidad">
+          </b-form-input>
+          </b-row>
+        <!-- <label for="">Fecha de expediente:</label> -->
+        <b-form-input
+          placeholder="Fecha expediente"
+          class="mb-2"
+          type="date"
+          v-model="paquete.fechaExpediente"
+        >
+        </b-form-input>
+        <b-form-checkbox
+            class=""
+            id="checkbox-1"
+            v-model="paquete.bis"
+            name="checkbox-1"
+            value="true"
+            unchecked-value="false"
+            switch
+          >
+            BIS
+          </b-form-checkbox>
+      </span>
+    </b-row>
+    <b-row class="justify-content-center">
+      <b-button-group>
+        <b-button variant="success" @click="save()">Guardar</b-button>
+        <b-button variant="danger" @click="eliminar()">Eliminar</b-button>
+        <!-- <b-button variant="outline-info" @click="limpiar()">Limpiar</b-button> -->
+      </b-button-group>
+    </b-row>
   </div>
 </template>
 
@@ -70,14 +123,20 @@
 import axios from "axios";
 import config from "../config/config";
 import Swal from "sweetalert2";
+import moment from "moment";
 
 export default {
   data() {
     return {
       aux: null,
-      noPaquete: null,
+      noPaquete: "",
+      pq: '',
+      paquetes: [],
+      cantidad: null,
+      identificador: null,
+      bis: false,
       digitalizador: null,
-      paquete: null,
+      paquete: {},
       folioInicio: null,
       folioFin: null,
       fechaExpediente: null,
@@ -87,49 +146,107 @@ export default {
     };
   },
   created() {
-    this.noPaquete = localStorage.noPaquete;
-    this.search();
+    // this.noPaquete = localStorage.noPaquete;
+    // this.search();
+  },
+  computed: {
+    valida() {
+      if (this.noPaquete.length > 5) {
+        return false;
+      }
+    },
   },
   methods: {
-    async search() {
-      this.aux = JSON.parse(localStorage.getItem('paquete'));
-      // this.noPaquete = aux.noPaquete;
-      // this.bis = aux.bis;
-      // this.folioInicio = aux.folioInicio;
-      // this.folioFin = aux.folioFin;
-      // console.log(aux);
-      // let dia = aux.fechaExpediente.slice(8,10);
-      // let mes = aux.fechaExpediente.slice(5,7);
-      // this.fechaExpediente = dia + '/' + mes + '/' + aux.fechaExpediente.slice(0, 4)
-      if (!aux)
-        return Swal.fire("No se ingresó un paquete.", "Por favor, regrese a 'Búsqueda', busque un paquete y presione 'Editar'.", "info")
-        .then(res => {
-          if(res)
-            this.$router.push("/home");
-        });
-        this.noPaquete = aux.noPaquete;
-      await axios
+    // async search() {
+    //   this.aux = JSON.parse(localStorage.getItem('paquete'));
+    //   // this.noPaquete = aux.noPaquete;
+    //   // this.bis = aux.bis;
+    //   // this.folioInicio = aux.folioInicio;
+    //   // this.folioFin = aux.folioFin;
+    //   // console.log(aux);
+    //   // let dia = aux.fechaExpediente.slice(8,10);
+    //   // let mes = aux.fechaExpediente.slice(5,7);
+    //   // this.fechaExpediente = dia + '/' + mes + '/' + aux.fechaExpediente.slice(0, 4)
+    //   if (!aux)
+    //     return Swal.fire("No se ingresó un paquete.", "Por favor, regrese a 'Búsqueda', busque un paquete y presione 'Editar'.", "info")
+    //     .then(res => {
+    //       if(res)
+    //         this.$router.push("/home");
+    //     });
+    //     this.noPaquete = aux.noPaquete;
+    //   await axios
+    //     .get(`${config.api}/paquete`, {
+    //       params: {
+    //         noPaquete: aux.noPaquete,
+    //         bis: aux.bis,
+    //         folioInicio: aux.folioInicio
+    //       },
+    //     })
+    //     .then((res) => {
+    //       if (res.data.paquete.length == 0)
+    //         return Swal.fire(
+    //           `No se encontró el paquete ${this.noPaquete}.`,
+    //           "",
+    //           "error"
+    //         );
+    //       this.id = res.data.paquete[0]._id;
+    //       this.folioInicio = res.data.paquete[0].folioInicio;
+    //       this.folioFin = res.data.paquete[0].folioFin;
+    //       this.fechaExpediente = res.data.paquete[0].fechaExpediente
+    //         ? new Date(res.data.paquete[0].fechaExpediente)
+    //             .toISOString()
+    //             .slice(0, 10)
+    //         : null;
+    //     })
+    //     .catch((error) => {
+    //       if (error) {
+    //         console.log(error);
+    //       }
+    //     });
+    // },
+    fill(paquete){
+      this.paquete = paquete;
+      this.paquete.fechaExpediente = paquete.fechaExpediente
+            ? moment(paquete.fechaExpediente.slice(0, 19)).format(
+                "YYYY-MM-DD"
+              )
+            : null;
+      this.$bvModal.hide("packages");
+    },
+    search() {
+      // this.limpiar();
+      if (!this.noPaquete)
+        return Swal.fire("Ingresa un número de paquete", "", "info");
+      let params = {
+        noPaquete: this.noPaquete,
+        bis: this.bis,
+      };
+      axios
         .get(`${config.api}/paquete`, {
-          params: {
-            noPaquete: aux.noPaquete,
-            bis: aux.bis,
-            folioInicio: aux.folioInicio
-          },
+          params,
         })
         .then((res) => {
-          if (res.data.paquete.length == 0)
+          if (res.data.paquete.length < 1) {
             return Swal.fire(
               `No se encontró el paquete ${this.noPaquete}.`,
               "",
               "error"
-            );
-          this.folioInicio = res.data.paquete[0].folioInicio;
-          this.folioFin = res.data.paquete[0].folioFin;
-          this.fechaExpediente = res.data.paquete[0].fechaExpediente
-            ? new Date(res.data.paquete[0].fechaExpediente)
-                .toISOString()
-                .slice(0, 10)
-            : null;
+            ).then((res) => {
+              // this.limpiar();
+            });
+          }
+          if (res.data.paquete.length > 1) {
+            this.paquetes = res.data.paquete;
+            this.$bvModal.show("packages");
+          }
+          this.showBis = res.data.paquete[0].bis;
+          this.paquete = res.data.paquete[0];
+          this.paquete.fechaExpediente = res.data.paquete[0].fechaExpediente
+                ? moment(res.data.paquete[0].fechaExpediente.slice(0, 19)).format(
+                    "YYYY-MM-DD"
+                  )
+                : null;
+          // this.getFolios();
         })
         .catch((error) => {
           if (error) {
@@ -151,63 +268,53 @@ export default {
       this.fechaExpediente = null;
       this.digitalizador = null;
     },
-    eliminar() {
+    async eliminar() {
       Swal.fire({
-        title: `¿Está seguro de que desea eliminar el paquete ${this.noPaquete}?`,
+        title: `¿Está seguro de que desea eliminar el paquete ${this.paquete.noPaquete}${this.paquete.bis ? ' BIS' : ''}`
+        + `${this.paquete.cantidad ? ' ' + this.paquete.identificador + '/' + this.paquete.cantidad : ''}`,
         showDenyButton: true,
         confirmButtonText: `Eliminar`,
         cancelButtonText: "Cancelar",
-        icon: "warning"
-      }).then((result) => {
+        icon: "warning",
+      }).then(async(result) => {
         if (result.isConfirmed) {
-          console.log(this.noPaquete);
-          console.log(this.bis);
-          console.log(this.folioInicio);
-          console.log(this.folioFin);
-          axios.delete(`${config.api}/paquete`, {
-            params: {
-                noPaquete: this.noPaquete,
-                bis: this.bis,
-                folioInicio: this.folioInicio,
-                folioFin: this.folioInicio
-              }
-          })
-          .then(res => {
-            Swal.fire(`¡Hecho!`, `Paquete ${this.noPaquete} eliminado correctamente.`, "success");
-          })
-          .catch(err => {
-            console.log(err);
-            Swal.fire(`¡Error!`, "No se pudo completar la acción.", "error");
-          })
+          console.log(this.paquete);
+          let data = this.paquete;
+          await axios
+            ({
+              url: `${config.api}/edit`,
+              method: 'delete',
+              data })
+            .then((res) => {
+              console.log(res.data);
+              Swal.fire(
+                `¡Hecho!`,
+                `Paquete ${res.data.paquete.noPaquete}${res.data.paquete.bis ? ' BIS' : ''}${res.data.paquete.cantidad ? ' ' + res.data.paquete.identificador + '/' + res.data.paquete.cantidad : ''} eliminado correctamente.`,
+                "success"
+              );
+            })
+            .catch((err) => {
+              console.log(err);
+              return Swal.fire(`¡Error!`, "No se pudo completar la acción.", "error");
+            });
         }
       });
     },
-    save() {
-      axios
-        .put(`${config.api}/paquete`, {
-          paquete: {
-            noPaquete: this.noPaquete,
-            folioInicio: this.folioInicio,
-            folioFin: this.folioFin,
-            fechaExpediente: this.fechaExpediente
-          },
-          aux
+    async save() {
+      await axios
+        .put(`${config.api}/edit`, {
+          data: this.paquete
         })
         .then((res) => {
-          console.log(res.data);
-          Swal.fire(
+          return Swal.fire(
             `¡Hecho!`,
-            `Paquete ${this.noPaquete} actualizado correctamente.`,
+            `Paquete ${res.data.paquete.noPaquete}${res.data.paquete.bis ? ' BIS' : ''}${res.data.paquete.cantidad ? ' ' + res.data.paquete.identificador + '/' + res.data.paquete.cantidad : ''} actualizado correctamente.`,
             "success"
           );
         })
         .catch((err) => {
           console.log(err.response);
-          Swal.fire(
-            `Error!`,
-            `No se pudo actualizar el paquete.`,
-            "error"
-          );
+          return Swal.fire(`¡Error!`, `No se pudo actualizar el paquete.`, "error");
         });
     },
   },
