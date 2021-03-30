@@ -249,7 +249,7 @@ export default {
           "info"
         );
         if(!this.fechaExpediente){
-          Swal.fire({
+          return Swal.fire({
             title: 'Paquete sin fecha',
             text: '¿Está seguro de guardar el paquete sin fecha? Normalmente es la misma que un paquete anterior o consecuente.',
             icon: 'warning',

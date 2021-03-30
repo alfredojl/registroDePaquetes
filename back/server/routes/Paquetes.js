@@ -167,6 +167,7 @@ app.put('/edit', async(req, res) => {
 
 app.delete('/edit', async(req, res) => {
     let body = req.body;
+    let id = body._id;
     await Paquete.findByIdAndDelete(id, async(err, paqueteDeleted) => {
         if (err) return res.status(500).json({
             ok: false,

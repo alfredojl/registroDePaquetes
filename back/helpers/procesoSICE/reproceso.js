@@ -18,7 +18,9 @@ const configSFTP = {
 const pathSFTP = '/HD4/repository7/documentos/digitalizacion/'
 
 const reproceso = async() => {
+    console.log('Iniciando...'.blue)
     var archs = fs.readdirSync(ruta);
+    archs = archs.slice(0, 6);
     let sftp = new client;
 
     await sftp.connect(configSFTP)
@@ -26,20 +28,37 @@ const reproceso = async() => {
             for (file of archs) {
                 let folio = null,
                     tomo = null,
+                    nh = null,
                     sep = null;
                 sep = path.parse(path.join(ruta, file)).name.split('_');
                 // console.log(file);
                 folio = sep[0];
-                if (sep.length === 2) {
+                // if (sep.length === 2) {
+                //     tomo = sep[1];
+                // }
+                if (sep.length === 3) {
                     tomo = sep[1];
+                    nh = sep[2]
+                } else {
+                    nh = sep[1]
                 }
-                console.log(`Subiendo ${file}: \t\t${folio} ${tomo ? 'Tomo ' + tomo : ''}`.cyan);
+                console.log(`Subiendo ${file}: \t\t${folio} ${tomo ? 'Tomo ' + tomo : ''}\t${nh}`.cyan);
                 await sftp.list(pathSFTP, 'pdf' || 'safe')
-                    .then(() => console.log('¡Reemplazado!'.green))
+                    .then(() => {
+                        // fs.renameSync()
+                        console.log(path.join(ruta, file), path.join(ruta, 'Hecho', file).yellow);
+                        fs.renameSync(path.join(ruta, file), path.join(ruta, 'Hecho', file));
+                        fs.appendFileSync(path.join(ruta, 'Hecho', 'reporte.csv'), `${file},${folio},${tomo ? tomo : ''},${nh},reemplazado\n`, 'utf8')
+                        console.log('¡Reemplazado!'.green);
+                    })
             }
         })
         .then(() => sftp.end())
-        .catch(err => console.log(err))
+        .catch(err => {
+            fs.renameSync(path.join(ruta, file), path.join(ruta, 'Error', file));
+            fs.appendFileSync(path.join(ruta, 'Hecho', 'reporte.csv'), `${file},${folio},${tomo ? tomo : ''},${nh},no\n`, 'utf8')
+            console.log(err)
+        })
 
     // console.log(archs);
     // console.log(folio, tomo);
