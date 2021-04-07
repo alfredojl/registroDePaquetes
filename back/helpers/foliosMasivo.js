@@ -63,7 +63,18 @@ const subida = async() => {
             numeroImagenes: el.Imgs
         }, index + ' de ' + xlsx.utils.sheet_to_json(workbook.Sheets[heads[0]]).length);
 
-        //=====================================================================================================================
+        await Folio.find({ folio, tomo, noPaquete: el.Paquete }, async(err, folioFinded) => {
+                if (err) errores.push(err)
+                    // console.log(`Folio ${folio} finded...`.magenta);
+                if (folioFinded.length == 0) {
+
+                } else if (folioFinded.length == 1) {
+
+                } else {
+                    console.log(`Folio ${folio} has ${folioFinded.length} length.`.magenta);
+                }
+            })
+            //=====================================================================================================================
         let m = await maria(folio, tomo);
         f.bis = false;
         f.estado = "Completo";

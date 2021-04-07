@@ -26,11 +26,17 @@ const inserta = async() => {
         paquetesDB = [],
         foliosDB = [];
     temp.forEach(el => {
-        let paquete = el.Paquete.split(' ')[0];
+        let partes = el.Paquete.toString().split(' ')
+        let paquete = partes[0];
+        let bis = false;
+        partes.length > 2 && partes[2].toLowerCase() == 'bis' ? bis = true : false;
         let cantidad = el.Paquete.split(' ')[1].split('/')[1];
         let identificador = el.Paquete.split(' ')[1].split('/')[0];
         paquetes.push({
             noPaquete: paquete,
+            bis,
+            estado: 'Recibido',
+            local: false,
             identificador,
             cantidad,
             folioInicio: el.FolioInicio,
@@ -40,6 +46,7 @@ const inserta = async() => {
             registrado: "Toño"
         });
     });
+    // console.log(paquetes);
     for (element of paquetes) {
         // console.log(element);
         // for (let i = element.folioInicio; i <= element.folioFin; i++)

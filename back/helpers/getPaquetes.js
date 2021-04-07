@@ -3,8 +3,8 @@ const MongoClient = require("mongodb").MongoClient,
 const xlsx = require("xlsx");
 
 const reporte800 = require('./reporte800.json');
-const name = 'registro30.03';
-const nameAdrian = 'foliosLote20';
+// const name = 'registro30.03';
+const nameAdrian = 'foliosLote28';
 
 const moment = require('moment');
 moment.locale('es-mx')
@@ -19,46 +19,46 @@ const getPaquetes = async() => {
         async(err, res) => {
 
 
-            let regex = '2021-03-25';
+            let regex = '2021-03-30';
             let day = moment(regex).hours(0).minutes(0).seconds(0).format();
 
             if (err) throw err;
             console.log("BD ONLINE");
 
-            const archivo = res.db("registro").collection("paquetes");
-
+            
             // archivo.find({FechaProcesado: {$gte: fecha}}).toArray((err, cols) => {
-            // await archivo.find({ FechaProcesado: { $regex: yesterday  } }).toArray((err, cols) => {
-            // await archivo.find({ FechaProcesado: {$regex: regex}, Error: false}).sort({ Folio: 1, Tomo: 1 }).toArray(async(err, cols) => {
-            // await archivo.find({ Procesado: true, Error: false, FechaProcesado: {$regex: '29/12/2020'} }).sort({Folio: 1, Tomo: 1}).toArray(async(err, cols) => {
-            //======================================================================================================================================
-            //***********************************************************************************************************************************+
-            //  Para conteo de folios... Adrián.
-            // let conteo = [];
-            // let foliosTotal = 0;
-            // for (el of lista) {
-            //     let count = await archivo.countDocuments({ noPaquete: el });
-            //     foliosTotal += count;
-            //     conteo.push({
-            //             Paquete: el,
-            //             Folios: count
-            //         })
-            //         // , async(err, foliosDB) => {
-            //         //     console.log(foliosDB);
-            //         //     foliosTotal += foliosDB;
-            //         // })
-            // }
-            // conteo.push({
-            //     Paquete: 'Total =',
-            //     Folios: foliosTotal
-            // })
-            // console.log(conteo);
-            // let doc, libro;
-            // doc = xlsx.utils.json_to_sheet(conteo);
-            // libro = xlsx.utils.book_new();
-            // xlsx.utils.book_append_sheet(libro, doc, nameAdrian);
-            // xlsx.writeFile(libro, `./${nameAdrian}.xlsx`);
-            // console.log(`[${nameAdrian}.xlsx] created.`)
+                // await archivo.find({ FechaProcesado: { $regex: yesterday  } }).toArray((err, cols) => {
+                    // await archivo.find({ FechaProcesado: {$regex: regex}, Error: false}).sort({ Folio: 1, Tomo: 1 }).toArray(async(err, cols) => {
+                        // await archivo.find({ Procesado: true, Error: false, FechaProcesado: {$regex: '29/12/2020'} }).sort({Folio: 1, Tomo: 1}).toArray(async(err, cols) => {
+                            //======================================================================================================================================
+                            //***********************************************************************************************************************************+
+                            //  Para conteo de folios... Adrián.
+            const archivo = res.db("registro").collection("folios");
+            let conteo = [];
+            let foliosTotal = 0;
+            for (el of lista) {
+                let count = await archivo.countDocuments({ noPaquete: el });
+                foliosTotal += count;
+                conteo.push({
+                        Paquete: el,
+                        Folios: count
+                    })
+                    // , async(err, foliosDB) => {
+                    //     console.log(foliosDB);
+                    //     foliosTotal += foliosDB;
+                    // })
+            }
+            conteo.push({
+                Paquete: 'Total =',
+                Folios: foliosTotal
+            });
+            console.log(conteo);
+            let doc, libro;
+            doc = xlsx.utils.json_to_sheet(conteo);
+            libro = xlsx.utils.book_new();
+            xlsx.utils.book_append_sheet(libro, doc, nameAdrian);
+            xlsx.writeFile(libro, `./${nameAdrian}.xlsx`);
+            console.log(`[${nameAdrian}.xlsx] created.`)
             // await archivo.countDocuments({ noPaquete: { $in: lista } }, async(err, cols) => {
             //     console.log(cols);
             //     // await archivo.find({ folio: { $in: reporte800 } }).sort({ folio: 1 }).toArray(async(err, cols) => {
@@ -70,29 +70,30 @@ const getPaquetes = async() => {
             //     //     return { Folio: el.Folio, Tomo: el.Tomo, Toca: el.Toca,
             //     //         Concatenado: el.Tomo ? el.Folio + '-' + el.Tomo : el.Folio
             //     //     }
-            //     // })
+            // })
             //     // **************************************************************************************************************
             //     // Para paquetes.
-            await archivo.find({ fechaAlta: { $gte: new Date(day) } }).sort({ noPaquete: 1 }).toArray(async(err, cols) => {
-                var paquetes = cols.map((el) => {
-                    console.log(el.fechaExpediente ? moment(el.fechaExpediente).format('L') : null, el.fechaExpediente ? moment(el.fechaExpediente.toISOString().slice(0, 10)).format('DD/MM/YYYY') : null, el.fechaExpediente ? el.fechaExpediente.toISOString().slice(0, 10) : null, el.noPaquete);
-                    return {
-                        Paquete: el.noPaquete,
-                        // Folio: el.folio,
-                        "Folio inicio": el.folioInicio,
-                        "Folio fin": el.folioFin,
-                        "Fecha expediente": el.fechaExpediente ? moment(el.fechaExpediente.toISOString().slice(0, 10)).format('L') : 'Fecha inválida'
-                            // Expediente: el.Expediente,
-                            // Toca: el.Toca,
-                            // "Fecha de procesado": el.FechaProcesado ? el.FechaProcesado.slice(0,10) : 'Sin fecha'
-                    };
-                });
-                let doc, libro;
-                doc = xlsx.utils.json_to_sheet(paquetes);
-                libro = xlsx.utils.book_new();
-                xlsx.utils.book_append_sheet(libro, doc, "Hoja 1");
-                xlsx.writeFile(libro, `./${name}.xlsx`);
-                console.log(`[${name}.xlsx] created.`)
+            // await archivo.find({ fechaAlta: { $gte: new Date(day) } }).sort({ noPaquete: 1 }).toArray(async(err, cols) => {
+            //     var paquetes = cols.map((el) => {
+            //         console.log(el.fechaExpediente ? moment(el.fechaExpediente).format('L') : null, el.fechaExpediente ? moment(el.fechaExpediente.toISOString().slice(0, 10)).format('DD/MM/YYYY') : null, el.fechaExpediente ? el.fechaExpediente.toISOString().slice(0, 10) : null, el.noPaquete);
+            //         return {
+            //             Paquete: el.noPaquete,
+            //             // Folio: el.folio,
+            //             "Folio inicio": el.folioInicio,
+            //             "Folio fin": el.folioFin,
+            //             "Fecha expediente": el.fechaExpediente ? moment(el.fechaExpediente.toISOString().slice(0, 10)).format('L') : 'Fecha inválida'
+            //                 // Expediente: el.Expediente,
+            //                 // Toca: el.Toca,
+            //                 // "Fecha de procesado": el.FechaProcesado ? el.FechaProcesado.slice(0,10) : 'Sin fecha'
+            //         };
+            //     });
+
+            //     let doc, libro;
+            //     doc = xlsx.utils.json_to_sheet(paquetes);
+            //     libro = xlsx.utils.book_new();
+            //     xlsx.utils.book_append_sheet(libro, doc, "Hoja 1");
+            //     xlsx.writeFile(libro, `./registro${moment(day).format('DD.MM')}.xlsx`);
+            //     console.log(`[registro${moment(day).format('DD.MM')}.xlsx] created.`)
 
                 //     // **************************************************************************************************************
                 //     // Para folios.
@@ -127,9 +128,9 @@ const getPaquetes = async() => {
                 //     // xlsx.writeFile(libro, `./z${regex.slice(0, 2)}.csv`);
                 //     // console.log(`[paquetes${moment().subtract(1, 'days').format('DD-MM-YYYY')}.xlsx] created.`)
                 //     // console.log(`[z${regex.slice(0, 2)}.csv] created.`)
-            });
+                // });
 
-        });
-};
-
+            // });
+        })
+}
 getPaquetes();
