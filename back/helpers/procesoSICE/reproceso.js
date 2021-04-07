@@ -27,16 +27,18 @@ const pathSFTP = '/HD4/repository7/documentos/digitalizacion/'
 
 const reproceso = async() => {
     console.log('Iniciando...'.blue)
-    let conn = await pool.getConnection((err, connection) => { if (err) console.log(err) });
+    var Id;
+    const conn = await pool.getConnection((err, connection) => { if (err) console.log(err) });
     var archs = fs.readdirSync(ruta);
     archs = archs.filter(el => path.parse(path.join(ruta, el)).ext == '.pdf')
-    archs = archs.slice(0, 1);
+    // archs = archs.slice(0, 10);
     let sftp = new client;
 
     await sftp.connect(configSFTP)
         .then(async() => {
+            let index = 0;
             for (file of archs) {
-                var folio = null,
+                    var folio = null,
                     tomo = null,
                     nh = null,
                     sep = null;
@@ -52,24 +54,30 @@ const reproceso = async() => {
                 } else {
                     nh = sep[1]
                 }
-                if (!nh) {
+                let a = await conn.query(`SELECT Id FROM T15 WHERE C22 = ${folio} AND C25 ${tomo ? '= ' + tomo : 'IS NULL'} AND C11242 = ${nh}`);
+                Id = a[0] ? a[0].Id : null;
+                conn.release();
+                if(!Id){
+                    console.log(`${file}: \t\t${folio} ${tomo ? 'Tomo ' + tomo : ''}\t${nh} no está en SICE. ----> Error`.red);
+                    fs.appendFileSync(path.join(ruta, 'NoSubido', 'reporte.csv'), `${file},,${folio},${tomo ? tomo : ''},${nh}\n`, 'utf8')
+                    fs.renameSync(path.join(ruta, file), path.join(ruta, 'NoSubido', file));
+                }
+                else if (!nh) {
                     console.log(`${file}: \t\t${folio} ${tomo ? 'Tomo ' + tomo : ''}\t${nh} sin número de imágenes. ----> Eror`.red);
                     fs.appendFileSync(path.join(ruta, 'Hecho', 'reporte.csv'), `${file},,${folio},${tomo ? tomo : ''},${nh},SIN HOJAS\n`, 'utf8')
                     fs.renameSync(path.join(ruta, file), path.join(ruta, 'Error', file));
                 } else {
-                    let a = await conn.query(`SELECT Id FROM T15 WHERE C22 = ${folio} AND C25 ${tomo ? '= ' + tomo : 'IS NULL'}`)
                         // console.log(nh);
-                    let id = a[0].Id;
-                    console.log(id);
-                    conn.release();
-                    console.log(`Subiendo ${file}: \t\t${folio} ${tomo ? 'Tomo ' + tomo : ''}\t${nh}`.cyan);
-                    await sftp.list(pathSFTP, 'pdf' || 'safe')
+                    // let id = a[0].Id;
+                    // console.log(Id)
+                    console.log(`Subiendo ${file}: \t\t${folio} ${tomo ? 'Tomo ' + tomo : ''}\t${nh}\t${++index} de ${archs.length}`.cyan);
+                    await sftp.put(path.join(ruta, file), path.join(pathSFTP, Id.toString() + '.pdf'))
                         .then(() => {
                             // fs.renameSync()
                             // console.log(path.join(pathSFTP, id.toString() + '.pdf'));
-                            fs.copyFileSync(path.join(ruta, file), path.join(ruta, 'SFTP', id.toString() + '.pdf'))
+                            // fs.copyFileSync(path.join(ruta, file), path.join(ruta, 'SFTP', id.toString() + '.pdf'))
                             fs.renameSync(path.join(ruta, file), path.join(ruta, 'Hecho', file));
-                            fs.appendFileSync(path.join(ruta, 'Hecho', 'reporte.csv'), `${file},${id},${folio},${tomo ? tomo : ''},${nh},reemplazado\n`, 'utf8')
+                            fs.appendFileSync(path.join(ruta, 'Hecho', 'reporte.csv'), `${file},${Id},${folio},${tomo ? tomo : ''},${nh},reemplazado\n`, 'utf8')
                             console.log('¡Reemplazado!'.green);
                         })
                 }
@@ -77,6 +85,7 @@ const reproceso = async() => {
         })
         .then(() => sftp.end())
         .catch(err => {
+            sftp.end()
             // console.log(path.join(ruta, 'Error', file));
             fs.renameSync(path.join(ruta, file), path.join(ruta, 'Error', file));
             console.log('Error al conectar SFTP.'.red);
