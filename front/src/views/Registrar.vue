@@ -126,7 +126,7 @@
           >
             BIS
           </b-form-checkbox>
-          <p>Paquetes</p>
+          <!-- <p>Paquetes</p> -->
             <b-form-input
               type="number"
               placeholder="#"
@@ -134,16 +134,15 @@
               class="ml-1"
               size="sm"
               v-model="identificador"
-            ></b-form-input>de
+            ></b-form-input>/
             <b-form-input
               style="max-width: 3rem"
               type="number"
               size="sm"
               placeholder="cantidad"
+              @click="save()"
               v-model="cantidad"
             ></b-form-input>
-          </b-row>
-          <b-row>
           </b-row>
         <b-row class="justify-content-center">
           <b-button-group>

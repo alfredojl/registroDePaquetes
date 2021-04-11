@@ -2,7 +2,6 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
 import Login from "../views/Login.vue";
-import Validar from "../views/Validar.vue";
 import Registrar from "../views/Registrar.vue";
 import Asignar from "../views/Asignar.vue";
 import Capturar from "../views/Capturar.vue";
@@ -13,6 +12,7 @@ import AltaFolio from '../views/AltaFolio';
 import Lotes from '../views/Lotes';
 import Reporte from '../views/Reporte';
 import ValidarInfoFolio from '../views/ValidarInfoFolio';
+import Insertar from '../views/Insertar.vue';
 // import CrearUsuario from "../views/CrearUsuario.vue";
 
 Vue.use(VueRouter);
@@ -133,6 +133,15 @@ const routes = [{
         path: '/editar',
         name: 'Editar',
         component: Editar,
+        beforeEnter: (to, from, next) => {
+            if (isAuthenticated() && isAuth()) next();
+            else next(false);
+        },
+    },
+    {
+        path: '/insertar',
+        name: 'Insertar',
+        component: Insertar,
         beforeEnter: (to, from, next) => {
             if (isAuthenticated() && isAuth()) next();
             else next(false);

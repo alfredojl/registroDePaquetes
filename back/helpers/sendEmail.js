@@ -6,10 +6,10 @@ const cron = require('node-cron')
 const moment = require('moment');
 moment.locale('es-mx')
 
-// const yesterdayF = new Date(moment('2021-04-02').hours(0).minutes(0).seconds(0).format());
-// const yesterdayL = new Date(moment('2021-04-02').hours(23).minutes(59).seconds(59).format());
-const yesterdayL = new Date(moment().subtract(1, 'days').hours(23).minutes(59).seconds(59).format());
-const yesterdayF = new Date(moment().subtract(1, 'days').hours(0).minutes(0).seconds(0).format());
+const yesterdayF = new Date(moment('2021-03-31').hours(0).minutes(0).seconds(0).format());
+const yesterdayL = new Date(moment('2021-03-31').hours(23).minutes(59).seconds(59).format());
+// const yesterdayL = new Date(moment().subtract(1, 'days').hours(23).minutes(59).seconds(59).format());
+// const yesterdayF = new Date(moment().subtract(1, 'days').hours(0).minutes(0).seconds(0).format());
 
 console.log(yesterdayF, yesterdayL);
 
@@ -100,7 +100,7 @@ Saludos.`,
 
 getPaquetes();
 
-sendEmail();
+// sendEmail();
 
 // const exec = async() => {
 //     getPaquetes();

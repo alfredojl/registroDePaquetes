@@ -157,53 +157,6 @@ export default {
     },
   },
   methods: {
-    // async search() {
-    //   this.aux = JSON.parse(localStorage.getItem('paquete'));
-    //   // this.noPaquete = aux.noPaquete;
-    //   // this.bis = aux.bis;
-    //   // this.folioInicio = aux.folioInicio;
-    //   // this.folioFin = aux.folioFin;
-    //   // console.log(aux);
-    //   // let dia = aux.fechaExpediente.slice(8,10);
-    //   // let mes = aux.fechaExpediente.slice(5,7);
-    //   // this.fechaExpediente = dia + '/' + mes + '/' + aux.fechaExpediente.slice(0, 4)
-    //   if (!aux)
-    //     return Swal.fire("No se ingresó un paquete.", "Por favor, regrese a 'Búsqueda', busque un paquete y presione 'Editar'.", "info")
-    //     .then(res => {
-    //       if(res)
-    //         this.$router.push("/home");
-    //     });
-    //     this.noPaquete = aux.noPaquete;
-    //   await axios
-    //     .get(`${config.api}/paquete`, {
-    //       params: {
-    //         noPaquete: aux.noPaquete,
-    //         bis: aux.bis,
-    //         folioInicio: aux.folioInicio
-    //       },
-    //     })
-    //     .then((res) => {
-    //       if (res.data.paquete.length == 0)
-    //         return Swal.fire(
-    //           `No se encontró el paquete ${this.noPaquete}.`,
-    //           "",
-    //           "error"
-    //         );
-    //       this.id = res.data.paquete[0]._id;
-    //       this.folioInicio = res.data.paquete[0].folioInicio;
-    //       this.folioFin = res.data.paquete[0].folioFin;
-    //       this.fechaExpediente = res.data.paquete[0].fechaExpediente
-    //         ? new Date(res.data.paquete[0].fechaExpediente)
-    //             .toISOString()
-    //             .slice(0, 10)
-    //         : null;
-    //     })
-    //     .catch((error) => {
-    //       if (error) {
-    //         console.log(error);
-    //       }
-    //     });
-    // },
     fill(paquete){
       this.paquete = paquete;
       this.paquete.fechaExpediente = paquete.fechaExpediente
@@ -213,7 +166,7 @@ export default {
             : null;
       this.$bvModal.hide("packages");
     },
-    search() {
+    async search() {
       // this.limpiar();
       if (!this.noPaquete)
         return Swal.fire("Ingresa un número de paquete", "", "info");
@@ -221,7 +174,7 @@ export default {
         noPaquete: this.noPaquete,
         bis: this.bis,
       };
-      axios
+      await axios
         .get(`${config.api}/paquete`, {
           params,
         })

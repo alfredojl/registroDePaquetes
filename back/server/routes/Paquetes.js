@@ -42,6 +42,79 @@ app.get('/paquete', (req, res) => {
     })
 });
 
+app.post('/insert', async(req, res) => {
+    let body = req.body.data;
+    let noPaquete = body.noPaquete;
+    let folioInicio = body.folioInicio;
+    let bis = body.bis;
+    let identificador = body.identificador;
+    // res.json({
+    //     ok: true,
+    //     paquete: {
+    //         noPaquete: 17
+    //     }
+    // })
+    await Paquete.find({ noPaquete, bis, folioInicio, identificador }, async(err, paqueteFinded) => {
+        if(err) return res.status(500).json({
+            ok: false,
+            err
+        })
+        if(paqueteFinded.length > 0)
+            return res.json({
+                ok: false,
+                message: `El paquete ${noPaquete} ya cuenta con un registro ${paqueteFinded[0].cantidad ? identificador + '/' + paqueteFinded[0].cantidad : 'sin partes (n/n)'}. Verifique la información.`
+            });
+        else
+            await Folio.find({ noPaquete, bis }, async(err, foliosFinded) => {
+                if(err) return res.status(500).json({
+                    ok: false,
+                    message: err
+                });
+                if(foliosFinded.length > 0){
+                    if(foliosFinded.bis)
+                        return res.json({
+                            ok: false,
+                            message: `Ya existe el paquete ${noPaquete} como BIS.`
+                        })
+                    return res.json({
+                        ok: false,
+                        message: `Ya existe el paquete ${noPaquete} en el apartado de folios.`
+                    })
+                }
+                await Paquete.create(body, async(err, paqueteDB) => {
+                    if(err) return res.status(500).json({
+                        ok: false,
+                        message: err
+                    });
+
+                    let folios = [];
+                    for (let i = body.folioInicio; i <= body.folioFin; i++) {
+                        let folio = {
+                            folio: i,
+                            noPaquete: body.noPaquete,
+                            bis
+                        }
+                        folios.push(folio);
+                    };
+
+                    await Folio.insertMany(folios, (err, resultado) => {
+                        if (err) {
+                            Paquete.remove({ noPaquete: body.noPaquete });
+                            return res.status(500).json({
+                                ok: false,
+                                err
+                            });
+                        }
+                    });
+                    return res.json({
+                        ok: true,
+                        paquete: paqueteDB
+                    })
+                })
+            })
+    })
+})
+
 app.post('/paquete', async(req, res) => {
     let body = req.body.data;
     let noPaquete = body.noPaquete;

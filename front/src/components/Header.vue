@@ -6,14 +6,14 @@
 
     <b-collapse id="nav-collapse" is-nav>
       <b-navbar-nav>
-        <b-nav-item to="home" :disabled="($route.path == '/home')">Buscar</b-nav-item>
-        <b-nav-item to="registrar" :disabled="($route.path == '/registrar')">Registrar</b-nav-item>
-        <b-nav-item to="validar" :disabled="($route.path == '/validar')">Validar</b-nav-item>
-        <b-nav-item to="capturar" :disabled="($route.path == '/capturar')">Capturar</b-nav-item>
-        <b-nav-item to="asignar" :disabled="($route.path == '/asignar')">Asignar</b-nav-item>
-        <b-nav-item to="lotes" :disabled="($route.path == '/lotes')">Lotes</b-nav-item>
-        <b-nav-item to="editar" :disabled="($route.path == '/editar')">Editar</b-nav-item>
-        <b-nav-item to="reporte" :disabled="($route.path == '/reporte')">Reporte</b-nav-item>
+        <b-nav-item to="home" :disabled="($route.path == '/home')"><span :class="$route.path == '/home' ? 'bg-light badge p-2 rounded-pill text-dark' : 'text-white'">Buscar</span></b-nav-item>
+        <b-nav-item to="registrar" :disabled="($route.path == '/registrar')"><span :class="$route.path == '/registrar' ? 'bg-light badge p-2 rounded-pill text-dark' : 'text-white'">Registrar</span></b-nav-item>
+        <b-nav-item to="editar" :disabled="($route.path == '/editar')"><span :class="$route.path == '/editar' ? 'bg-light badge p-2 rounded-pill text-dark' : 'text-white'">Editar</span></b-nav-item>
+        <b-nav-item to="insertar" :disabled="($route.path == '/insertar')"><span :class="$route.path == '/insertar' ? 'bg-light badge p-2 rounded-pill text-dark' : 'text-white'">Insertar</span></b-nav-item>
+        <b-nav-item to="validar" :disabled="($route.path == '/validar')"><span :class="$route.path == '/validar' ? 'bg-light badge p-2 rounded-pill text-dark' : 'text-white'">Validar</span></b-nav-item>
+        <!-- <b-nav-item to="capturar" :disabled="($route.path == '/capturar')"><span :class="$route.path == '/capturar' ? 'bg-light badge p-2 rounded-pill text-dark' : 'text-white'">Capturar</span></b-nav-item> -->
+        <!-- <b-nav-item to="asignar" :disabled="($route.path == '/asignar')"><span :class="$route.path == '/asignar' ? 'bg-light badge p-2 rounded-pill text-dark' : 'text-white'">Asignar</span></b-nav-item> -->
+        <b-nav-item to="lotes" :disabled="($route.path == '/lotes')"><span :class="$route.path == '/lotes' ? 'bg-light badge p-2 rounded-pill text-dark' : 'text-white'">Lotes</span></b-nav-item>
       </b-navbar-nav>
 
       <b-navbar-nav class="ml-auto">
