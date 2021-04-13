@@ -204,15 +204,28 @@ Lider de equipo: ${this.verificador ? this.verificador : "Sin asignar"}`
         })
         .then((res) => {
           this.folios = res.data.folios;
-          this.folios.forEach((el, index) => {
+          let total = 0;
+          this.folios = res.data.folios.map((el, index) => {
+            total += el.fojas;
+            el.fojas = el.fojas.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
             if (el.estado == "Faltante") {
-              this.folios[index].tomos = "********";
-              this.folios[index].referencias = "********";
+              this.folios[index].tomo = "********";
+              this.folios[index].estado = "********";
+              this.folios[index].fojas = "********";
             }
             if (el.estado == "Urgente") {
-              this.folios[index].tomos = "=========";
-              this.folios[index].referencias = "==========";
+              this.folios[index].tomo = "********";
+              this.folios[index].estado = "********";
+              this.folios[index].fojas = "********";
             }
+            return el;
+          });
+          total = total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+          this.folios.push({
+            folio: 'Total de fojas',
+            tomo: '',
+            estado: '',
+            fojas: total
           });
           this.qr();
           // this.folios.forEach((el, index) => {

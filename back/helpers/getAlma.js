@@ -8,7 +8,8 @@ const list = require('./alma05-09_04.json');
 
 const getAlma = async() => {
     await mongoose.connect(
-        "mongodb://localhost:27017/registro", {
+  "mongodb://production:production$@172.26.60.61:27017/registro?authSource=admin", {
+    // "mongodb://localhost:27017/registro", {
             useNewUrlParser: true,
             useUnifiedTopology: true,
             useCreateIndex: true,
@@ -22,8 +23,10 @@ const getAlma = async() => {
     console.log(lunes, martes);
     await Folio.find({ folio: { $in: list } }, (err, foliosFinded) => {
         if(err) throw new Error(err);
+        console.log('Cantidad folios encontrados: ', foliosFinded.length);
         let folios = foliosFinded.map(el => {
             return { 
+                Paquete: el.noPaquete || 'N/A',
                 Folio: el.folio,
                 Tomo: el.tomo ? el.tomo : '',
                 Expediente: el.expediente,
@@ -36,7 +39,7 @@ const getAlma = async() => {
         libro = xlsx.utils.book_new();
         xlsx.utils.book_append_sheet(libro, doc, "Hoja 1");
         xlsx.writeFile(libro, `./folios${lunes}_${martes}.xlsx`)
-        console.log(`[ folios${lunes}_${martes}.xlsx ] created.`)
+        console.log(`[ foliosUrgentes${lunes}_${martes}.xlsx ] created.`)
     })
     // process.exit();
 }
