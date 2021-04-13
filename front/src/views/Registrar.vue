@@ -140,7 +140,7 @@
               type="number"
               size="sm"
               placeholder="cantidad"
-              @click="save()"
+              @keypress.enter="save()"
               v-model="cantidad"
             ></b-form-input>
           </b-row>
@@ -258,7 +258,9 @@ export default {
             cancelButtonColor: '#FF9100'
           })
           .then(async(res) => {
-            if(res.value) {
+            if(res.isDenied)
+              return;
+            if(res.isConfirmed) {
               let fechaAlta = Date.now();
               let data = {
                 noPaquete: this.noPaquete,

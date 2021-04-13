@@ -76,9 +76,10 @@
             size="sm"
             placeholder="cantidad"
             v-model="cantidad"
-            @click="save()"
+            @keypress.enter="save()"
           ></b-form-input>
         </b-row>
+        <b-btn-group></b-btn-group>
       </b-form>
   </div>
     </div>
@@ -120,6 +121,10 @@ export default {
             showDenyButton: true
         })
         .then( async(res) => {
+          if(!res.value)
+            return;
+          if(this.noPaquete.length == 0 || !this.folioInicio || !this.folioFin)
+            return Swal.fire('¡Atención!', 'Tienes que poner un número de paquete.', 'info');
             let data = {
                 noPaquete: this.noPaquete,
                 folioInicio: this.folioInicio,

@@ -17,8 +17,7 @@ const pool = mariadb.createPool({
 });
 
 mongoose.connect(
-  "mongodb://production:production$@172.26.60.61:27017/registro?authSource=admin",
-  {
+  "mongodb://production:production$@172.26.60.61:27017/registro?authSource=admin", {
     // 'mongodb://localhost:27017/registro', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -31,7 +30,7 @@ mongoose.connect(
   }
 );
 const subida = async () => {
-  let workbook = xlsx.readFile("./lote9.11.12.xlsx");
+  let workbook = xlsx.readFile("./subirUrgentesDeUrgentes.xlsx");
   let heads = workbook.SheetNames;
   // console.log(xlsx.utils.sheet_to_json(workbook.Sheets[heads[0]], { skipHeader: false }).slice(0, 5));
   let index = 0;
@@ -61,9 +60,9 @@ const subida = async () => {
     let tomo = null;
     let nh = el.Imgs;
     folio = folio.split("_");
-    if (folio.length == 1) {
+    if (folio.length == 2) {
       folio = parseInt(folio);
-    } else if (folio.length > 1) {
+    } else if (folio.length > 2) {
       tomo = folio[1];
       folio = parseInt(folio[0]);
     }

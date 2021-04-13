@@ -81,30 +81,25 @@
     </div>
     <b-row class="mt-3 justify-content-center">
       <b-col cols="auto">
-      <b-input-group
-        prepend="Lote"
-        v-show="give == 'lote' && add == 'search'"
-        class=""
-      >
-        <b-form-input
-          type="number"
-          v-model="noLote"
-          @keypress.enter="search"
-        ></b-form-input>
-        <b-input-group-prepend>
-          <b-button variant="secondary" @click="search()">Buscar</b-button>
-        </b-input-group-prepend>
-      </b-input-group>
+        <b-input-group
+          prepend="Lote"
+          v-show="give == 'lote' && add == 'search'"
+          class=""
+        >
+          <b-form-input
+            type="number"
+            v-model="noLote"
+            @keypress.enter="search"
+          ></b-form-input>
+          <b-input-group-prepend>
+            <b-button variant="secondary" @click="search()">Buscar</b-button>
+          </b-input-group-prepend>
+        </b-input-group>
       </b-col>
     </b-row>
     <b-row class="justify-content-center">
-      <b-col class="col-auto">
-        <b-input-group
-          prepend="Paquete"
-          v-show="give == 'paquete' && add == 'search'"
-          class=""
-        >
-          <!-- <b-form-input
+      <!-- <b-col class="col-auto"> -->
+      <!-- <b-form-input
             type="number"
             v-model="noPaquete"
             @keypress.enter="
@@ -112,28 +107,25 @@
               search();
             "
           ></b-form-input> -->
-          <!-- <b-input-group prepend="Paquete" class=""> -->
-          <b-form-textarea
-            type="textarea"
-            ref="folio"
-            @keypress.enter="busca"
-            size="sm"
-            v-model="noPaquete"
-            no-resize
-          ></b-form-textarea>
-          <!-- </b-input-group> -->
-          <b-input-group-prepend>
-            <b-button
-              variant="secondary"
-              @click="
-                noLote = null;
-                search();
-              "
-              >Buscar</b-button
-            >
-          </b-input-group-prepend>
-        </b-input-group>
-      </b-col>
+      <!-- <b-input-group prepend="Paquete" class=""> -->
+      <b-input-group class="" style="max-width: 20rem">
+        <b-form-input
+          @keypress.enter="busca"
+          size="sm"
+          v-model="noPaquete"
+          no-resize
+        ></b-form-input>
+        <!-- </b-input-group> -->
+        <b-button
+          variant="secondary"
+          @click="
+            noLote = null;
+            search();
+          "
+          >Buscar</b-button
+        >
+        <!-- </b-col> -->
+      </b-input-group>
     </b-row>
     <b-row class="mt-2 justify-content-center">
       <b-col cols="auto">
@@ -155,8 +147,11 @@
         >
       </b-col>
       <b-col cols="auto">
-        <b-button v-show="give && add == 'search'" variant="primary" class="p-2"
-        @click="addDateD"
+        <b-button
+          v-show="give && add == 'search'"
+          variant="primary"
+          class="p-2"
+          @click="addDateD"
           >Devolver</b-button
         >
       </b-col>
@@ -165,8 +160,8 @@
           v-show="give && add == 'search'"
           variant="success"
           class="p-2"
-          @click="[aValidar = true, validaInit()]"
-        >Validar</b-button
+          @click="[(aValidar = true), validaInit()]"
+          >Validar</b-button
         >
       </b-col>
       <b-col cols="auto">
@@ -175,67 +170,80 @@
           variant="success"
           class="p-2"
           @click="save"
-        >Guardar</b-button
+          >Guardar</b-button
         >
       </b-col>
     </b-row>
     <b-row v-show="aValidar" class="justify-content-center">
       <b-col cols="auto">
         <b-form-textarea
-            type="textarea"
-            ref="folio"
-            size="sm"
-            class="m-2"
-            v-model="noPaquete"
-            no-resize
-            @keypress.enter="valida"
-          ></b-form-textarea>
+          type="textarea"
+          ref="folio"
+          size="sm"
+          class="m-2"
+          v-model="noPaquete"
+          no-resize
+          @keypress.enter="valida"
+        ></b-form-textarea>
       </b-col>
     </b-row>
     <div v-if="!spinner">
       <b-row class="justify-content-center">
-          <table id="tabla" v-show="paquetes.length > 0">
-            <thead>
-              <th>#</th>
-              <th>Lote</th>
-              <th>Paquete</th>
-              <th>Fecha entregado</th>
-              <th>Fecha devolución</th>
-              <th v-show="aValidar">Validar</th>
-            </thead>
-            <tbody
-              class="text-center"
-              v-for="(item, index) in paquetes"
-              :key="index"
-            >
-              <tr>
-                <td>{{ index + 1 }}</td>
-                <td>{{ item.noLote }}</td>
-                <td>
-                  {{ item.noPaquete }}{{ item.bis ? " BIS" : null
-                  }}{{
-                    item.cantidad
-                      ? " " + item.identificador + "/" + item.cantidad
-                      : null
-                  }}
-                </td>
-                <td>{{ item.fechaEntregado }}</td>
-                <td>{{ item.fechaDevolucion }}</td>
-                <td v-show="aValidar"><b-icon v-show="!item.status" icon="exclamation-circle-fill" variant="danger"></b-icon>
-                  <b-icon v-show="item.status" icon="check-circle-fill" variant="success"></b-icon></td>
-                <!-- <td><b-icon v-show="!status[index]" icon="exclamation-circle-fill" variant="danger"></b-icon>
+        <table id="tabla" v-show="paquetes.length > 0">
+          <thead>
+            <th>#</th>
+            <th>Lote</th>
+            <th>Paquete</th>
+            <th>Fecha entregado</th>
+            <th>Fecha devolución</th>
+            <th v-show="aValidar">Validar</th>
+          </thead>
+          <tbody
+            class="text-center"
+            v-for="(item, index) in paquetes"
+            :key="index"
+          >
+            <tr>
+              <td>{{ index + 1 }}</td>
+              <td>{{ item.noLote }}</td>
+              <td>
+                {{ item.noPaquete }}{{ item.bis ? " BIS" : null
+                }}{{
+                  item.cantidad
+                    ? " " + item.identificador + "/" + item.cantidad
+                    : null
+                }}
+              </td>
+              <td>{{ item.fechaEntregado }}</td>
+              <td>{{ item.fechaDevolucion }}</td>
+              <td v-show="aValidar">
+                <b-icon
+                  v-show="!item.status"
+                  icon="exclamation-circle-fill"
+                  variant="danger"
+                ></b-icon>
+                <b-icon
+                  v-show="item.status"
+                  icon="check-circle-fill"
+                  variant="success"
+                ></b-icon>
+              </td>
+              <!-- <td><b-icon v-show="!status[index]" icon="exclamation-circle-fill" variant="danger"></b-icon>
                   <b-icon v-show="status[index]" icon="check-circle-fill" variant="success"></b-icon></td> -->
-                <td><b-button
+              <td>
+                <b-button
                   variant="outline-secondary"
                   size="sm"
                   pill
                   v-show="add != 'search'"
                   @click="elimina(index)"
-                ><b-icon icon="dash"></b-icon></b-button></td>
-              </tr>
-            </tbody>
-          </table>
-          <!-- <b-table
+                  ><b-icon icon="dash"></b-icon
+                ></b-button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <!-- <b-table
             id="tabla"
             class="mt-3 text-center"
             style="width: 25rem"
@@ -276,7 +284,7 @@ import Swal from "sweetalert2";
 import moment from "moment";
 import { IconsPlugin } from "bootstrap-vue";
 
-moment.locale('es-mx');
+moment.locale("es-mx");
 
 export default {
   computed: {},
@@ -348,7 +356,11 @@ export default {
     },
     endQR() {
       console.log(this.noPaquete);
-      if (this.noPaquete.includes("equipo") || this.noPaquete.includes('Preparador') || this.noPaquete.includes('::END::')) {
+      if (
+        this.noPaquete.includes("equipo") ||
+        this.noPaquete.includes("Preparador") ||
+        this.noPaquete.includes("::END::")
+      ) {
         return true;
       }
       return false;
@@ -382,25 +394,29 @@ export default {
       //     });
     },
     validaInit() {
-      this.paquetes.forEach(el => {
-        this.list.push(el.noPaquete)
+      this.paquetes.forEach((el) => {
+        this.list.push(el.noPaquete);
       });
     },
     valida() {
-      if(this.endQR()) {
+      if (this.endQR()) {
         let sob;
-        if(this.noPaquete[0] == '\n')
+        if (this.noPaquete[0] == "\n")
           this.noPaquete = this.noPaquete.slice(1, this.noPaquete.length);
-        this.noPaquete = this.noPaquete.split('\n').shift();
+        this.noPaquete = this.noPaquete.split("\n").shift();
         sob = true;
-        this.paquetes.forEach(el => {
-          if(el.noPaquete.toString() == this.noPaquete.split(' ')[0]){
-            el.status = true
+        this.paquetes.forEach((el) => {
+          if (el.noPaquete.toString() == this.noPaquete.split(" ")[0]) {
+            el.status = true;
             sob = false;
           }
-        })
-        if(sob)
-          Swal.fire('¡Caramba!', `Paquete ${this.noPaquete} no pertenece al lote ${this.noLote}.`, 'warning')
+        });
+        if (sob)
+          Swal.fire(
+            "¡Caramba!",
+            `Paquete ${this.noPaquete} no pertenece al lote ${this.noLote}.`,
+            "warning"
+          );
         this.noPaquete = null;
         this.$refs.folio.focus();
       }
@@ -422,8 +438,8 @@ export default {
         this.currentPaqs.push(this.noPaquete);
         this.noPaquete = this.noPaquete.split(" ");
         console.log(this.noPaquete);
-        if(this.noPaquete.length < 3){
-          this.noPaquete.push('')
+        if (this.noPaquete.length < 3) {
+          this.noPaquete.push("");
         }
         if (this.noPaquete[1].toUpperCase() == "BIS") {
           paquete.bis = true;
@@ -442,34 +458,39 @@ export default {
       }
     },
     download() {
-      let doc = new jspdf('p', 'mm', 'a4');
+      let doc = new jspdf("p", "mm", "a4");
       // autotable(doc, { html: '#tabla' })
-      doc.setFontSize(8)
+      doc.setFontSize(8);
       // doc.text('Título sobre la empresa, quizá (?).', 5,15)
-      doc.text(`${moment().format('LLLL')}`, 150, 10)
-      doc.text('____________________________', 10, 280)
-      doc.text('Nombre y firma de entrega.', 15,285)
-      doc.text('____________________________', 150, 280)
-      doc.text('Nombre y firma de recepción.', 155,285)
+      doc.text(`${moment().format("LLLL")}`, 150, 10);
+      doc.text("____________________________", 10, 280);
+      doc.text("Nombre y firma de entrega.", 15, 285);
+      doc.text("____________________________", 150, 280);
+      doc.text("Nombre y firma de recepción.", 155, 285);
       // doc.text('Título sobre la empresa, quizá (?).', 5,15)
       // doc.text('Título sobre la empresa, quizá (?).', 5,15)
       autotable(doc, {
         // head: [["#", "Lote", "Paquete", "Fecha entregado"]],
-        html: '#tabla',
+        html: "#tabla",
         columns: [
-          { title: "#", dataKey: '#' },
-          { title: "Lote", dataKey: 'noLote' },
-          { title: "Paquete", dataKey: 'noPaquete' },
-          { title: "Fecha de entrega", dataKey: 'fechaEntregado' },
-          { title: "Fecha de devolución", dataKey: 'fechaDevolucion' },
-          ],
-          // margin: {top: 10, bottom: 10, right: 10, left: 10},
-          styles: {fontSize: 8, valing: 'center', halign: 'center', cellPadding: 0.5},
-          margin: {left: 50},
-          tableWidth: 95,
-          columnWidth: 'wrap',
-          showHead: 'everyPage',
-          theme: 'striped',
+          { title: "#", dataKey: "#" },
+          { title: "Lote", dataKey: "noLote" },
+          { title: "Paquete", dataKey: "noPaquete" },
+          { title: "Fecha de entrega", dataKey: "fechaEntregado" },
+          { title: "Fecha de devolución", dataKey: "fechaDevolucion" },
+        ],
+        // margin: {top: 10, bottom: 10, right: 10, left: 10},
+        styles: {
+          fontSize: 8,
+          valing: "center",
+          halign: "center",
+          cellPadding: 0.5,
+        },
+        margin: { left: 50 },
+        tableWidth: 95,
+        columnWidth: "wrap",
+        showHead: "everyPage",
+        theme: "striped",
         // headStyles:
       });
       // doc.autotable({
@@ -497,9 +518,8 @@ export default {
           });
         })
         .catch((err) => {
-          if (err.response)
-            console.log(err.response);
-          Swal.fire('¡Error!', 'Algo salió mal.', 'error');
+          if (err.response) console.log(err.response);
+          Swal.fire("¡Error!", "Algo salió mal.", "error");
         });
     },
     async search() {
