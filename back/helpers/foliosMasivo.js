@@ -30,7 +30,7 @@ mongoose.connect(
   }
 );
 const subida = async () => {
-  let workbook = xlsx.readFile("./listaALMA.xlsx");
+  let workbook = xlsx.readFile("./noProcesados.xlsx");
   let heads = workbook.SheetNames;
   // console.log(xlsx.utils.sheet_to_json(workbook.Sheets[heads[0]], { skipHeader: false }).slice(0, 5));
   let index = 0;
@@ -76,7 +76,7 @@ const subida = async () => {
       `${++index} de ${total}`.magenta
     );
 
-    var encontrado = await Folio.find({ folio, tomo, noPaquete: el.Paquete });
+    var encontrado = await Folio.find({ folio, tomo, noPaquete: el.Paquete || null });
     if (!encontrado) {
       throw new Error('"encontrado" vacío...'.red);
     } else if (encontrado.length == 0) {
@@ -186,6 +186,10 @@ const subida = async () => {
   console.log(
     "Folios actualizados: ".brightCyan,
     colors.magenta(foliosUpdated)
+  );
+  console.log(
+    "Folios creados: ".brightCyan,
+    colors.magenta(foliosCreated)
   );
   console.log(
     "Errores: ",

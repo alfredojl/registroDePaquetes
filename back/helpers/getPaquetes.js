@@ -4,7 +4,7 @@ const xlsx = require("xlsx");
 
 const reporte800 = require('./reporte800.json');
 // const name = 'registro30.03';
-const nameAdrian = 'foliosLote31';
+const nameAdrian = 'foliosLote33';
 
 const moment = require('moment');
 moment.locale('es-mx')
@@ -19,7 +19,7 @@ const getPaquetes = async() => {
         async(err, res) => {
 
 
-            let regex = '2021-04-09';
+            let regex = '2021-04-12';
             let day = moment(regex).hours(0).minutes(0).seconds(0).format();
 
             if (err) throw err;
@@ -59,8 +59,8 @@ const getPaquetes = async() => {
             xlsx.utils.book_append_sheet(libro, doc, nameAdrian);
             xlsx.writeFile(libro, `./${nameAdrian}.xlsx`);
             console.log(`[${nameAdrian}.xlsx] created.`)
-            // await archivo.countDocuments({ noPaquete: { $in: lista } }, async(err, cols) => {
-            //     console.log(cols);
+            await archivo.countDocuments({ noPaquete: { $in: lista } }, async(err, cols) => {
+                console.log(cols);
             //     // await archivo.find({ folio: { $in: reporte800 } }).sort({ folio: 1 }).toArray(async(err, cols) => {
             //     // await archivo.find({ $or: [ 
             //     //     { FechaProcesado: { $regex: '26/12/2020' }},
@@ -70,7 +70,7 @@ const getPaquetes = async() => {
             //     //     return { Folio: el.Folio, Tomo: el.Tomo, Toca: el.Toca,
             //     //         Concatenado: el.Tomo ? el.Folio + '-' + el.Tomo : el.Folio
             //     //     }
-            // })
+            })
             //     // **************************************************************************************************************
             //     // Para paquetes.
             // const archivo = res.db("registro").collection("paquetes");
