@@ -23,24 +23,31 @@ moment.locale('es-mx');
 const getFolio = async(folio, tomo) => {
 
     // if (tomo)
-    return await Folio.findOne({ folio, tomo })
+    return await Folio.find({ folio, tomo })
         .then(consult => {
-            if (consult && !consult.rep && consult.validado === true && consult.procesado !== false)
-                return consult
-            else if (!consult) {
-                fs.appendFileSync(path.resolve(os.homedir(), 'LOG.txt'), `${folio} ${tomo ? 'Tomo ' + tomo : ''} no se encontró en la BD de registro.\t [${moment().format('ddd, D MMM Y, HH:mm:ss')}]\n`, 'utf8')
-                consult = {}
-                consult.encontrado = false;
-                return consult;
+            if(consult.length > 1) {
+                fs.appendFileSync(path.resolve('reporteDuplicados.csv'), `${folio},${tomo ? 'Tomo ' + tomo : ''}\n`, 'utf8')
+                consult[0] = {}
+                consult[0].notProcess = true;
+                return consult[0];
             } else {
-                consult = {}
-                consult.notProcess = true;
-                return consult;
-            }
+                if (consult.length == 0){
+                    fs.appendFileSync(path.resolve(os.homedir(), 'LOG.txt'), `${folio} ${tomo ? 'Tomo ' + tomo : ''} no se encontró en la BD de registro.\t [${moment().format('ddd, D MMM Y, HH:mm:ss')}]\n`, 'utf8')
+                    consult[0] = {}
+                    consult[0].encontrado = false;
+                    return consult[0];
+                } else if (consult[0] && !consult[0].rep && consult[0].validado === true && consult[0].procesado !== false) {
+                    return consult[0]
+                } else {
+                    consult[0] = {}
+                    consult[0].notProcess = true;
+                    return consult[0];
+                }
+        }
         })
         // await Folio.findOne({ folio })
-        //     .then(consult => {
-        //         console.log(consult);
+        //     .then(consult[0] => {
+        //         console.log(consult[0]);
         //     })
 };
 

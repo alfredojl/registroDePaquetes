@@ -19,6 +19,7 @@ const getList = async() => {
     if (archs.length == 0)
         return console.log(symbols.info, 'Nada por procesar'.bold.cyan);
     else {
+        // archs = archs.slice(0,1);
         console.log(symbols.info, `Procesando ${archs.length} folios...`.bold.bgCyan);
     }
 

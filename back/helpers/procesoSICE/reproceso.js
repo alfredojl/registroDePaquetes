@@ -26,7 +26,7 @@ const configSFTP = {
 const pathSFTP = '/HD4/repository7/documentos/digitalizacion/'
 
 const reproceso = async() => {
-    console.log('Iniciando...'.blue)
+    console.log('Iniciando...\t\t\t\tFolio\tTomo\tImgs'.blue)
     var Id;
     const conn = await pool.getConnection((err, connection) => { if (err) console.log(err) });
     var archs = fs.readdirSync(ruta);
@@ -58,12 +58,12 @@ const reproceso = async() => {
                 Id = a[0] ? a[0].Id : null;
                 conn.release();
                 if(!Id){
-                    console.log(`${file}: \t\t${folio} ${tomo ? 'Tomo ' + tomo : ''}\t${nh} no está en SICE. ----> Error`.red);
+                    console.log(`${file}: \t\t\t${folio} ${tomo ? 'Tomo ' + tomo : ''}\t${nh} no está en SICE. ----> Error\t${++index} de ${archs.length}`.red);
                     fs.appendFileSync(path.join(ruta, 'NoSubido', 'reporte.csv'), `${file},,${folio},${tomo ? tomo : ''},${nh}\n`, 'utf8')
                     fs.renameSync(path.join(ruta, file), path.join(ruta, 'NoSubido', file));
                 }
                 else if (!nh) {
-                    console.log(`${file}: \t\t${folio} ${tomo ? 'Tomo ' + tomo : ''}\t${nh} sin número de imágenes. ----> Eror`.red);
+                    console.log(`${file}: \t\t${folio} ${tomo ? 'Tomo ' + tomo : ''}\t${nh} sin número de imágenes. ----> Error\t${++index} de ${archs.length}`.red);
                     fs.appendFileSync(path.join(ruta, 'Hecho', 'reporte.csv'), `${file},,${folio},${tomo ? tomo : ''},${nh},SIN HOJAS\n`, 'utf8')
                     fs.renameSync(path.join(ruta, file), path.join(ruta, 'Error', file));
                 } else {
