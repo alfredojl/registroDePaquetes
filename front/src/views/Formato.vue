@@ -13,123 +13,123 @@
 
     <!-- <br /> -->
     <b-row class="mt-4 justify-content-center">
-    <b-col cols="auto">
-      <table style="width: 30rem">
-        <tr>
-          <th class="">Nombre del preparador:</th>
-          <!-- <th class="renglon">{{ preparador }}</th>
+      <b-col cols="auto">
+        <table style="width: 30rem">
+          <tr>
+            <th class="">Nombre del preparador:</th>
+            <!-- <th class="renglon">{{ preparador }}</th>
         <th class="l">Verificador</th>
         <th class="checkes"></th>
         <th>Digitalizador</th> -->
-        </tr>
-        <tr>
-          <td class="l renglon">Paquete</td>
-          <td class="l">
-            {{ noPaquete }} {{ bis ? "BIS" : "" }}
-            {{ identificador ? identificador + "/" : "" }}{{ cantidad }}
-          </td>
-          <!-- <td class="l">Registro de datos</td>
+          </tr>
+          <tr>
+            <td class="l renglon">Paquete</td>
+            <td class="l">
+              {{ noPaquete }} {{ bis ? "BIS" : "" }}
+              {{ identificador ? identificador + "/" : "" }}{{ cantidad }}
+            </td>
+            <!-- <td class="l">Registro de datos</td>
         <td class="l"></td>
         <td class="l"></td> -->
-        </tr>
-        <tr>
-          <td class="l">Folio inicio</td>
-          <td class="l">{{ folioInicio }}</td>
-          <!-- <td class="l">Numero de hojas continuas</td>
+          </tr>
+          <tr>
+            <td class="l">Folio inicio</td>
+            <td class="l">{{ folioInicio }}</td>
+            <!-- <td class="l">Numero de hojas continuas</td>
         <td class="l"></td>
         <td class="l"></td> -->
-        </tr>
-        <tr>
-          <td class="l">Folio fin</td>
-          <td class="l">{{ folioFin }}</td>
-          <!-- <td class="l">Sin grapas</td> -->
-          <!-- <td class="l"></td>
+          </tr>
+          <tr>
+            <td class="l">Folio fin</td>
+            <td class="l">{{ folioFin }}</td>
+            <!-- <td class="l">Sin grapas</td> -->
+            <!-- <td class="l"></td>
         <td class="l"></td> -->
-        </tr>
-        <tr>
-          <td class="l">Fecha expediente</td>
-          <td class="l">{{ fechaExpediente }}</td>
-          <!-- <td class="l">Sin clips</td>
+          </tr>
+          <tr>
+            <td class="l">Fecha expediente</td>
+            <td class="l">{{ fechaExpediente }}</td>
+            <!-- <td class="l">Sin clips</td>
         <td class="l"></td>
         <td class="l"></td> -->
-        </tr>
-        <tr>
-          <td class="l">Con periódico</td>
-          <td class="l"></td>
-          <!-- <td class="l">Sin fojas dobladas</td>
+          </tr>
+          <tr>
+            <td class="l">Con periódico</td>
+            <td class="l"></td>
+            <!-- <td class="l">Sin fojas dobladas</td>
         <td class="l"></td>
         <td class="l"></td> -->
-        </tr>
-        <tr>
-          <td class="l">Papel cebolla</td>
-          <td class="l"></td>
-          <!-- <td class="l">Fojas con cinta</td>
+          </tr>
+          <tr>
+            <td class="l">Papel cebolla</td>
+            <td class="l"></td>
+            <!-- <td class="l">Fojas con cinta</td>
         <td class="l"></td>
         <td class="l"></td> -->
-        </tr>
-        <tr>
-          <td class="l">Tickets</td>
-          <td class="l"></td>
-          <!-- <td class="l">Con separador</td>
+          </tr>
+          <tr>
+            <td class="l">Tickets</td>
+            <td class="l"></td>
+            <!-- <td class="l">Con separador</td>
         <td class="l"></td>
         <td class="l"></td> -->
-        </tr>
-        <tr>
-          <td class="l">Observaciones</td>
-          <td class="l"></td>
-          <!-- <td class="l">Con acetato</td>
+          </tr>
+          <tr>
+            <td class="l">Observaciones</td>
+            <td class="l"></td>
+            <!-- <td class="l">Con acetato</td>
         <td class="l"></td>
         <td class="l"></td> -->
-        </tr>
-        <tr>
-          <td class="l">Dañados</td>
-          <td class="l"></td>
-          <!-- <td class="l">Registro doctos engrapados</td>
+          </tr>
+          <tr>
+            <td class="l">Dañados</td>
+            <td class="l"></td>
+            <!-- <td class="l">Registro doctos engrapados</td>
         <td class="l"></td>
         <td class="l"></td> -->
-        </tr>
-        <tr>
-          <td class="l">Mutilados</td>
-          <td class="l"></td>
-          <!-- <td class="l">Registro de observaciones</td>
+          </tr>
+          <tr>
+            <td class="l">Mutilados</td>
+            <td class="l"></td>
+            <!-- <td class="l">Registro de observaciones</td>
         <td class="l"></td>
         <td class="l"></td> -->
-        </tr>
-        <tr>
-          <td class="l">Texto borroso</td>
-          <td class="l"></td>
-          <!-- <td class="l"></td>
+          </tr>
+          <tr>
+            <td class="l">Texto borroso</td>
+            <td class="l"></td>
+            <!-- <td class="l"></td>
         <td class="l"></td>
         <td class="l"></td> -->
-        </tr>
-        <tr>
-          <td class="l">Texto ilegible</td>
-          <td class="l"></td>
-          <!-- <td class="l"></td>
+          </tr>
+          <tr>
+            <td class="l">Texto ilegible</td>
+            <td class="l"></td>
+            <!-- <td class="l"></td>
         <td class="l"></td>
         <td class="l"></td> -->
-        </tr>
-        <tr>
-          <td class="l">Manchados</td>
-          <td class="l"></td>
-          <!-- <td class="l"></td>
+          </tr>
+          <tr>
+            <td class="l">Manchados</td>
+            <td class="l"></td>
+            <!-- <td class="l"></td>
         <td class="l"></td>
         <td class="l"></td> -->
-        </tr>
-      </table>
-    </b-col>
-    <!-- <br /> -->
-    <b-col cols="auto">
-      <div class="mt-2 p-0">
-        <b-table
-          id="folios"
-          class="mt-3 text-center"
-          :items="folios"
-          :fields="headers"
-        >
-        </b-table>
-      </div>
-    </b-col>
+          </tr>
+        </table>
+      </b-col>
+      <!-- <br /> -->
+      <b-col cols="auto">
+        <div class="mt-2 p-0">
+          <b-table
+            id="folios"
+            class="mt-3 text-center"
+            :items="folios"
+            :fields="headers"
+          >
+          </b-table>
+        </div>
+      </b-col>
     </b-row>
   </div>
 </template>
@@ -190,7 +190,7 @@ Lider de equipo: ${this.verificador ? this.verificador : "Sin asignar"}`
           console.log(err);
         });
     },
-    getFolios() {
+    async getFolios() {
       if (!localStorage.noPaquete) this.spinner = false;
       let params = {
         folioInicio: this.folioInicio,
@@ -198,16 +198,23 @@ Lider de equipo: ${this.verificador ? this.verificador : "Sin asignar"}`
         noPaquete: this.noPaquete,
         bis: this.bis,
       };
-      axios
+      await axios
         .get(`${config.api}/folios`, {
           params,
         })
         .then((res) => {
           this.folios = res.data.folios;
+          this.folios.forEach((el) => {
+            el.tomo = parseInt(el.tomo) || "";
+          });
+          console.log(this.folios);
+          console.log(this.folios.sort((a, b) => a.tomo - b.tomo));
           let total = 0;
           this.folios = res.data.folios.map((el, index) => {
             total += el.fojas;
-            el.fojas = el.fojas.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            el.fojas = el.fojas
+              .toString()
+              .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             if (el.estado == "Faltante") {
               this.folios[index].tomo = "********";
               this.folios[index].estado = "********";
@@ -220,12 +227,12 @@ Lider de equipo: ${this.verificador ? this.verificador : "Sin asignar"}`
             }
             return el;
           });
-          total = total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+          total = total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
           this.folios.push({
-            folio: 'Total de fojas',
-            tomo: '',
-            estado: '',
-            fojas: total
+            folio: "Total de fojas",
+            tomo: "",
+            estado: "",
+            fojas: total,
           });
           this.qr();
           // this.folios.forEach((el, index) => {
