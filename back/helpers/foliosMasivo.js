@@ -17,8 +17,9 @@ const pool = mariadb.createPool({
 });
 
 mongoose.connect(
-  "mongodb://production:production$@172.26.60.61:27017/registro?authSource=admin", {
-    // 'mongodb://localhost:27017/registro', {
+  "mongodb://production:production$@172.26.60.61:27017/registro?authSource=admin",
+  // "mongodb://localhost:27017/registro",
+  {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,
@@ -30,7 +31,7 @@ mongoose.connect(
   }
 );
 const subida = async () => {
-  let workbook = xlsx.readFile("./noProcesados.xlsx");
+  let workbook = xlsx.readFile("./almayGerardo22-04.xlsx");
   let heads = workbook.SheetNames;
   // console.log(xlsx.utils.sheet_to_json(workbook.Sheets[heads[0]], { skipHeader: false }).slice(0, 5));
   let index = 0;
@@ -76,7 +77,11 @@ const subida = async () => {
       `${++index} de ${total}`.magenta
     );
 
-    var encontrado = await Folio.find({ folio, tomo, noPaquete: el.Paquete || null });
+    var encontrado = await Folio.find({
+      folio,
+      tomo,
+      noPaquete: el.Paquete || null,
+    });
     if (!encontrado) {
       throw new Error('"encontrado" vacío...'.red);
     } else if (encontrado.length == 0) {
@@ -187,10 +192,7 @@ const subida = async () => {
     "Folios actualizados: ".brightCyan,
     colors.magenta(foliosUpdated)
   );
-  console.log(
-    "Folios creados: ".brightCyan,
-    colors.magenta(foliosCreated)
-  );
+  console.log("Folios creados: ".brightCyan, colors.magenta(foliosCreated));
   console.log(
     "Errores: ",
     errors,

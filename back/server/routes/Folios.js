@@ -44,37 +44,49 @@ app.put("/foliosSICE", async (req, res) => {
     //     })
     let _id = bodi._id;
     // delete bodi._id;
-    console.log(bodi);
-    await Folio.findOne({ _id }, async (err, folioDB) => {
-      if (err) errors.push(err);
+    try {
+      let folioDB = await Folio.findOne({ _id });
       if (!folioDB) {
-        console.log(bodi);
         let folioAdded = await Folio.create(bodi);
-        if (!folioAdded) errors.push("No se agregó.");
-        else console.log(folioAdded);
+        foliosResultado.push(folioAdded);
+        console.log("added ", folioAdded);
       } else {
-        await Folio.updateOne(
-          { _id },
-          { $set: bodi },
-          {
-            new: true,
-          },
-          async (err, folioDB) => {
-            if (err) {
-              if (err) errors.push(err);
-            }
-            console.log(folioDB);
-            // if (!folioDB)
-            //   await Folio.create(folios[index], (err, folioCreated) => {
-            //     if (err) errors.push(err);
-            //     foliosResultado.push(folioCreated);
-            //   });
-            // else foliosResultado.push(folioDB);
-            // count++;
-          }
-        );
+        let folioUpdated = await Folio.updateOne({ _id }, bodi, { new: true });
+        foliosResultado.push(folioUpdated);
+        console.log("updated ", folioUpdated);
       }
-    });
+    } catch (err) {
+      errors.push(err);
+    }
+    // if (err) errors.push(err);
+    // if (!folioDB) {
+    //   console.log(bodi);
+    //   let folioAdded = await Folio.create(bodi);
+    //   if (!folioAdded) errors.push("No se agregó.");
+    //   else console.log(folioAdded);
+    // } else {
+    //   await Folio.updateOne(
+    //     { _id },
+    //     { $set: bodi },
+    //     {
+    //       new: true,
+    //     },
+    //     async (err, folioDB) => {
+    //       if (err) {
+    //         if (err) errors.push(err);
+    //       }
+    //       console.log(folioDB);
+    //       // if (!folioDB)
+    //       //   await Folio.create(folios[index], (err, folioCreated) => {
+    //       //     if (err) errors.push(err);
+    //       //     foliosResultado.push(folioCreated);
+    //       //   });
+    //       // else foliosResultado.push(folioDB);
+    //       // count++;
+    //     }
+    //   );
+    // }
+    // });
   }
   return res.json({
     ok: true,
@@ -293,7 +305,6 @@ app.put("/folios", async (req, res) => {
 app.delete("/tomo", async (req, res) => {
   let { _id } = req.body;
   let body = req.body;
-  console.log(_id);
   if (!_id)
     return res.json({
       ok: true,

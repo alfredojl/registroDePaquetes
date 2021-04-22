@@ -48,16 +48,16 @@
     </div>
     <b-overlay :show="over" blur="1rem" variant="transparent" rounded="lg">
       <template #overlay style="border: 3px solid black">
-    <b-progress
-      :precision="2"
-      :max="maxBar ? maxBar : '0'"
-      style="width: 25rem; heigh: 50rem !important"
-      class="mt-2"
-    >
-      <b-progress-bar :value="count">
-        {{ count }} de {{ maxBar ? maxBar : "0" }}
-      </b-progress-bar>
-    </b-progress>
+        <b-progress
+          :precision="2"
+          :max="maxBar ? maxBar : '0'"
+          style="width: 25rem; heigh: 50rem !important"
+          class="mt-2"
+        >
+          <b-progress-bar :value="count">
+            {{ count }} de {{ maxBar ? maxBar : "0" }}
+          </b-progress-bar>
+        </b-progress>
       </template>
       <b-col>
         <b-row class="justify-content-center">
@@ -74,6 +74,7 @@
                   <b-button-group class="col-auto">
                     <b-button
                       size="sm"
+                      style="width: 100%"
                       v-b-toggle="`folio-${dato.folio}-` + index"
                       :variant="`${dato.tomo ? 'outline-secondary' : 'info'}`"
                       >Folio {{ dato.folio }} {{ dato.tomo ? "Tomo " : ""
@@ -82,21 +83,21 @@
                     <b-button
                       class="p-1"
                       size="md"
-                      variant="link"
+                      variant="outline-success"
                       v-show="!dato.tomo"
                       @click="agregaTomo(dato.folio, index)"
                     >
-                      <b-icon-plus-circle> </b-icon-plus-circle>
+                      <b-icon-plus-square> </b-icon-plus-square>
                       <!--  <span>tomo</span> -->
                     </b-button>
                     <b-button
                       v-show="!dato.tomo"
-                      variant="link"
+                      variant="outline-danger"
                       class="p-1"
                       size="md"
                       @click="deleteTomo(index)"
                     >
-                      <b-icon-dash-circle></b-icon-dash-circle>
+                      <b-icon-dash-square> </b-icon-dash-square>
                     </b-button>
                   </b-button-group>
                 </div>
@@ -207,7 +208,9 @@
                           size="sm"
                         >
                           <template #first>
-                            <b-form-select-option :value="''">-- Seleccione una opción --</b-form-select-option>
+                            <b-form-select-option :value="''"
+                              >-- Seleccione una opción --</b-form-select-option
+                            >
                           </template>
                         </b-form-select>
                         <!-- <b-icon
@@ -240,8 +243,10 @@
                           size="sm"
                           text-field="name"
                         >
-                        <template #first>
-                            <b-form-select-option :value="null">-- Seleccione una opción --</b-form-select-option>
+                          <template #first>
+                            <b-form-select-option :value="null"
+                              >-- Seleccione una opción --</b-form-select-option
+                            >
                           </template>
                         </b-form-select>
                         <!-- <b-icon
@@ -334,7 +339,10 @@
         </b-row>
       </b-col>
     </b-overlay>
-    <div class="row mt-4 mb-5 justify-content-center" v-show="folios.length > 0">
+    <div
+      class="row mt-4 mb-5 justify-content-center"
+      v-show="folios.length > 0"
+    >
       <b-button-group size="sm" v-show="!over">
         <b-button variant="success" @click="save()"
           >Guardar todo validado</b-button
@@ -390,13 +398,59 @@ export default {
     await this.search();
   },
   methods: {
-    imprime(bla){
+    imprime(bla) {
       console.log(bla);
     },
     deleteTomo(index) {
-      if (!this.folios[index].tomos) return;
+      // Swal.fire({
+      //   title: "Eliminar tomo",
+      //   text: "¿Está seguro de que quiere eliminar el tomo?",
+      //   icon: "warning",
+      //   confirmButtonText: "Eliminar",
+      //   denyButtonText: "Cancelar",
+      //   showDenyButton: true,
+      // }).then(async (res) => {
+      //   if (res.isDenied) return;
+      //   else if (res.isConfirmed) {
+      //     await axios
+      //       .delete(`${config.api}/tomo`, {
+      //         data: this.folios[index],
+      //       })
+      //       .then(async (res) => {
+      //         if (res.data.notFinded) {
       this.folios.splice(this.folios[index].tomos + index, 1);
       this.folios[index].tomos--;
+      //           this.folios.splice(index, 1);
+      //         } else {
+      //           this.folios.splice(index, 1);
+      //           let data = {
+      //             folios: this.folios,
+      //           };
+      //           await axios
+      //             .put(`${config.api}/foliosSICE`, { data })
+      //             .then((res) => {
+      //               this.search();
+      //             });
+      //         }
+      //         Swal.fire({
+      //           title: "¡Hecho!",
+      //           text: res.data.message,
+      //           icon: "success",
+      //         });
+      //         this.folios[index - this.folios[index].tomo].tomos--;
+      //         // console.log(this.folios[index - this.folios[index].tomo]);
+      //         // console.log(this.folios);
+      //       })
+      //       .catch((err) => {
+      //         console.error(err);
+      //         return Swal.fire({
+      //           title: "¡Error!",
+      //           text: res.data.message,
+      //           icon: "error",
+      //         });
+      //       });
+      //   }
+      // });
     },
     agregaTomo(folio, index) {
       // console.log(this.folios[index].tomos ? this.folios[index].tomos + 1 : index + 1);
@@ -464,17 +518,19 @@ export default {
       this.over = true;
       let errors = [];
       if (this.modal === true) {
-      await axios.get(`${config.api}/busquedaSICE`, {
-        params: {
-          folioInicio: paquete.folioInicio,
-          folioFin: paquete.folioFin
-        }
-      }).then(res => {
-        if(res.data.folios.length > 0)
-        res.data.folios.forEach(el => {
-          this.rep.push(el.Folio);
-        })
-      })
+        await axios
+          .get(`${config.api}/busquedaSICE`, {
+            params: {
+              folioInicio: paquete.folioInicio,
+              folioFin: paquete.folioFin,
+            },
+          })
+          .then((res) => {
+            if (res.data.folios.length > 0)
+              res.data.folios.forEach((el) => {
+                this.rep.push(el.Folio);
+              });
+          });
         // this.infoPaquete.folios =
         await axios
           .get(`${config.api}/folios`, {
@@ -517,7 +573,7 @@ export default {
           .then((res) => {
             if (res.data) {
               if (res.data.encontrado == "false") errors.push(i);
-              else{
+              else {
                 this.folios[j]["expediente"] = res.data.expediente;
                 this.folios[j]["toca"] = res.data.toca;
                 this.folios[j]["juzgado"] = res.data.juzgado;
@@ -528,7 +584,8 @@ export default {
                 this.folios[j]["demandado"] = res.data.demandado;
                 this.folios[j]["juicio"] = res.data.juicio;
                 this.folios[j]["dependencia"] = res.data.dependencia;
-                this.folios[j]["observaciones"] = res.data.observaciones || null;
+                this.folios[j]["observaciones"] =
+                  res.data.observaciones || null;
                 (this.folios[j]["validado"] = false), this.count++;
               }
             }
@@ -570,8 +627,7 @@ export default {
           icon: "info",
           showConfirmButton: false,
           timer: 1000,
-        })
-        .then(this.over = false);
+        }).then((this.over = false));
       await axios
         .get(`${config.api}/paquete`, {
           params: {
@@ -579,7 +635,7 @@ export default {
             bis: this.bis,
           },
         })
-        .then(async(res) => {
+        .then(async (res) => {
           if (res.data.paquete.length == 0) {
             return Swal.fire(
               `No se encontró el paquete ${this.noPaquete}.`,
@@ -603,7 +659,7 @@ export default {
                   folioFin: this.paquete.folioFin,
                 },
               })
-              .then(async(res) => {
+              .then(async (res) => {
                 if (res.data.folios.length == 0) {
                   return Swal.fire(
                     `No se pudo encontrar el paquete ${this.noPaquete}.`,
@@ -611,20 +667,22 @@ export default {
                     "error"
                   ).then((res) => (this.over = false));
                 }
-                await axios.get(`${config.api}/busquedaSICE`, {
-                  params: {
-                    folioInicio: this.paquete.folioInicio,
-                    folioFin: this.paquete.folioFin
-                  }
-                }).then(res => {
-                  if(res.data.folios.length > 0)
-                  res.data.folios.forEach(el => {
-                    this.rep.push(el.Folio);
+                await axios
+                  .get(`${config.api}/busquedaSICE`, {
+                    params: {
+                      folioInicio: this.paquete.folioInicio,
+                      folioFin: this.paquete.folioFin,
+                    },
                   })
-                })
+                  .then((res) => {
+                    if (res.data.folios.length > 0)
+                      res.data.folios.forEach((el) => {
+                        this.rep.push(el.Folio);
+                      });
+                  });
                 this.folios = res.data.folios;
                 this.folios.forEach((el, index) => {
-                  if(this.rep.includes(el.folio))
+                  if (this.rep.includes(el.folio))
                     this.folios[index].rep = true;
                   if (el.referencias) {
                     this.referencias[index] = el.referencias;
@@ -651,7 +709,7 @@ export default {
         confirmButtonText: "Continuar",
         cancelButtonText: "Cancelar",
         buttonsStyling: true,
-      }).then((result) => {
+      }).then(async (result) => {
         // <--
         this.paquete.local = true;
         this.paquete.validado = localStorage.loggedIn;
@@ -664,10 +722,10 @@ export default {
           let data = {
             folios: this.folios,
           };
-          axios
+          await axios
             .put(`${config.api}/foliosSICE`, { data })
-            .then((res) => {
-              axios
+            .then(async (res) => {
+              await axios
                 .put(`${config.api}/paquete`, { data: this.paquete })
                 .then((res) => {
                   Swal.fire(
@@ -678,6 +736,7 @@ export default {
                     // this.$router.replace("/asignar");
                   });
                 });
+              this.search();
             })
             .catch((err) => {
               Swal.fire(
@@ -700,7 +759,7 @@ export default {
         confirmButtonText: "Continuar",
         cancelButtonText: "Cancelar",
         buttonsStyling: true,
-      }).then(async(result) => {
+      }).then(async (result) => {
         // <--
         if (result.value) {
           // <-- if confirmed
@@ -708,8 +767,7 @@ export default {
           this.paquete.validado = localStorage.loggedIn;
           this.paquete.local = true;
           this.folios.forEach((el) => {
-            if(this.rep.includes(el.folio))
-              el.validado = false;
+            if (this.rep.includes(el.folio)) el.validado = false;
             el.validado = true;
           });
           let data = {
@@ -717,7 +775,8 @@ export default {
           };
           await axios
             .put(`${config.api}/foliosSICE`, { data })
-            .then(async(res) => {
+            .then(async (res) => {
+              console.log(res.data);
               await axios
                 .put(`${config.api}/paquete`, { data: this.paquete })
                 .then((res) => {
@@ -729,6 +788,7 @@ export default {
                     // this.$router.replace("/asignar");
                   });
                 });
+              this.search();
             })
             .catch((err) => {
               Swal.fire(

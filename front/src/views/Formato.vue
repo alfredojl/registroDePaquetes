@@ -206,9 +206,14 @@ Lider de equipo: ${this.verificador ? this.verificador : "Sin asignar"}`
           this.folios = res.data.folios;
           this.folios.forEach((el) => {
             el.tomo = parseInt(el.tomo) || "";
+            el.folio = parseInt(el.folio);
           });
-          console.log(this.folios);
-          console.log(this.folios.sort((a, b) => a.tomo - b.tomo));
+          // console.log(this.folios);
+          this.folios.sort((a, b) => {
+            if (a.tomo > b.tomo && a.folio == b.folio) return 1;
+            if (a.tomo < b.tomo && a.folio == b.folio) return -1;
+            if (a.tomo == b.tomo && a.folio == b.folio) return 0;
+          });
           let total = 0;
           this.folios = res.data.folios.map((el, index) => {
             total += el.fojas;

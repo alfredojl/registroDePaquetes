@@ -1,76 +1,143 @@
-const mongoose = require('mongoose');
-const Folio = require('../server/models/Folios');
-const Paquete = require('../server/models/Paquetes');
-const xlsx = require('xlsx');
+const mongoose = require("mongoose");
+const moment = require("moment");
+const Folio = require("../server/models/Folios");
+const Paquete = require("../server/models/Paquetes");
+const xlsx = require("xlsx");
 
 mongoose.connect(
-    'mongodb://production:production$@172.26.60.61:27017/registro?authSource=admin', {
-        // 'mongodb://localhost:27017/registro', {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        useCreateIndex: true,
-        useFindAndModify: false,
-    },
-    (err, res) => {
-        if (err) throw err;
-        console.log("Mongo connected...");
-    }
+  "mongodb://production:production$@172.26.60.61:27017/registro?authSource=admin",
+  // "mongodb://localhost:27017/registro",
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+    useFindAndModify: false,
+  },
+  (err, res) => {
+    if (err) throw err;
+    console.log("Mongo connected...");
+  }
 );
 
-const inserta = async() => {
-    let workbook = xlsx.readFile('./Agregar.xlsx');
-    let heads = workbook.SheetNames;
-    let temp = xlsx.utils.sheet_to_json(workbook.Sheets[heads[0]], { skipHeader: false });
-    var paquetes = [],
-        errores = [],
-        paquetesDB = [],
-        foliosDB = [];
-    temp.forEach(el => {
-        let partes = el.Paquete.toString().split(' ')
-        let paquete = partes[0];
-        let bis = false;
-        partes.length > 2 && partes[2].toLowerCase() == 'bis' ? bis = true : false;
-        let cantidad = el.Paquete.split(' ')[1].split('/')[1];
-        let identificador = el.Paquete.split(' ')[1].split('/')[0];
-        paquetes.push({
-            noPaquete: paquete,
-            bis,
-            estado: 'Recibido',
-            local: false,
-            identificador,
-            cantidad,
-            folioInicio: el.FolioInicio,
-            folioFin: el.FolioFin,
-            fechaExpediente: new Date(el.Fecha.split('/').reverse()),
-            fechaAlta: new Date(),
-            registrado: "Toño"
-        });
-    });
-    // console.log(paquetes);
-    for (element of paquetes) {
-        // console.log(element);
-        // for (let i = element.folioInicio; i <= element.folioFin; i++)
-        await Paquete.create(element, async(err, paqueteDB) => {
-            if (err) errores.push(err)
-            console.log('¡Hecho! Paquete.');
-            paquetesDB.push(paqueteDB);
-            console.log({
-                folio: paqueteDB.folioInicio,
-                noPaquete: paqueteDB.noPaquete
-            });
-            await Folio.create({
-                folio: paqueteDB.folioInicio,
-                noPaquete: paqueteDB.noPaquete
-            }, async(err, folioDB) => {
-                if (err) errores.push(err)
-                console.log('¡Hecho! Folio.');
-                foliosDB.push(folioDB);
-                console.log(folioDB);
-            })
-        })
+const inserta = async () => {
+  let workbook = xlsx.readFile("./r14.xlsx");
+  let heads = workbook.SheetNames;
+  let temp = xlsx.utils.sheet_to_json(workbook.Sheets[heads[0]], {
+    skipHeader: false,
+  });
+  var paquetes = [],
+    errores = [],
+    paquetesDB = [],
+    foliosDB = [];
+  temp.forEach((el, index) => {
+    let paquete = null,
+      bis = null,
+      folioInicio = null,
+      folioFin = null,
+      cantidad = null,
+      identificador = null,
+      fecha = null;
+    if (typeof el.Paquete === "number") {
+      paquete = el.Paquete;
+      bis = false;
+    } else {
+      let partes = el.Paquete.split(" ");
+      paquete = partes[0];
+      if (partes.length > 2 && partes[1].toLowerCase() == "bis") {
+        bis = true;
+        cantidad = el.Paquete.split(" ")[2].split("/")[1];
+        identificador = el.Paquete.split(" ")[2].split("/")[0];
+      } else if (partes.length == 2 && partes[1].toLowerCase() == "bis") {
+        bis = true;
+      } else if (partes.length == 2) {
+        bis = false;
+        cantidad = el.Paquete.split(" ")[1].split("/")[1];
+        identificador = el.Paquete.split(" ")[1].split("/")[0];
+      }
     }
-    // console.log(paquetesDB);
-    // console.log(foliosDB);
-}
+    // console.log({
+    //   paquete,
+    //   bis,
+    //   cantidad,
+    //   identificador,
+    //   fecha:
+    //     el.YYYY != "S/F"
+    //       ? moment(`${el.YYYY}-${el.MM}-${el.DD}`).format()
+    //       : null,
+    //   format: `${el.YYYY}-${el.MM}-${el.DD}`,
+    // });
+    paquetes.push({
+      noPaquete: paquete,
+      bis,
+      estado: "Recibido",
+      local: false,
+      identificador,
+      cantidad,
+      folioInicio: el.FolioInicio,
+      folioFin: el.FolioFin,
+      fechaExpediente:
+        el.YYYY != "S/F"
+          ? moment(`${el.YYYY}-${el.MM}-${el.DD}`).format()
+          : null,
+      fechaAlta: new Date(),
+      registrado: "Toño",
+    });
+  });
+  let index = 0;
+  let indexFolios = 0;
+  for (body of paquetes) {
+    try {
+      console.log(++index + " de " + paquetes.length);
+      let folios = [];
+      let folio = [];
+      let paqueteDB = await Paquete.create(body);
+      paquetesDB.push(paqueteDB);
+      console.log(paqueteDB);
+      for (
+        let i = paqueteDB.folioInicio;
+        i <= paqueteDB.folioFin;
+        i++, ++indexFolios
+      ) {
+        folio = {
+          folio: i,
+          noPaquete: body.noPaquete,
+          bis: body.bis,
+        };
+        folios.push(folio);
+        // console.log(folio);
+        // let folioDB = await Folio.create(folio);
+        // foliosDB.push(folioDB);
+        // console.log(folioDB);
+      }
+      foliosDB.push(await Folio.insertMany(folios));
+    } catch (err) {
+      errores.push(err);
+    }
+  }
+
+  // console.log(element);
+  //   await Paquete.create(element)
+  //   .then(paqueteDB => {
+  //     console.log('¡Hecho! Paquete.');
+  //     paquetesDB.push(paqueteDB);
+  //     for (let i = element.folioInicio; i <= element.folioFin; i++)
+  //       await Folio.create({
+  //           folio: paqueteDB.folioInicio,
+  //           noPaquete: paqueteDB.noPaquete
+  //       }, async(err, folioDB) => {
+  //           if (err) errores.push(err)
+  //           console.log('¡Hecho! Folio.');
+  //           foliosDB.push(folioDB);
+  //           console.log(folioDB);
+  //       })
+  //         .then((folioDB) => {
+
+  //       })
+  //     })
+  //     .catch(err => {
+  //       errores.push(err)
+  //     });
+  console.log(paquetes.length, errores.length, foliosDB.length, indexFolios);
+};
 
 inserta();
