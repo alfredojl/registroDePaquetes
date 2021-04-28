@@ -31,7 +31,7 @@ mongoose.connect(
   }
 );
 const subida = async () => {
-  let workbook = xlsx.readFile("./almayGerardo22-04.xlsx");
+  let workbook = xlsx.readFile("./faltantesAlma.xlsx");
   let heads = workbook.SheetNames;
   // console.log(xlsx.utils.sheet_to_json(workbook.Sheets[heads[0]], { skipHeader: false }).slice(0, 5));
   let index = 0;
