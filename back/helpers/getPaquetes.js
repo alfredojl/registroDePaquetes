@@ -4,7 +4,7 @@ const xlsx = require("xlsx");
 
 const reporte800 = require("./reporte800.json");
 // const name = 'registro30.03';
-const nameAdrian = "foliosLote40";
+const nameAdrian = "foliosLote53";
 
 const moment = require("moment");
 moment.locale("es-mx");
@@ -19,7 +19,7 @@ const getPaquetes = async () => {
     { useUnifiedTopology: true },
     // MongoClient.connect('mongodb://pjcdmx:pjcdmx@172.26.60.60:27017/archivosSICE?authSource=admin', { useUnifiedTopology: true },
     async (err, res) => {
-      let regex = "2021-04-19";
+      let regex = "2021-04-26";
       let day = moment(regex).hours(0).minutes(0).seconds(0).format();
 
       if (err) throw err;
@@ -31,7 +31,7 @@ const getPaquetes = async () => {
       // await archivo.find({ Procesado: true, Error: false, FechaProcesado: {$regex: '29/12/2020'} }).sort({Folio: 1, Tomo: 1}).toArray(async(err, cols) => {
       //======================================================================================================================================
       //***********************************************************************************************************************************+
-      //  Para conteo de folios... Adrián.
+      // * Para conteo de folios... Adrián.
       // const archivo = res.db("registro").collection("folios");
       // let conteo = [];
       // let foliosTotal = 0;
@@ -66,12 +66,10 @@ const getPaquetes = async () => {
       // xlsx.utils.book_append_sheet(libro, doc, nameAdrian);
       // xlsx.writeFile(libro, `./${nameAdrian}.xlsx`);
       // console.log(`[${nameAdrian}.xlsx] created.`);
-      // await archivo.countDocuments(
-      //   { $and: [{ noPaquete: { $in: lista } }, { bis: false }] },
-      //   async (err, cols) => {
-      //     console.log(cols);
-      //   }
-      // );
+      // let cols = await archivo.countDocuments({
+      //   $and: [{ noPaquete: { $in: lista } }, { bis: false }],
+      // });
+      // console.log(cols);
       //     // await archivo.find({ folio: { $in: reporte800 } }).sort({ folio: 1 }).toArray(async(err, cols) => {
       //     // await archivo.find({ $or: [
       //     //     { FechaProcesado: { $regex: '26/12/2020' }},
