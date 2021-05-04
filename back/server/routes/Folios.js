@@ -88,6 +88,7 @@ app.put("/foliosSICE", async (req, res) => {
     // }
     // });
   }
+  console.log(folios.length, foliosResultado.length)
   return res.json({
     ok: true,
     result: {

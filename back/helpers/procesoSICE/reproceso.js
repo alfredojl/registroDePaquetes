@@ -31,7 +31,7 @@ const reproceso = async() => {
     const conn = await pool.getConnection((err, connection) => { if (err) console.log(err) });
     var archs = fs.readdirSync(ruta);
     archs = archs.filter(el => path.parse(path.join(ruta, el)).ext == '.pdf')
-    // archs = archs.slice(0, 10);
+    archs = archs.slice(0, 1);
     let sftp = new client;
 
     await sftp.connect(configSFTP)
@@ -70,7 +70,8 @@ const reproceso = async() => {
                         // console.log(nh);
                     // let id = a[0].Id;
                     // console.log(Id)
-                    console.log(`Subiendo ${file}: \t\t${folio} ${tomo ? 'Tomo ' + tomo : ''}\t${nh}\t${++index} de ${archs.length}`.cyan);
+                    console.log(`Subiendo ${file}: \t\t${folio} ${tomo ? 'Tomo ' + tomo : ''}\t${nh}\t${++index} de ${archs.length}\t[ ${moment().format('L HH:mm:ss')} ]`.cyan);
+                    console.log(path.join(pathSFTP, Id.toString() + '.pdf'));
                     await sftp.put(path.join(ruta, file), path.join(pathSFTP, Id.toString() + '.pdf'))
                         .then(() => {
                             // fs.renameSync()
@@ -78,7 +79,7 @@ const reproceso = async() => {
                             // fs.copyFileSync(path.join(ruta, file), path.join(ruta, 'SFTP', id.toString() + '.pdf'))
                             fs.renameSync(path.join(ruta, file), path.join(ruta, 'Hecho', file));
                             fs.appendFileSync(path.join(ruta, 'Hecho', 'reporte.csv'), `${file},${Id},${folio},${tomo ? tomo : ''},${nh},reemplazado\n`, 'utf8')
-                            console.log('¡Reemplazado!'.green);
+                            console.log(`¡Reemplazado!\t[ ${moment().format('L HH:mm:ss')} ]`.green);
                         })
                 }
             }

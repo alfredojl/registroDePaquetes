@@ -7,7 +7,7 @@ const cron = require('node-cron');
 const moment = require('moment');
 const symbols = require('log-symbols');
 
-const ruta = path.resolve(os.homedir(), "SICE");
+const ruta = path.join(os.homedir(), "SICE");
 
 let data = [];
 const getList = async() => {
@@ -74,7 +74,7 @@ const getList = async() => {
     data = [];
 };
 
-// const task = cron.schedule('*/30 * * * *', async() => {
+// const task = cron.schedule('0 19 * * *', async() => {
 //     console.log(symbols.info, `Procesando... [${moment().format('HH:mm:ss')}]`.underline.cyan);
 //     await getList();
 //     console.log(symbols.info, `Terminado. Esperando siguiente ciclo... [${moment().format('HH:mm:ss')}]`.underline.cyan);
