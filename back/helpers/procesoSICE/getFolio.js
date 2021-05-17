@@ -23,7 +23,7 @@ moment.locale("es-mx");
 
 const getFolio = async (folio, tomo) => {
   // if (tomo)
-  let consult = await Folio.findOne({ folio, tomo });
+  let consult = await Folio.find({ folio, tomo });
   if (consult.length > 1) {
     fs.appendFileSync(
       path.resolve("reporteDuplicados.csv"),
