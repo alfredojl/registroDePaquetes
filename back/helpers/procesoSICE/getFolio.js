@@ -24,21 +24,21 @@ moment.locale("es-mx");
 
 const getFolio = async (folio, tomo) => {
   // if (tomo)
-  console.log(tomo);
   try {
     let consult = await Folio.find({ folio, tomo });
-    if (consult.length > 1) {
-      fs.appendFileSync(
-        path.resolve("reporteDuplicados.csv"),
-        `${folio},${tomo ? "Tomo " + tomo : ""}\n`,
-        "utf-8"
-      );
-      consult[0] = {};
-      consult[0].notProcess = true;
-      return consult[0];
-    }
+    // console.log(consult)
+    // if (consult.length > 1) {
+    //   fs.appendFileSync(
+    //     path.resolve("reporteDuplicados.csv"),
+    //     `${folio},${tomo ? "Tomo " + tomo : ""}\n`,
+    //     "utf-8"
+    //   );
+    //   consult[0] = {};
+    //   consult[0].notProcess = true;
+    //   return consult[0];
+    // }
     // if (consult && !consult.rep && consult.validado === true && consult.procesado !== false)
-    else {
+    // else {
       if (consult.length === 0) {
         fs.appendFileSync(
           path.resolve(os.homedir(), "LOG.txt"),
@@ -64,7 +64,7 @@ const getFolio = async (folio, tomo) => {
         consult[0].notProcess = true;
         return consult[0];
       }
-    }
+    // }
   } catch(e) {
     console.log(e);
   }
@@ -73,5 +73,12 @@ const getFolio = async (folio, tomo) => {
   //         console.log(consult);
   //     })
 };
+
+// let ex = async () => {
+//     let c = await getFolio(6104719, null);
+//     console.log(c[0])
+// }
+
+// ex()
 
 module.exports = getFolio;
