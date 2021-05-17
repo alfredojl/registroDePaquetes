@@ -34,7 +34,7 @@ const getList = async() => {
             nh = sep[1]
         }
         if(folio.length != 7){
-            console.log(`Folio ${folio} ${tomo ? 'Tomo ' + tomo : ''} erróneo, no se va a procesar.`.bgRed);
+            console.log(`Folio ${folio} ${tomo ? 'Tomo ' + tomo : ''} erróneo, no se va a procesar.`.bgRed)
             fs.appendFileSync(path.resolve(os.homedir(), 'LOG.txt'), `${folio} ${tomo ? 'Tomo ' + tomo : ''} folio erróneo, se moverá a la carpeta de 'Error'.\t\t [${moment().format('ddd, D MMM Y, HH:mm:ss')}]\n`, 'utf8')
             fs.renameSync(path.join(ruta, file), path.join(ruta, `Error/${file}`));
             fs.appendFileSync(path.resolve(os.homedir(), 'reporte.csv'), `${folio.folio},${folio.tomo ? folio.tomo : ''},${folio.numeroImagenes},false\n`);
