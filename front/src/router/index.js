@@ -13,6 +13,7 @@ import Lotes from '../views/Lotes';
 import Reporte from '../views/Reporte';
 import ValidarInfoFolio from '../views/ValidarInfoFolio';
 import Insertar from '../views/Insertar.vue';
+import Urgentes from '../views/Urgentes.vue';
 // import CrearUsuario from "../views/CrearUsuario.vue";
 
 Vue.use(VueRouter);
@@ -147,6 +148,15 @@ const routes = [{
             else next(false);
         },
     },
+    {
+        path: '/urgentes',
+        name: 'Urgentes',
+        component: Urgentes,
+        beforeEnter: (to, from, next) => {
+            if (isAuthenticated() && isUrgente()) next();
+            else next(false);
+        },
+    },
     // {
     //     path: '/validarInfoFolio',
     //     name: 'ValidarInfoFolio',
@@ -162,6 +172,7 @@ const isAuthenticated = () => {
     return !!localStorage.loggedIn;
 };
 const isAuth = () => localStorage.loggedIn == 'Antonio' || localStorage.loggedIn == 'Alfredo';
+const isUrgente = () => localStorage.loggedIn == 'robert06' || localStorage.loggedIn == 'Alfredo';
 // const isReporter = () => {
 //     return localStorage.role == "reporter" || localStorage.role == "admin" ? true : false;
 // };

@@ -8,3 +8,6 @@ back/helpers/reporte800.json
 back/helpers/LOG.txt
 back/helpers/report.csv
 back/helpers/reportBD.csv
+*.xlsx
+*.csv
+*.txt

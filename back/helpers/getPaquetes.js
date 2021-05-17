@@ -4,7 +4,7 @@ const xlsx = require("xlsx");
 
 const reporte800 = require("./reporte800.json");
 // const name = 'registro30.03';
-const nameAdrian = "foliosLote53";
+const nameAdrian = "foliosLote57";
 
 const moment = require("moment");
 moment.locale("es-mx");
@@ -19,8 +19,13 @@ const getPaquetes = async () => {
     { useUnifiedTopology: true },
     // MongoClient.connect('mongodb://pjcdmx:pjcdmx@172.26.60.60:27017/archivosSICE?authSource=admin', { useUnifiedTopology: true },
     async (err, res) => {
-      let regex = "2021-04-26";
+      let regex = "2021-05-11";
       let day = moment(regex).hours(0).minutes(0).seconds(0).format();
+      // let lDay = moment("2021-05-03")
+      //   .hours(23)
+      //   .minutes(59)
+      //   .seconds(59)
+      //   .format();
 
       if (err) throw err;
       console.log("BD ONLINE");
@@ -32,44 +37,44 @@ const getPaquetes = async () => {
       //======================================================================================================================================
       //***********************************************************************************************************************************+
       // * Para conteo de folios... Adrián.
-      // const archivo = res.db("registro").collection("folios");
-      // let conteo = [];
-      // let foliosTotal = 0;
-      // for (el of lista) {
-      //   var noPaquete = null;
-      //   var bis = false;
-      //   if (typeof el === "string") {
-      //     var noPaquete = parseInt(el.split(" ")[0]);
-      //     var bis = true;
-      //   } else {
-      //     noPaquete = el;
-      //   }
-      //   let count = await archivo.countDocuments({ noPaquete, bis });
-      //   foliosTotal += count;
-      //   conteo.push({
-      //     Paquete: bis ? noPaquete + " BIS" : noPaquete,
-      //     Folios: count,
-      //   });
-      //   // , async(err, foliosDB) => {
-      //   //     console.log(foliosDB);
-      //   //     foliosTotal += foliosDB;
-      //   // })
-      // }
-      // conteo.push({
-      //   Paquete: "Total =",
-      //   Folios: foliosTotal,
-      // });
-      // console.log(conteo, conteo.length);
-      // let doc, libro;
-      // doc = xlsx.utils.json_to_sheet(conteo);
-      // libro = xlsx.utils.book_new();
-      // xlsx.utils.book_append_sheet(libro, doc, nameAdrian);
-      // xlsx.writeFile(libro, `./${nameAdrian}.xlsx`);
-      // console.log(`[${nameAdrian}.xlsx] created.`);
-      // let cols = await archivo.countDocuments({
-      //   $and: [{ noPaquete: { $in: lista } }, { bis: false }],
-      // });
-      // console.log(cols);
+      const archivo = res.db("registro").collection("folios");
+      let conteo = [];
+      let foliosTotal = 0;
+      for (el of lista) {
+        var noPaquete = null;
+        var bis = false;
+        if (typeof el === "string") {
+          var noPaquete = parseInt(el.split(" ")[0]);
+          var bis = true;
+        } else {
+          noPaquete = el;
+        }
+        let count = await archivo.countDocuments({ noPaquete, bis });
+        foliosTotal += count;
+        conteo.push({
+          Paquete: bis ? noPaquete + " BIS" : noPaquete,
+          Folios: count,
+        });
+        // , async(err, foliosDB) => {
+        //     console.log(foliosDB);
+        //     foliosTotal += foliosDB;
+        // })
+      }
+      conteo.push({
+        Paquete: "Total =",
+        Folios: foliosTotal,
+      });
+      console.log(conteo, conteo.length);
+      let doc, libro;
+      doc = xlsx.utils.json_to_sheet(conteo);
+      libro = xlsx.utils.book_new();
+      xlsx.utils.book_append_sheet(libro, doc, nameAdrian);
+      xlsx.writeFile(libro, `./${nameAdrian}.xlsx`);
+      console.log(`[${nameAdrian}.xlsx] created.`);
+      let cols = await archivo.countDocuments({
+        $and: [{ noPaquete: { $in: lista } }, { bis: false }],
+      });
+      console.log(cols);
       //     // await archivo.find({ folio: { $in: reporte800 } }).sort({ folio: 1 }).toArray(async(err, cols) => {
       //     // await archivo.find({ $or: [
       //     //     { FechaProcesado: { $regex: '26/12/2020' }},
@@ -81,52 +86,53 @@ const getPaquetes = async () => {
       //     //     }
       //     // **************************************************************************************************************
       //     * ******************************** Para paquetes.
-      const archivo = res.db("registro").collection("paquetes");
-      await archivo
-        .find({ fechaAlta: { $gte: new Date(day) } })
-        .sort({ noPaquete: 1 })
-        .toArray(async (err, cols) => {
-          var paquetes = cols.map((el) => {
-            console.log(
-              el.fechaExpediente
-                ? moment(el.fechaExpediente).format("L")
-                : null,
-              el.fechaExpediente
-                ? moment(el.fechaExpediente.toISOString().slice(0, 10)).format(
-                    "DD/MM/YYYY"
-                  )
-                : null,
-              el.fechaExpediente
-                ? el.fechaExpediente.toISOString().slice(0, 10)
-                : null,
-              el.noPaquete
-            );
-            return {
-              Paquete: el.noPaquete,
-              // Folio: el.folio,
-              "Folio inicio": el.folioInicio,
-              "Folio fin": el.folioFin,
-              "Fecha expediente": el.fechaExpediente
-                ? moment(el.fechaExpediente.toISOString().slice(0, 10)).format(
-                    "L"
-                  )
-                : "Fecha inválida",
-              // Expediente: el.Expediente,
-              // Toca: el.Toca,
-              // "Fecha de procesado": el.FechaProcesado ? el.FechaProcesado.slice(0,10) : 'Sin fecha'
-            };
-          });
+      // const archivo = res.db("registro").collection("paquetes");
+      // console.log('Obteniendo archivos de', day);
+      // await archivo
+      //   .find({ fechaAlta: { $gte: new Date(day) } })
+      //   .sort({ noPaquete: 1 })
+      //   .toArray(async (err, cols) => {
+      //     var paquetes = cols.map((el) => {
+      //       console.log(
+      //         el.fechaExpediente
+      //           ? moment(el.fechaExpediente).format("L")
+      //           : null,
+      //         el.fechaExpediente
+      //           ? moment(el.fechaExpediente.toISOString().slice(0, 10)).format(
+      //               "DD/MM/YYYY"
+      //             )
+      //           : null,
+      //         el.fechaExpediente
+      //           ? el.fechaExpediente.toISOString().slice(0, 10)
+      //           : null,
+      //         el.noPaquete
+      //       );
+      //       return {
+      //         Paquete: el.noPaquete,
+      //         // Folio: el.folio,
+      //         "Folio inicio": el.folioInicio,
+      //         "Folio fin": el.folioFin,
+      //         "Fecha expediente": el.fechaExpediente
+      //           ? moment(el.fechaExpediente.toISOString().slice(0, 10)).format(
+      //               "L"
+      //             )
+      //           : "Fecha inválida",
+      //         // Expediente: el.Expediente,
+      //         // Toca: el.Toca,
+      //         // "Fecha de procesado": el.FechaProcesado ? el.FechaProcesado.slice(0,10) : 'Sin fecha'
+      //       };
+      //     });
 
-          let doc, libro;
-          doc = xlsx.utils.json_to_sheet(paquetes);
-          libro = xlsx.utils.book_new();
-          xlsx.utils.book_append_sheet(libro, doc, "Hoja 1");
-          xlsx.writeFile(
-            libro,
-            `./registro${moment(day).format("DD.MM")}.xlsx`
-          );
-          console.log(`[registro${moment(day).format("DD.MM")}.xlsx] created.`);
-        });
+      //     let doc, libro;
+      //     doc = xlsx.utils.json_to_sheet(paquetes);
+      //     libro = xlsx.utils.book_new();
+      //     xlsx.utils.book_append_sheet(libro, doc, "Hoja 1");
+      //     xlsx.writeFile(
+      //       libro,
+      //       `./registro${moment(day).format("DD.MM")}.xlsx`
+      //     );
+      //     console.log(`[registro${moment(day).format("DD.MM")}.xlsx] created.`);
+      //   });
       //     // **************************************************************************************************************
       //     // Para folios.
       //     // var paquetes = cols.map((el) => {

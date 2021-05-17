@@ -5,7 +5,10 @@ const Folio = require("../server/models/Folios");
 const mariadb = require("mariadb");
 const fs = require("fs");
 
-const list = require("./almaTodo.json");
+const list = require("./alma03-07-05.json");
+const name = "alma10-14-05";
+const name2 = "foliosAlma10-14-May";
+// const list = require("./gerardo.json");
 
 const getAlma = async () => {
   try {
@@ -22,11 +25,29 @@ const getAlma = async () => {
       readies = 0,
       duplicated = 0;
 
-    // * Consulta en lista
+    // * Consulta masiva en SICE.
+    // let consult = await res.query(
+    //   `SELECT Id, C22 Folio, C25 Tomo, C11242 "Imágenes" FROM T15 WHERE Usuario = "DEVELOPMENT S&H" AND Fecha <= '2021-02-28 00:00:00' ORDER BY C22, C25;`
+    // );
+    // let doc, libro;
+    // doc = xlsx.utils.json_to_sheet(consult);
+    // libro = xlsx.utils.book_new();
+    // xlsx.utils.book_append_sheet(libro, doc, "Hoja 1");
+    // xlsx.writeFile(libro, `./masivoSICE.xlsx`);
+    // console.log(`[ masivoSICE ] created.`);
+    // * Aquí
+
+    // * Consulta en SICE
     let consult = await res.query(
-      'SELECT C24 Paquete, C22 Folio, C25 Tomo, C23 Expediente, C29 Toca, C11242 "# Imágenes" FROM T15 WHERE Usuario = "DEVELOPMENT S&H" AND C22 IN (?) ORDER BY C22, C25;',
+      `SELECT C24 Paquete, C22 Folio, C25 Tomo, C11242 "# Imágenes" FROM T15 WHERE Usuario = "DEVELOPMENT S&H" AND C22 IN (?) ORDER BY C22, C25;`,
       [list]
     );
+    let suma = await res.query(
+      'SELECT SUM(C11242) suma FROM T15 WHERE Usuario = "DEVELOPMENT S&H" AND C22 IN (?) ORDER BY C22, C25;',
+      [list]
+    );
+    // console.log(suma);
+    consult.push({ Paquete: "Total", "# Imágenes": suma[0].suma });
     consult.forEach((el) => {
       el.Paquete = el.Paquete ? el.Paquete : "N/A";
     });
@@ -35,16 +56,22 @@ const getAlma = async () => {
     doc = xlsx.utils.json_to_sheet(consult);
     libro = xlsx.utils.book_new();
     xlsx.utils.book_append_sheet(libro, doc, "Hoja 1");
-    xlsx.writeFile(libro, `./foliosAlmaMarzo-Abril.xlsx`);
-    console.log(`[ foliosAlmaMarzo-Abril.xlsx ] created.`);
+    xlsx.writeFile(libro, `./${name2}.xlsx`);
+    console.log(`[ ${name2} ] created.`);
     // * Hasta aquí
+
     // * Consulta si está o no
     // try {
-    //   fs.statSync("./reporteFoliosAlmaMarzo-Abril.csv");
+    //   await fs.unlinkSync(`./${name}.csv`);
+    //   await fs.appendFileSync(
+    //     `./${name}.csv`,
+    //     `folio,Status\n`,
+    //     "utf-8"
+    //   );
     // } catch (e) {
     //   fs.appendFileSync(
-    //     "./reporteFoliosAlmaMarzo-Abril.csv",
-    //     `folio,Usuario,Status\n`,
+    //     `./${name}.csv`,
+    //     `folio,Status\n`,
     //     "utf-8"
     //   );
     // }
@@ -62,14 +89,14 @@ const getAlma = async () => {
     //     });
     //     if (!probe) {
     //       fs.appendFileSync(
-    //         "./reporteFoliosAlmaMarzo-Abril.csv",
-    //         `${el},Registro existente en SICE.\n`,
+    //         `./${name}.csv`,
+    //         `${el},Registro previo en SICE.\n`,
     //         "utf-8"
     //       );
     //       duplicated++;
     //     } else {
     //       fs.appendFileSync(
-    //         "./reporteFoliosAlmaMarzo-Abril.csv",
+    //         `./${name}.csv`,
     //         `${el},Listo\n`,
     //         "utf-8"
     //       );
@@ -77,7 +104,7 @@ const getAlma = async () => {
     //     }
     //   } else {
     //     fs.appendFileSync(
-    //       "./reporteFoliosAlmaMarzo-Abril.csv",
+    //       `./${name}.csv`,
     //       `${el},Aún no se sube.\n`,
     //       "utf-8"
     //     );

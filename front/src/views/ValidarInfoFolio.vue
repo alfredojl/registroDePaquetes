@@ -508,6 +508,14 @@ export default {
         });
     },
     async getInformacionFolio(paquete) {
+      this.folios.sort((a, b) => {
+        if (parseInt(a.tomo) > parseInt(b.tomo) && a.folio == b.folio) return 1;
+        if (parseInt(a.tomo) < parseInt(b.tomo) && a.folio == b.folio)
+          return -1;
+        if (parseInt(a.tomo) == parseInt(b.tomo) && a.folio == b.folio)
+          return 0;
+      });
+      console.log(this.folios);
       if (paquete.local) {
         this.$bvModal.hide("packages");
         this.modal = false;
