@@ -19,20 +19,20 @@ const colors = require("colors");
 const moment = require("moment");
 moment.locale("es-mx");
 
-// const yesterdayF = "2021-05-16 00:00:00";
-// const yesterdayL = "2021-05-16 23:59:59";
-const yesterdayL = moment()
-  .subtract(1, "days")
-  .hours(23)
-  .minutes(59)
-  .seconds(59)
-  .format("YYYY-MM-DD HH:mm:ss");
-const yesterdayF = moment()
-  .subtract(1, "days")
-  .hours(0)
-  .minutes(0)
-  .seconds(0)
-  .format("YYYY-MM-DD HH:mm:ss");
+const yesterdayF = "2021-05-26 00:00:00";
+const yesterdayL = "2021-05-26 23:59:59";
+// const yesterdayL = moment()
+//   .subtract(1, "days")
+//   .hours(23)
+//   .minutes(59)
+//   .seconds(59)
+//   .format("YYYY-MM-DD HH:mm:ss");
+// const yesterdayF = moment()
+//   .subtract(1, "days")
+//   .hours(0)
+//   .minutes(0)
+//   .seconds(0)
+//   .format("YYYY-MM-DD HH:mm:ss");
 
   console.log(yesterdayF, yesterdayL);
 

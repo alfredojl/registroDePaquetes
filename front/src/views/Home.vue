@@ -341,8 +341,7 @@ export default {
             if (value == "Faltante") return "bg-warning";
           },
         },
-        { key: "tomos", label: "Tomos", tdClass: "text-center" },
-        { key: "referencias", label: "Referencia" },
+        { key: "tomo", label: "Tomo", tdClass: "text-center" },
       ],
     };
   },

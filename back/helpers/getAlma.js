@@ -5,9 +5,9 @@ const Folio = require("../server/models/Folios");
 const mariadb = require("mariadb");
 const fs = require("fs");
 
-const list = require("./alma03-07-05.json");
-const name = "alma10-14-05";
-const name2 = "foliosAlma10-14-May";
+const list = require("./alma17-21-05.json");
+const name = "alma17-21-05";
+const name2 = "foliosAlma17-21-May";
 // const list = require("./gerardo.json");
 
 const getAlma = async () => {
@@ -25,16 +25,16 @@ const getAlma = async () => {
       readies = 0,
       duplicated = 0;
 
-    // * Consulta masiva en SICE.
+    // * Consulta masiva en SICE (subido en marzo).
     // let consult = await res.query(
-    //   `SELECT Id, C22 Folio, C25 Tomo, C11242 "Imágenes" FROM T15 WHERE Usuario = "DEVELOPMENT S&H" AND Fecha <= '2021-02-28 00:00:00' ORDER BY C22, C25;`
+    //   `SELECT C24 Paquete, C22 Folio, C25 Tomo, C11242 "Imágenes" FROM T15 WHERE Usuario = "DEVELOPMENT S&H" AND Fecha BETWEEN '2021-04-01 00:00:00' AND '2021-04-30 23:59:59' ORDER BY C22, C25;`
     // );
     // let doc, libro;
     // doc = xlsx.utils.json_to_sheet(consult);
     // libro = xlsx.utils.book_new();
     // xlsx.utils.book_append_sheet(libro, doc, "Hoja 1");
-    // xlsx.writeFile(libro, `./masivoSICE.xlsx`);
-    // console.log(`[ masivoSICE ] created.`);
+    // xlsx.writeFile(libro, `./siceAbril.xlsx`);
+    // console.log(`[ siceAbril ] created.`);
     // * Aquí
 
     // * Consulta en SICE
@@ -76,7 +76,7 @@ const getAlma = async () => {
     //   );
     // }
     // for (el of list) {
-    //   console.log(el);
+    //   process.stdout.write(`${el}`);
     //   let folioConsult = await res.query(
     //     `SELECT C24 Paquete, C22 Folio, C25 Tomo, C23 Expediente, C29 Toca, C11242 "# Imágenes", Usuario FROM T15 WHERE C22 = ${el} ORDER BY C22, C25;`
     //   );
@@ -93,21 +93,24 @@ const getAlma = async () => {
     //         `${el},Registro previo en SICE.\n`,
     //         "utf-8"
     //       );
+    //       process.stdout.write(' ¡Duplicado!\n')
     //       duplicated++;
     //     } else {
     //       fs.appendFileSync(
     //         `./${name}.csv`,
     //         `${el},Listo\n`,
     //         "utf-8"
-    //       );
-    //       readies++;
-    //     }
-    //   } else {
-    //     fs.appendFileSync(
-    //       `./${name}.csv`,
-    //       `${el},Aún no se sube.\n`,
-    //       "utf-8"
-    //     );
+    //         );
+    //         process.stdout.write(' ¡Ready!\n')
+    //         readies++;
+    //       }
+    //     } else {
+    //       fs.appendFileSync(
+    //         `./${name}.csv`,
+    //         `${el},Aún no se sube.\n`,
+    //         "utf-8"
+    //         );
+    //       process.stdout.write(' ¡Aún no!\n')
     //     notYet++;
     //   }
     //   // if (folioConsut.length == 0)

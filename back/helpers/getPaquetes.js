@@ -1,23 +1,28 @@
 const MongoClient = require("mongodb").MongoClient,
   assert = require("assert");
 const xlsx = require("xlsx");
+const axios = require("axios");
+const colors = require("colors");
 
 const reporte800 = require("./reporte800.json");
 // const name = 'registro30.03';
-const nameAdrian = "foliosLote57";
+const nameAdrian = "foliosLote69";
 
 const moment = require("moment");
 moment.locale("es-mx");
 const yesterday = moment().subtract(1, "days").format("DD/MM/YYYY");
 const cron = require("node-cron");
+const mongoose = require("mongoose");
+const Folio = require("../server/models/Folios");
 
 const lista = require("./lista.json");
 
 const getPaquetes = async () => {
   MongoClient.connect(
     "mongodb://production:production$@172.26.60.61:27017/registro?authSource=admin",
+    // { useUnifiedTopology: true },
+    // "mongodb://localhost:27017/registro",
     { useUnifiedTopology: true },
-    // MongoClient.connect('mongodb://pjcdmx:pjcdmx@172.26.60.60:27017/archivosSICE?authSource=admin', { useUnifiedTopology: true },
     async (err, res) => {
       let regex = "2021-05-11";
       let day = moment(regex).hours(0).minutes(0).seconds(0).format();
@@ -35,6 +40,76 @@ const getPaquetes = async () => {
       // await archivo.find({ FechaProcesado: {$regex: regex}, Error: false}).sort({ Folio: 1, Tomo: 1 }).toArray(async(err, cols) => {
       // await archivo.find({ Procesado: true, Error: false, FechaProcesado: {$regex: '29/12/2020'} }).sort({Folio: 1, Tomo: 1}).toArray(async(err, cols) => {
       //======================================================================================================================================
+      //***********************************************************************************************************************************+
+      // * Para paquetes lista de folios
+      // const listaFolios = xlsx.readFile("./600kconPaquete.xlsx");
+      // const folios = res.db("registro").collection("folios");
+      // let index = 0;
+      // let heads = listaFolios.SheetNames;
+      // let temp = xlsx.utils.sheet_to_json(listaFolios.Sheets[heads[0]], {
+      //   skipHeader: true,
+      // });
+      // temp = temp.map((el) => {
+      //   return {
+      //     folio: el.Folio,
+      //     tomo: el.Tomo || null,
+      //     noPaquete: el.Paquete,
+      //     numeroImagenes: el.Imgs,
+      //   };
+      // });
+      // for (el of temp.slice(0, 1)) {
+      //   // let con = await folios.findOne({ folio: el.Folio });
+      //   // let noPaquete = con ? con.noPaquete : 'N/A';
+      //   let m = await axios.get(
+      //     "http://digitalizacion.pjcdmx.gob.mx/consulta_folio.php",
+      //     {
+      //       params: {
+      //         f: el.folio,
+      //       },
+      //     }
+      //   );
+      //   console.log(m.data.encontrado);
+      //   if (m.data.encontrado) {
+      //     let toUpdate = {
+      //       expediente: m.expediente,
+      //       juzgado: m.juzgado,
+      //       instanciaJ: m.insJuz,
+      //       instanciaS: m.insSal,
+      //       dependencia: m.dependencia,
+      //       toca: m.toca,
+      //       actor: m.actor,
+      //       demandado: m.demandado,
+      //       juicio: m.juicio,
+      //       sala: m.Sala,
+      //       observaciones: null,
+      //       validado: true,
+      //     };
+      //     let foliosFinded = await folios.find({ folio: el.folio });
+      //     console.log("Before".red, foliosFinded);
+      //     // let folioUpdated= await folios.updateMany({ folio: el.folio.toString() }, toUpdate);
+      //     // console.log('After'.red, folioUpdated);
+      //     // process.stdout.write(`\t${folioUpdated.result.nModified} de ${folioUpdated.result.n} actualizado(s).\n`.yellow);
+      //   } else process.stdout.write("\tNo se encontró\n".red);
+      //   // el.Paquete = noPaquete;
+      //   // console.log(el);
+      // }
+      // // let doc, libro, newTemp;
+      // // newTemp = temp.map(el => {
+      // //   return {
+      // //     Paquete: el.Paquete,
+      // //     Folio: el.Folio,
+      // //     Tomo: el.Tomo || null,
+      // //     Imgs: el.IMGs
+      // //   }
+      // // });
+      // // console.log(newTemp);
+      // process.exit(0);
+      // doc = xlsx.utils.json_to_sheet(newTemp);
+      // libro = xlsx.utils.book_new();
+      // xlsx.utils.book_append_sheet(libro, doc);
+      // xlsx.writeFile(libro, `./600kconPaquete.xlsx`);
+      // console.log(`[600kconPaquete.xlsx] created.`);
+      // process.exit(0);
       //***********************************************************************************************************************************+
       // * Para conteo de folios... Adrián.
       const archivo = res.db("registro").collection("folios");
@@ -75,6 +150,7 @@ const getPaquetes = async () => {
         $and: [{ noPaquete: { $in: lista } }, { bis: false }],
       });
       console.log(cols);
+      process.exit();
       //     // await archivo.find({ folio: { $in: reporte800 } }).sort({ folio: 1 }).toArray(async(err, cols) => {
       //     // await archivo.find({ $or: [
       //     //     { FechaProcesado: { $regex: '26/12/2020' }},
@@ -173,3 +249,88 @@ const getPaquetes = async () => {
   );
 };
 getPaquetes();
+
+const actualizaPasado = async () => {
+  try {
+    await mongoose.connect("mongodb://production:production$@172.26.60.61:27017/registro?authSource=admin", {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useCreateIndex: true,
+      // useFindAndModify: false,
+    });
+    // await mongoose.connect("mongodb://localhost:27017/registro", {
+    //   useNewUrlParser: true,
+    //   useUnifiedTopology: true,
+    //   useCreateIndex: true,
+    //   // useFindAndModify: false,
+    // });
+    console.log("MongoDB connected...".magenta);
+
+    const listaFolios = xlsx.readFile("./600kconPaquete.xlsx");
+    let index = 0;
+    let heads = listaFolios.SheetNames;
+    let temp = xlsx.utils.sheet_to_json(listaFolios.Sheets[heads[0]], {
+      skipHeader: true,
+    });
+    temp = temp.map((el) => {
+      return {
+        folio: el.Folio,
+        tomo: el.Tomo || null,
+        noPaquete: el.Paquete,
+        numeroImagenes: el.Imgs,
+      };
+    });
+    let tam = temp.length;
+    console.time();
+    for (el of temp) {
+      // let con = await folios.findOne({ folio: el.Folio });
+      // let noPaquete = con ? con.noPaquete : 'N/A';
+      process.stdout.write(`${++index}/${tam}\t${el.folio}\t${el.tomo}`.italic.yellow);
+      let m = await axios.get(
+        "http://digitalizacion.pjcdmx.gob.mx/consulta_folio.php",
+        {
+          params: {
+            f: el.folio,
+          },
+        }
+      );
+      if (m.data.encontrado) {
+        let toUpdate = {
+          expediente: m.data.expediente,
+          juzgado: m.data.juzgado,
+          instanciaJ: m.data.insJuz,
+          instanciaS: m.data.insSal,
+          dependencia: m.data.dependencia,
+          toca: m.data.toca,
+          actor: m.data.actor,
+          demandado: m.data.demandado,
+          juicio: m.data.juicio,
+          sala: m.data.Sala,
+          observaciones: null,
+          validado: true,
+        };
+        let foliosFinded = await Folio.find({ folio: el.folio, tomo: el.tomo });
+        if (foliosFinded.length == 0) {
+          toUpdate.folio = el.folio;
+          toUpdate.tomo = el.tomo;
+          toUpdate.noPaquete = null;
+          let folioCreated = await Folio.create(toUpdate);
+          process.stdout.write('\tcreado.\n'.green)
+        }
+        else {
+          let folioUpdated = await Folio.updateOne({ folio: el.folio, tomo: el.tomo }, toUpdate);
+          process.stdout.write(`\tactualizado.\n`.magenta);
+        }
+        // console.log("Before".red, foliosFinded);
+      } else process.stdout.write("\tNo se encontró\n".red);
+      // el.Paquete = noPaquete;
+      // console.log(el);
+    }
+    console.timeEnd();
+    process.exit();
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+// actualizaPasado();
