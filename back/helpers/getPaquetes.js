@@ -4,7 +4,7 @@ const xlsx = require("xlsx");
 const axios = require("axios");
 const colors = require("colors");
 
-const reporte800 = require("./reporte800.json");
+// const reporte800 = require("./reporte800.json");
 // const name = 'registro30.03';
 const nameAdrian = "foliosLote69";
 
@@ -110,47 +110,78 @@ const getPaquetes = async () => {
       // xlsx.writeFile(libro, `./600kconPaquete.xlsx`);
       // console.log(`[600kconPaquete.xlsx] created.`);
       // process.exit(0);
+      // * Get folios faltantes
+      const archivo = res.db("registro").collection("folios");
+      let faltantes = await archivo
+        .find({ estado: "Faltante" })
+        .sort({ folio: 1 })
+        .toArray();
+      // console.log(faltantes);
+      faltantes = faltantes.map((el) => {
+        let Paquete;
+        if (el.bis)
+          if (el.cantidad)
+            Paquete =
+              el.noPaquete + " Bis " + el.identificador + "/" + el.cantidad;
+          else Paquete = el.noPaquete + " Bis";
+        else Paquete = el.noPaquete;
+
+        return {
+          Paquete,
+          Folio: el.folio,
+          Estado: el.estado,
+        };
+      });
+      let doc, libro;
+      doc = xlsx.utils.json_to_sheet(faltantes);
+      libro = xlsx.utils.book_new();
+      xlsx.utils.book_append_sheet(libro, doc, "Camiloooos");
+      xlsx.writeFile(libro, `./faltantesSistema.xlsx`);
+      console.log(`[faltantesSistema.xlsx] created.`);
+      process.exit();
+      // * Hasta aquí
       //***********************************************************************************************************************************+
       // * Para conteo de folios... Adrián.
-      const archivo = res.db("registro").collection("folios");
-      let conteo = [];
-      let foliosTotal = 0;
-      for (el of lista) {
-        var noPaquete = null;
-        var bis = false;
-        if (typeof el === "string") {
-          var noPaquete = parseInt(el.split(" ")[0]);
-          var bis = true;
-        } else {
-          noPaquete = el;
-        }
-        let count = await archivo.countDocuments({ noPaquete, bis });
-        foliosTotal += count;
-        conteo.push({
-          Paquete: bis ? noPaquete + " BIS" : noPaquete,
-          Folios: count,
-        });
-        // , async(err, foliosDB) => {
-        //     console.log(foliosDB);
-        //     foliosTotal += foliosDB;
-        // })
-      }
-      conteo.push({
-        Paquete: "Total =",
-        Folios: foliosTotal,
-      });
-      console.log(conteo, conteo.length);
-      let doc, libro;
-      doc = xlsx.utils.json_to_sheet(conteo);
-      libro = xlsx.utils.book_new();
-      xlsx.utils.book_append_sheet(libro, doc, nameAdrian);
-      xlsx.writeFile(libro, `./${nameAdrian}.xlsx`);
-      console.log(`[${nameAdrian}.xlsx] created.`);
-      let cols = await archivo.countDocuments({
-        $and: [{ noPaquete: { $in: lista } }, { bis: false }],
-      });
-      console.log(cols);
-      process.exit();
+
+      // const archivo = res.db("registro").collection("folios");
+      // let conteo = [];
+      // let foliosTotal = 0;
+      // for (el of lista) {
+      //   var noPaquete = null;
+      //   var bis = false;
+      //   if (typeof el === "string") {
+      //     var noPaquete = parseInt(el.split(" ")[0]);
+      //     var bis = true;
+      //   } else {
+      //     noPaquete = el;
+      //   }
+      //   let count = await archivo.countDocuments({ noPaquete, bis });
+      //   foliosTotal += count;
+      //   conteo.push({
+      //     Paquete: bis ? noPaquete + " BIS" : noPaquete,
+      //     Folios: count,
+      //   });
+      //   // , async(err, foliosDB) => {
+      //   //     console.log(foliosDB);
+      //   //     foliosTotal += foliosDB;
+      //   // })
+      // }
+      // conteo.push({
+      //   Paquete: "Total =",
+      //   Folios: foliosTotal,
+      // });
+      // console.log(conteo, conteo.length);
+      // let doc, libro;
+      // doc = xlsx.utils.json_to_sheet(conteo);
+      // libro = xlsx.utils.book_new();
+      // xlsx.utils.book_append_sheet(libro, doc, nameAdrian);
+      // xlsx.writeFile(libro, `./${nameAdrian}.xlsx`);
+      // console.log(`[${nameAdrian}.xlsx] created.`);
+      // let cols = await archivo.countDocuments({
+      //   $and: [{ noPaquete: { $in: lista } }, { bis: false }],
+      // });
+      // console.log(cols);
+      // process.exit();
       //     // await archivo.find({ folio: { $in: reporte800 } }).sort({ folio: 1 }).toArray(async(err, cols) => {
       //     // await archivo.find({ $or: [
       //     //     { FechaProcesado: { $regex: '26/12/2020' }},
@@ -252,12 +283,15 @@ getPaquetes();
 
 const actualizaPasado = async () => {
   try {
-    await mongoose.connect("mongodb://production:production$@172.26.60.61:27017/registro?authSource=admin", {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      useCreateIndex: true,
-      // useFindAndModify: false,
-    });
+    await mongoose.connect(
+      "mongodb://production:production$@172.26.60.61:27017/registro?authSource=admin",
+      {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true,
+        // useFindAndModify: false,
+      }
+    );
     // await mongoose.connect("mongodb://localhost:27017/registro", {
     //   useNewUrlParser: true,
     //   useUnifiedTopology: true,
@@ -266,7 +300,7 @@ const actualizaPasado = async () => {
     // });
     console.log("MongoDB connected...".magenta);
 
-    const listaFolios = xlsx.readFile("./600kconPaquete.xlsx");
+    const listaFolios = xlsx.readFile("./66carpetas.xlsx");
     let index = 0;
     let heads = listaFolios.SheetNames;
     let temp = xlsx.utils.sheet_to_json(listaFolios.Sheets[heads[0]], {
@@ -276,8 +310,6 @@ const actualizaPasado = async () => {
       return {
         folio: el.Folio,
         tomo: el.Tomo || null,
-        noPaquete: el.Paquete,
-        numeroImagenes: el.Imgs,
       };
     });
     let tam = temp.length;
@@ -285,7 +317,9 @@ const actualizaPasado = async () => {
     for (el of temp) {
       // let con = await folios.findOne({ folio: el.Folio });
       // let noPaquete = con ? con.noPaquete : 'N/A';
-      process.stdout.write(`${++index}/${tam}\t${el.folio}\t${el.tomo}`.italic.yellow);
+      process.stdout.write(
+        `${++index}/${tam}\t${el.folio}\t${el.tomo}`.italic.yellow
+      );
       let m = await axios.get(
         "http://digitalizacion.pjcdmx.gob.mx/consulta_folio.php",
         {
@@ -315,10 +349,12 @@ const actualizaPasado = async () => {
           toUpdate.tomo = el.tomo;
           toUpdate.noPaquete = null;
           let folioCreated = await Folio.create(toUpdate);
-          process.stdout.write('\tcreado.\n'.green)
-        }
-        else {
-          let folioUpdated = await Folio.updateOne({ folio: el.folio, tomo: el.tomo }, toUpdate);
+          process.stdout.write("\tcreado.\n".green);
+        } else {
+          let folioUpdated = await Folio.updateOne(
+            { folio: el.folio, tomo: el.tomo },
+            toUpdate
+          );
           process.stdout.write(`\tactualizado.\n`.magenta);
         }
         // console.log("Before".red, foliosFinded);

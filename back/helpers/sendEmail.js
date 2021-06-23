@@ -51,11 +51,12 @@ const getPaquetes = async () => {
   try {
     let conn = await pool.getConnection();
     console.log("Mariadb connected...".green);
-    let foliosRecorded = await conn.query(
-      `SELECT C24 Paquete, C22 Folio, C25 Tomo, C23 Expediente, C29 Toca, C11242 'Imágenes' FROM T15 WHERE Fecha BETWEEN '${yesterdayF}' AND '${yesterdayL}' AND Usuario = "DEVELOPMENT S&H" ORDER BY C22, C25;`
-    );
+    // let foliosRecorded = await conn.query(
+    //   `SELECT C24 Paquete, C22 Folio, C25 Tomo, C23 Expediente, C29 Toca, C11242 'Imágenes' FROM T15 WHERE Fecha BETWEEN '${yesterdayF}' AND '${yesterdayL}' AND Usuario = "DEVELOPMENT S&H" ORDER BY C22, C25;`
+    // );
+    let foliosRecorded = await conn.query('SELECT C24 Paquete, C22 Folio, C25 Tomo, C23 Expediente, C29 Toca, C11242 "Imágenes" FROM T15 WHERE Usuario = "DEVELOPMENT S&H" AND Fecha >= "2021-06-01"');
     let suma = await conn.query(
-      `SELECT SUM(C11242) suma FROM T15 WHERE Fecha BETWEEN '${yesterdayF}' AND '${yesterdayL}' AND Usuario = "DEVELOPMENT S&H";`
+      `SELECT SUM(C11242) suma FROM T15 WHERE Fecha >= '2021-06-01' AND Usuario = "DEVELOPMENT S&H";`
     );
 
     suma = suma[0].suma || 0;
@@ -72,24 +73,23 @@ const getPaquetes = async () => {
       xlsx.utils.book_append_sheet(libro, doc, "");
       xlsx.writeFile(
         libro,
-        `./paquetes${moment(yesterdayF).format("DD-MM")}.xlsx`
+        // `./paquetes${moment(yesterdayF).format("DD-MM")}.xlsx`
+        'paquetesJunio.xlsx'
       );
       console.log(
-        `[paquetes${moment(yesterdayF).format("DD-MM")}.xlsx] created.`.cyan
+        // `[paquetes${moment(yesterdayF).format("DD-MM")}.xlsx] created.`.cyan
+        'paquetesJunio.xlsx'
       );
   
       let resultado = await send({
           to: user,
           bcc: copies,
-          subject: `Reporte de folios subidos a SICE ${moment(yesterdayF).format(
-              "L"
-            )}.`,
+          subject: `Reporte de folios subidos en el mes de junio de 2021.`,
             text: `Buenos días.
-Adjunto archivo excel de folios subidos el día ${moment(yesterdayF).format(
-            "LL"
-          )}.
+Adjunto archivo excel de folios subidos en el mes de junio de 2021..
 Saludos.`,
-        files: [`./paquetes${moment(yesterdayF).format("DD-MM")}.xlsx`],
+//         files: [`./paquetes${moment(yesterdayF).format("DD-MM")}.xlsx`],
+        files: [`./paquetesJunio.xlsx`],
       });
   
       console.log(`Email to '${user}' with copy to '${copies.join(", ")}' sent succesfully.`.green);
