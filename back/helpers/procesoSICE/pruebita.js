@@ -7,7 +7,7 @@ const cron = require('node-cron');
 const moment = require('moment');
 const symbols = require('log-symbols');
 
-const ruta = path.join(os.homedir(), "SICE");
+const ruta = path.resolve(os.homedir(), "SICE");
 
 let data = [];
 const getList = async() => {
@@ -34,7 +34,7 @@ const getList = async() => {
             nh = sep[1]
         }
         if(folio.length != 7){
-            console.log(`Folio ${folio} ${tomo ? 'Tomo ' + tomo : ''} erróneo, no se va a procesar.`.bgRed)
+            console.log(`Folio ${folio} ${tomo ? 'Tomo ' + tomo : ''} erróneo, no se va a procesar.`.bgRed);
             fs.appendFileSync(path.resolve(os.homedir(), 'LOG.txt'), `${folio} ${tomo ? 'Tomo ' + tomo : ''} folio erróneo, se moverá a la carpeta de 'Error'.\t\t [${moment().format('ddd, D MMM Y, HH:mm:ss')}]\n`, 'utf8')
             fs.renameSync(path.join(ruta, file), path.join(ruta, `Error/${file}`));
             fs.appendFileSync(path.resolve(os.homedir(), 'reporte.csv'), `${folio.folio},${folio.tomo ? folio.tomo : ''},${folio.numeroImagenes},false\n`);
@@ -74,7 +74,7 @@ const getList = async() => {
     data = [];
 };
 
-// const task = cron.schedule('0 19 * * *', async() => {
+// const task = cron.schedule('*/30 * * * *', async() => {
 //     console.log(symbols.info, `Procesando... [${moment().format('HH:mm:ss')}]`.underline.cyan);
 //     await getList();
 //     console.log(symbols.info, `Terminado. Esperando siguiente ciclo... [${moment().format('HH:mm:ss')}]`.underline.cyan);
