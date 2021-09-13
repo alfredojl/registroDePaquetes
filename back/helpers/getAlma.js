@@ -26,42 +26,42 @@ const getAlma = async () => {
       duplicated = 0;
 
     // * Consulta masiva en SICE (subido en mayo).
+    // let consult = await res.query(
+    //   `SELECT C24 Paquete, C22 Folio, C25 Tomo, C11242 "Imágenes" FROM T15 WHERE Usuario = "DEVELOPMENT S&H" AND Fecha >= '2021-03-01';`
+    // );
+    // let doc, libro;
+    // doc = xlsx.utils.json_to_sheet(consult);
+    // libro = xlsx.utils.book_new();
+    // xlsx.utils.book_append_sheet(libro, doc, "Hoja 1");
+    // xlsx.writeFile(libro, `./todoSICE.xlsx`);
+    // console.log(`[ todoSICE ] created.`);
+    // * Aquí
+    // * Consulta masiva SICE normal
     let consult = await res.query(
-      `SELECT C24 Paquete, C22 Folio, C25 Tomo, C11242 "Imágenes" FROM T15 WHERE Usuario = "DEVELOPMENT S&H" AND Fecha >= '2021-03-01';`
+      `SELECT C24 Paquete, C22 Folio, C25 Tomo, C23 Expediente, C29 Toca, C11242 "Imágenes" FROM T15 WHERE Usuario = "DEVELOPMENT S&H" AND Fecha >= '2021-03-01' ORDER BY C22, C25;`
     );
+    // ! Para duplicados
+    // let consult = await res.query(
+    //   `SELECT Id, C24 Paquete, C22 Folio, C25 Tomo, C11242 "Imágenes" FROM (SELECT Id, C24, C22, C25, C11242, COUNT(*) rep FROM T15 WHERE Usuario = "DEVELOPMENT S&H" GROUP BY C22, C25 HAVING rep > 1) ch`
+    // );
+    // let lista = consult.map(el => {
+    //   return el.Folio;
+    // });
+    // let consulta2 = await res.query(
+    //   `SELECT Id, C24 Paquete, C22 Folio, C25 Tomo, C11242 "Imágenes" FROM T15 WHERE Usuario = "DEVELOPMENT S&H" AND C22 IN (?) ORDER BY C22, C25;`,
+    //   [lista]
+    // );
+    // consulta2.forEach((el, index) => {
+    //   el["Número"] = index + 1;
+    // });
+    // console.log(consulta2.length);
+    // ! Para duplicados
     let doc, libro;
     doc = xlsx.utils.json_to_sheet(consult);
     libro = xlsx.utils.book_new();
     xlsx.utils.book_append_sheet(libro, doc, "Hoja 1");
-    xlsx.writeFile(libro, `./todoSICE.xlsx`);
-    console.log(`[ todoSICE ] created.`);
-    // * Aquí
-    // * Consulta masiva SICE normal
-    // let consult = await res.query(
-    //   `SELECT Id, C24 Paquete, C22 Folio, C25 Tomo, C11242 "Imágenes" FROM T15 WHERE Usuario = "DEVELOPMENT S&H" AND Fecha >= '2021-03-01 00:00:00' ORDER BY C22, C25;`
-    // );
-    // // ! Para duplicados
-    // // let consult = await res.query(
-    // //   `SELECT Id, C24 Paquete, C22 Folio, C25 Tomo, C11242 "Imágenes" FROM (SELECT Id, C24, C22, C25, C11242, COUNT(*) rep FROM T15 WHERE Usuario = "DEVELOPMENT S&H" GROUP BY C22, C25 HAVING rep > 1) ch`
-    // // );
-    // // let lista = consult.map(el => {
-    // //   return el.Folio;
-    // // });
-    // // let consulta2 = await res.query(
-    // //   `SELECT Id, C24 Paquete, C22 Folio, C25 Tomo, C11242 "Imágenes" FROM T15 WHERE Usuario = "DEVELOPMENT S&H" AND C22 IN (?) ORDER BY C22, C25;`,
-    // //   [lista]
-    // // );
-    // // consulta2.forEach((el, index) => {
-    // //   el["Número"] = index + 1;
-    // // });
-    // // console.log(consulta2.length);
-    // // ! Para duplicados
-    // let doc, libro;
-    // doc = xlsx.utils.json_to_sheet(consulta2);
-    // libro = xlsx.utils.book_new();
-    // xlsx.utils.book_append_sheet(libro, doc, "Hoja 1");
-    // xlsx.writeFile(libro, `./siceAnioPasadoRepetidosWId.xlsx`);
-    // console.log(`[ siceAnioPasadoRepetidosWId ] created.`);
+    xlsx.writeFile(libro, `./reporteSICE.xlsx`);
+    console.log(`[ reporteSICE ] created.`);
     // * Aquí
     // * Consulta en SICE (CSV)
     // let consult = await res.query(
