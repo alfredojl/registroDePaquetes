@@ -44,7 +44,7 @@ front> yarn install
 Nos ubicamos en la carpeta "front" y ejecutamos el siguiente comando:
 
 ```
-front> npm run dev
+front> npm run build
 ```
 
 Esto nos generará una carpeta llamada "dist", la cuál contiene todo el código perteneciente al *frontend*.
