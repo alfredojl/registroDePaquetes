@@ -32,8 +32,10 @@ const reproceso = async () => {
         if (err) console.log(err);
     });
     var archs = fs.readdirSync(ruta);
-    archs = archs.filter((el) => path.parse(path.join(ruta, el)).ext == ".pdf");
+    archs = archs.filter((el) => path.parse(path.join(ruta, el)).ext == ".pdf" || path.parse(path.join(ruta, el)).ext == ".safe");
+    // archs  
     let sftp = new client();
+    var index = 0;
 
     try {
         console.log("Conectando...".yellow);
@@ -59,65 +61,73 @@ const reproceso = async () => {
                 `SELECT Id FROM T15 WHERE C22 = ${folio} AND C25 ${tomo ? "= " + tomo : "IS NULL"
                 } AND C11242 = ${nh}`
             );
+            console.log(a);
             conn.release();
-            Id = a[0] ? a[0].Id : null;
-            if (!Id) {
-                console.log(
-                    `${file}: \t\t\t${folio} ${tomo ? "Tomo " + tomo : ""
-                        }\t${nh} no está en SICE. ----> Error\t${++index} de ${archs.length
-                        }`.red
-                );
-                fs.appendFileSync(
-                    path.join(ruta, "NoSubido", "reporte.csv"),
-                    `${file},,${folio},${tomo ? tomo : ""},${nh}\n`,
-                    "utf8"
-                );
-                fs.renameSync(
-                    path.join(ruta, file),
-                    path.join(ruta, "NoSubido", file)
-                );
-            } else if (!nh) {
-                console.log(
-                    `${file}: \t\t${folio} ${tomo ? "Tomo " + tomo : ""
-                        }\t${nh} sin número de imágenes. ----> Error\t${++index} de ${archs.length
-                        }`.red
-                );
-                fs.appendFileSync(
-                    path.join(ruta, "Hecho", "reporte.csv"),
-                    `${file},,${folio},${tomo ? tomo : ""},${nh},SIN HOJAS\n`,
-                    "utf8"
-                );
-                fs.renameSync(path.join(ruta, file), path.join(ruta, "Error", file));
-            } else {
-                console.log(
-                    `Subiendo ${file}: \t\t${folio} ${tomo ? "Tomo " + tomo : ""
-                        }\t${nh}\t${++index} de ${archs.length}\t[ ${moment().format(
-                            "L HH:mm:ss"
-                        )} ]`.cyan
-                );
-                // await sftp.delete(pathSFTP + Id.toString() + '.pdf', true);
-                // await sftp.delete(pathSFTP + Id.toString() + '.safe', true);
-                await sftp.exists(pathSFTP + Id.toString() + '.pdf');
-                await sftp.exists(pathSFTP + Id.toString() + '.safe');
-                // await sftp.put(
-                //     path.join(ruta, file),
-                //     pathSFTP + Id.toString() + '.pdf'
-                // )
-                fs.renameSync(
-                    path.join(ruta, file),
-                    path.join(ruta, "Hecho", file)
-                );
-                fs.appendFileSync(
-                    path.join(ruta, "Hecho", "reporte.csv"),
-                    `${file},${Id},${folio},${tomo ? tomo : ""
-                    },${nh},reemplazado\n`,
-                    "utf8"
-                );
-                console.log(
-                    `${Id.toString()}.pdf subido.\t[ ${moment().format(
-                        "L HH:mm:ss"
-                    )} ]`.green
-                );
+                // Id = a[0] ? a[0].Id : null;
+                
+                if (a.length == 0) {
+                    console.log(
+                        `${file}: \t\t\t${folio} ${tomo ? "Tomo " + tomo : ""
+                            }\t${nh} no está en SICE. ----> Error\t${++index} de ${archs.length
+                            }`.red
+                    );
+                    fs.appendFileSync(
+                        path.join(ruta, "NoSubido", "reporte.csv"),
+                        `${file},,${folio},${tomo ? tomo : ""},${nh}\n`,
+                        "utf8"
+                    );
+                    fs.renameSync(
+                        path.join(ruta, file),
+                        path.join(ruta, "NoSubido", file)
+                    );
+                } else if (!nh) {
+                    console.log(
+                        `${file}: \t\t${folio} ${tomo ? "Tomo " + tomo : ""
+                            }\t${nh} sin número de imágenes. ----> Error\t${++index} de ${archs.length
+                            }`.red
+                    );
+                    fs.appendFileSync(
+                        path.join(ruta, "Hecho", "reporte.csv"),
+                        `${file},,${folio},${tomo ? tomo : ""},${nh},SIN HOJAS\n`,
+                        "utf8"
+                    );
+                    fs.renameSync(path.join(ruta, file), path.join(ruta, "Error", file));
+                } else {
+                    for (let Id of a){
+                        let id = Id.Id;
+                        console.log(id);
+                        console.log(
+                            `Subiendo ${file}: \t\t${folio} ${tomo ? "Tomo " + tomo : ""
+                                }\t${nh}\t${++index} de ${archs.length}\t[ ${moment().format(
+                                    "L HH:mm:ss"
+                                )} ]`.cyan
+                        );
+                        // await sftp.delete(pathSFTP + id.toString() + '.pdf', true);
+                        // await sftp.delete(pathSFTP + id.toString() + '.safe', true);
+                        let a = await sftp.delete(pathSFTP + id.toString() + '.pdf', true);
+                        let b = await sftp.delete(pathSFTP + id.toString() + '.safe', true);
+                        await sftp.put(
+                            path.join(ruta, file),
+                            pathSFTP + id.toString() + '.pdf'
+                        )
+                        
+                        console.log(
+                            `${id}.pdf subido.\t[ ${moment().format(
+                                "L HH:mm:ss"
+                            )} ]`.green
+                        );
+                        fs.appendFileSync(
+                            path.join(ruta, "Hecho", "reporte.csv"),
+                            `${file},${id},${folio},${tomo ? tomo : ""
+                            },${nh},reemplazado\n`,
+                            "utf8"
+                        );
+
+                    }
+                    fs.renameSync(
+                        path.join(ruta, file),
+                        path.join(ruta, "Hecho", file)
+                    );
             }
         }
         sftp.end();
@@ -129,6 +139,7 @@ const reproceso = async () => {
         console.log(`${err}`);
     };
     console.log("\n\nFin...".blue);
+    process.exit();
 };
 
 reproceso();
