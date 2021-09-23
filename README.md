@@ -38,6 +38,12 @@ front> yarn install
 
 -----
 
+# Configuraciones.
+
+Para que el front se comunique con el back, es necesario modificar el archivo que se encuentra en `front/src/config/config.js` y modificamos el apartado de "api" con la dirección ip y el puerto donde se va a encontrar el back corriendo (que será en este caso el puerto 3000 según la configuración del back).
+
+-----
+
 # Despliegue del proyecto.
 
 ## Front
