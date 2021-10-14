@@ -4,10 +4,9 @@ const moment = require("moment");
 const Folio = require("../server/models/Folios");
 const mariadb = require("mariadb");
 const fs = require("fs");
+const colors = require("colors");
 
-const list = require("./alma17-21-05.json");
-const name = "alma17-21-05";
-const name2 = "foliosAlma17-21-May";
+moment.locale('es-mx');
 // const list = require("./gerardo.json");
 
 const getAlma = async () => {
@@ -19,12 +18,36 @@ const getAlma = async () => {
       database: "documentos",
     });
     console.log("Conectado...");
-    let lunes = moment("2021-04-12").format("DD-MM");
-    let martes = moment("2021-04-16").format("DD-MM");
-    let notYet = 0,
-      readies = 0,
-      duplicated = 0;
+    // let lunes = moment("2021-04-12").format("DD-MM");
+    // let martes = moment("2021-04-16").format("DD-MM");
+    // let notYet = 0,
+    //   readies = 0,
+    //   duplicated = 0;
 
+    // * Agrega mes de carga a lista.
+    
+    const reporte = xlsx.readFile('./reporteOctubre.xlsx');
+    const heads = reporte.SheetNames;
+    let temp = xlsx.utils.sheet_to_json(reporte.Sheets[heads[0]], {
+      skipHeader: false
+    });
+
+    const tam = temp.length;
+    
+    for ( [ index, exp ] of temp.slice(0, temp.length - 1).entries() ) {
+      const consult = await res.query(`SELECT Fecha FROM T15 WHERE C22 = ${ exp.Folio }`);
+      temp[index].Mes = moment(consult[0].Fecha).format('MMMM').toUpperCase();
+      console.log(`${ index + 1 }`.green, ` de `.yellow, `${ tam }`.cyan);
+    }
+
+    let doc, libro;
+    doc = xlsx.utils.json_to_sheet( temp );
+    libro = xlsx.utils.book_new();
+    xlsx.utils.book_append_sheet(libro, doc, "Hoja 1");
+    xlsx.writeFile(libro, `./reporteOctubreWMonth.xlsx`);
+    console.log(`[ reporteOctubreWMonth ] created.`);
+    
+    // * Agrega mes de carga a lista.
     // * Consulta masiva en SICE (subido en mayo).
     // let consult = await res.query(
     //   `SELECT C24 Paquete, C22 Folio, C25 Tomo, C11242 "Imágenes" FROM T15 WHERE Usuario = "DEVELOPMENT S&H" AND Fecha >= '2021-03-01';`
@@ -37,9 +60,9 @@ const getAlma = async () => {
     // console.log(`[ todoSICE ] created.`);
     // * Aquí
     // * Consulta masiva SICE normal
-    let consult = await res.query(
-      `SELECT C24 Paquete, C22 Folio, C25 Tomo, C23 Expediente, C29 Toca, C11242 "Imágenes" FROM T15 WHERE Usuario = "DEVELOPMENT S&H" AND Fecha >= '2021-03-01' ORDER BY C22, C25;`
-    );
+    // let consult = await res.query(
+    //   `SELECT C24 Paquete, C22 Folio, C25 Tomo, C23 Expediente, C29 Toca, C11242 "Imágenes" FROM T15 WHERE Usuario = "DEVELOPMENT S&H" AND Fecha >= '2021-03-01' ORDER BY C22, C25;`
+    // );
     // ! Para duplicados
     // let consult = await res.query(
     //   `SELECT Id, C24 Paquete, C22 Folio, C25 Tomo, C11242 "Imágenes" FROM (SELECT Id, C24, C22, C25, C11242, COUNT(*) rep FROM T15 WHERE Usuario = "DEVELOPMENT S&H" GROUP BY C22, C25 HAVING rep > 1) ch`
@@ -56,12 +79,12 @@ const getAlma = async () => {
     // });
     // console.log(consulta2.length);
     // ! Para duplicados
-    let doc, libro;
-    doc = xlsx.utils.json_to_sheet(consult);
-    libro = xlsx.utils.book_new();
-    xlsx.utils.book_append_sheet(libro, doc, "Hoja 1");
-    xlsx.writeFile(libro, `./reporteSICE.xlsx`);
-    console.log(`[ reporteSICE ] created.`);
+    // let doc, libro;
+    // doc = xlsx.utils.json_to_sheet(consult);
+    // libro = xlsx.utils.book_new();
+    // xlsx.utils.book_append_sheet(libro, doc, "Hoja 1");
+    // xlsx.writeFile(libro, `./reporteSICE.xlsx`);
+    // console.log(`[ reporteSICE ] created.`);
     // * Aquí
     // * Consulta en SICE (CSV)
     // let consult = await res.query(
